@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <AssemblyName>UsbGuard</AssemblyName>
+    <RootNamespace>UsbGuard</RootNamespace>
+    <Platforms>AnyCPU</Platforms>
+    <Prefer32Bit>false</Prefer32Bit>
+    <Nullable>disable</Nullable>
+    <Version>1.0.0</Version>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="src\**\*.cs" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Management" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
