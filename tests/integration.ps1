@@ -191,6 +191,22 @@ $logFile = Join-Path $env:ProgramData 'UsbGuard\usbguard.log'
 $logTxt = if (Test-Path $logFile) { Get-Content $logFile -Raw -Encoding UTF8 } else { '' }
 Check 'TC27' 'Ghi nhật ký hoạt động' ($logTxt -match 'Chế độ' -and $logTxt -match 'khởi động') $logFile
 
+# ---------- Đo tài nguyên (không tính đạt/lỗi, chỉ ghi số đo) ----------
+Say ""; Say "--- Đo tài nguyên dịch vụ trong 60 giây ---"
+$procId = Svc-Pid
+$pr = Get-Process -Id $procId
+$cpu0 = $pr.TotalProcessorTime.TotalMilliseconds; $sw = [Diagnostics.Stopwatch]::StartNew()
+$ramMax = 0; $ramSum = 0; $nS = 0
+for ($k = 0; $k -lt 60; $k++) {
+    Start-Sleep -Seconds 1
+    $pr.Refresh(); $mb = [math]::Round($pr.WorkingSet64 / 1MB, 1)
+    $ramSum += $mb; $nS++; if ($mb -gt $ramMax) { $ramMax = $mb }
+}
+$pr.Refresh()
+$cpuPct = [math]::Round(100 * ($pr.TotalProcessorTime.TotalMilliseconds - $cpu0) / $sw.ElapsedMilliseconds / [Environment]::ProcessorCount, 2)
+$script:ramTb = [math]::Round($ramSum / $nS, 1); $script:ramMax = $ramMax; $script:cpuPct = $cpuPct
+Say ("  RAM (working set): trung bình $($script:ramTb) MB, cao nhất $ramMax MB; CPU trung bình $cpuPct % (trên " + [Environment]::ProcessorCount + " lõi)")
+
 # ---------- TC28-30: gỡ cài đặt ----------
 Say ""; Say "--- TC28 Gỡ cài đặt ---"
 $r = Run-Exe @('uninstall', 'sai-mat-khau-123')
@@ -228,6 +244,6 @@ foreach ($x in $results) {
 [void]$md.Append($transcript.ToString())
 [void]$md.AppendLine('```')
 [IO.File]::WriteAllText((Join-Path $OutDir "integration-$tag.md"), $md.ToString(), (New-Object Text.UTF8Encoding($false)))
-[pscustomobject]@{ he_dieu_hanh = $os.Caption; phien_ban = $os.Version; dat = $pass; tong = $total; tu_sua_ms = $script:repairMs; chay_lai_ms = $script:restartMs; ca = $results } |
+[pscustomobject]@{ he_dieu_hanh = $os.Caption; phien_ban = $os.Version; dat = $pass; tong = $total; tu_sua_ms = $script:repairMs; chay_lai_ms = $script:restartMs; ram_tb_mb = $script:ramTb; ram_max_mb = $script:ramMax; cpu_pct = $script:cpuPct; ca = $results } |
     ConvertTo-Json -Depth 5 | Set-Content (Join-Path $OutDir "integration-$tag.json") -Encoding UTF8
 if ($pass -ne $total) { exit 1 } else { exit 0 }
