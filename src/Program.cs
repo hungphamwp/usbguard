@@ -9,6 +9,16 @@ namespace UsbGuard
 
         public static int Main(string[] args)
         {
+            // Đổi console sang UTF-8 để in tiếng Việt, và TRẢ LẠI bảng mã cũ khi thoát:
+            // nếu để nguyên, cmd.exe đang chạy file .bat (QUAN-LY.bat) sẽ đọc lệnh kế tiếp bị lệch.
+            System.Text.Encoding oldOut = null;
+            try { oldOut = Console.OutputEncoding; } catch { }
+            try { return Run(args); }
+            finally { if (oldOut != null) try { Console.OutputEncoding = oldOut; } catch { } }
+        }
+
+        private static int Run(string[] args)
+        {
             if (args.Length == 0)
             {
                 // Không có đối số: SCM (Service Control Manager) gọi theo cách này khi khởi động dịch vụ.

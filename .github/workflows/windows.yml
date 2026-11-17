@@ -60,10 +60,12 @@ jobs:
           if ((Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\USBSTOR).Start -ne 4) { throw 'USBSTOR chua bi chan' }
           $o = Run-Bat 'QUAN-LY.bat' @('1', '', '4', '', '7', '', '0')
           if ($o -notmatch 'RUNNING') { throw 'QUAN-LY lua chon 1 khong in trang thai' }
-          if ($o -notmatch ': 0') { throw 'QUAN-LY lua chon 4 khong liet ke USB' }
-          if ($o -notmatch 'whitelist') { throw 'QUAN-LY lua chon 7 khong hien danh sach' }
+          if ($o -notmatch 'USB đang cắm: 0') { throw 'QUAN-LY lua chon 4 khong liet ke USB' }
+          if ($o -notmatch 'thiết bị trong whitelist') { throw 'QUAN-LY lua chon 7 khong hien danh sach' }
+          if ($o -match 'syntax of the command') { throw 'QUAN-LY loi cu phap' }
           $o = Run-Bat 'GO-CAI-DAT.bat' @($pw, '')
           sc.exe query UsbGuard | Out-Null
           if ($LASTEXITCODE -ne 1060) { throw 'GO-CAI-DAT.bat: dich vu van con' }
           if ((Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\USBSTOR).Start -ne 3) { throw 'USBSTOR chua tra ve mac dinh' }
           Write-Host 'BO CAI CHAY DUNG'
+          exit 0
