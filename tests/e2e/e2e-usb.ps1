@@ -35,7 +35,14 @@ function HostDo([string]$cmd) {
 }
 function Plug($x) { HostDo "plug $x" | Out-Null }
 function Unplug($x) { HostDo "unplug $x" | Out-Null; Start-Sleep 2 }
+function Clean-Desktop {
+    # Đóng menu Start (nếu đang mở) và thu nhỏ mọi cửa sổ để ảnh chụp thấy rõ thông báo / giao diện.
+    try { (New-Object -ComObject WScript.Shell).SendKeys('{ESC}') } catch { }
+    try { (New-Object -ComObject Shell.Application).MinimizeAll() } catch { }
+    Start-Sleep -Milliseconds 700
+}
 function Shot($name) { Start-Sleep -Milliseconds 800; HostDo "shot $name" | Out-Null }
+function UgLog { Get-Content "$env:ProgramData\UsbGuard\usbguard.log" -Raw -Encoding UTF8 -ErrorAction SilentlyContinue }
 
 $results = New-Object System.Collections.ArrayList
 function Check([string]$id, [string]$name, [bool]$ok, [string]$detail) {
@@ -90,11 +97,12 @@ $elev = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentit
 L "=== KIỂM THỬ CẮM USB THẬT (QEMU usb-storage) ==="
 L "Máy: $env:COMPUTERNAME | $($os.Caption) $($os.Version) | quyền Administrator: $elev"
 Start-Sleep 20   # để Windows ổn định sau lần đăng nhập đầu
+Clean-Desktop
 
 # E01: trước khi cài, USB giả lập phải hoạt động như USB thật
 Plug A
 $w = Watch A 40 -TryWrite -UntilWritable
-$bus = (Get-Disk -ErrorAction SilentlyContinue | Where-Object { $_.SerialNumber -like "*$($Serial.A)*" -or $_.FriendlyName -like '*QEMU*' } | Select-Object -First 1).BusType
+$bus = (Get-Disk -ErrorAction SilentlyContinue | Where-Object { $_.SerialNumber -like "*$($Serial.A)*" } | Select-Object -First 1).BusType
 Check 'E01' 'Trước khi cài: cắm USB thì Windows nhận ổ và ghi được file' ($w.ghi_duoc) ("bus=$bus, có ký tự ổ sau $($w.vol_dau) ms, ghi file sau $($w.ghi_ms) ms")
 Shot 'e01-truoc-khi-cai'
 Unplug A
@@ -111,11 +119,12 @@ Check 'E02' 'Cài bằng setup.exe: dịch vụ chạy, bật đủ 3 tầng ch�
 
 # E03: chế độ CHẶN TẤT CẢ, cắm USB
 $hid0 = HidOk
+Clean-Desktop
 Plug A
 $w = Watch A 15 -TryWrite
 $dev = UsbDev A
 Shot 'e03-thong-bao-chan-usb'
-$logTxt = Get-Content "$env:ProgramData\UsbGuard\usbguard.log" -Raw -ErrorAction SilentlyContinue
+$logTxt = UgLog
 Check 'E03' 'Chặn tất cả: cắm USB không dùng được (không có ổ, không ghi được)' (-not $w.ghi_duoc -and -not $w.con_vol -and -not $w.con_disk) ("thấy ký tự ổ: " + $(if ($null -ne $w.vol_dau) { "có, $($w.vol_dau)-$($w.vol_cuoi) ms" } else { 'không lần nào' }) + ", ghi được: $($w.ghi_duoc), thiết bị USB: $($dev.Status) / $($dev.Problem)")
 Check 'E04' 'Chặn tất cả: dịch vụ ghi nhật ký và báo người dùng' ($logTxt -match [regex]::Escape('Đã chặn thiết bị USB lưu trữ') -or $logTxt -match 'Đã gỡ thiết bị USB') ((($logTxt -split "`n") | Where-Object { $_ -match 'chặn thiết bị|gỡ thiết bị' } | Select-Object -Last 1))
 
@@ -141,6 +150,7 @@ try { $fs = [IO.File]::Open((Join-Path ($vol.DriveLetter + '\') 'dang-mo.txt'), 
 App @('resume', $Pw) | Out-Null
 $w = Watch A 25 -UntilGone
 $disabled = (Get-ItemProperty HKLM:\SOFTWARE\UsbGuard -ErrorAction SilentlyContinue).DisabledDevices
+L ("  nhật ký UsbGuard: " + (((UgLog) -split "`n") | Where-Object { $_ -match 'Buộc tháo|gỡ thiết bị' } | Select-Object -Last 2) -join ' / ')
 $okE07 = -not (Accessible A)
 Check 'E07' 'Bật lại chặn khi USB đang mở file: USB vẫn bị chặn' $okE07 ("còn ổ sau 25 giây: $($w.con_vol); thiết bị bị vô hiệu hoá: $($disabled -join ',')")
 if ($fs) { try { $fs.Close() } catch { } }
@@ -150,20 +160,26 @@ Unplug A
 Plug B
 Start-Sleep 6
 $devOut = App @('devices')
+L ($devOut.Trim())
 Check 'E08' 'Lệnh devices thấy USB đang bị chặn và gợi ý đúng số serial' ($devOut -match $Serial.B) ((($devOut -split "`n") | Where-Object { $_ -match 'Gợi ý|bị chặn' }) -join ' / ')
 App @('whitelist', 'add', $Serial.B, $Pw) | Out-Null
 $w = Watch B 40 -TryWrite -UntilWritable
 Check 'E09' 'Thêm serial vào whitelist: USB đó dùng được (không cần rút ra)' ($w.ghi_duoc) ("ghi được sau $($w.ghi_ms) ms")
 
 # E10: chế độ danh sách cho phép, cắm USB lạ -> bị gỡ nhanh; USB được phép vẫn dùng
+$logLen = (UgLog).Length
+Clean-Desktop
 Plug A
 $w = Watch A 15 -TryWrite
+$newLog = (UgLog).Substring($logLen)
+L ("  nhật ký UsbGuard: " + (($newLog -split "`n") | Where-Object { $_ -match 'gỡ|chặn|Buộc' } | Select-Object -First 3) -join ' / ')
 $expose = if ($null -ne $w.vol_dau) { $w.vol_cuoi - $w.vol_dau } else { 0 }
 Shot 'e10-whitelist-chan-usb-la'
-Check 'E10' 'Danh sách cho phép: USB lạ bị gỡ, ổ tồn tại tối đa 2 giây' (-not $w.con_vol -and -not $w.con_disk -and $expose -le 2000) ("ổ xuất hiện " + $(if ($null -ne $w.vol_dau) { "lúc $($w.vol_dau) ms, mất lúc $($w.vol_cuoi) ms, tồn tại khoảng $expose ms" } else { 'không lần nào' }) + ", ghi được: $($w.ghi_duoc)")
+Check 'E10' 'Danh sách cho phép: USB lạ bị gỡ, ổ tồn tại tối đa 2 giây' (-not $w.con_vol -and -not $w.con_disk -and $expose -le 2000 -and $newLog -match 'không được phép') ("ổ xuất hiện " + $(if ($null -ne $w.vol_dau) { "lúc $($w.vol_dau) ms, mất lúc $($w.vol_cuoi) ms, tồn tại khoảng $expose ms" } else { 'không lần nào' }) + ", ghi được: $($w.ghi_duoc)")
 Check 'E11' 'Danh sách cho phép: USB được phép vẫn dùng bình thường' (Accessible B) ''
 
 # GUI: chụp màn hình giao diện quản lý khi đang có 1 USB được phép + 1 USB bị chặn
+Clean-Desktop
 $gui = Start-Process $App -ArgumentList 'gui' -PassThru
 Start-Sleep 8
 Shot 'gui-quan-ly'

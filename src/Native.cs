@@ -19,6 +19,15 @@ namespace UsbGuard
         [DllImport("kernel32.dll")]
         public static extern uint WTSGetActiveConsoleSessionId();
 
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern IntPtr FindFirstVolume(StringBuilder name, int len);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool FindNextVolume(IntPtr h, StringBuilder name, int len);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool FindVolumeClose(IntPtr h);
+
         [DllImport("kernel32.dll")]
         public static extern uint GetConsoleProcessList(uint[] list, uint count);
 

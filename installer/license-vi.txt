@@ -15,4 +15,4 @@ Phiên bản 1.1.0 - Bản quyền (c) 2026 Phạm Văn Hưng
 
 6. Phần mềm được cung cấp "nguyên trạng". Tác giả không chịu trách nhiệm cho thiệt hại phát sinh do sử dụng sai mục đích.
 
-Bấm "Tôi đồng ý" để tiếp tục cài đặt.
+Chọn "Tôi đồng ý với các điều khoản trên" để tiếp tục cài đặt.

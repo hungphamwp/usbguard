@@ -84,6 +84,7 @@ namespace UsbGuard
         }
 
         public static List<string> GetDisabledDevices() { return GetMulti("DisabledDevices"); }
+        public static List<string> GetDisabledDevicesSafe() { try { return GetDisabledDevices(); } catch { return new List<string>(); } }
         public static void SetDisabledDevices(List<string> list) { SetMulti("DisabledDevices", list); }
         public static void AddDisabledDevice(string id)
         {

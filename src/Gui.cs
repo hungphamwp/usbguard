@@ -317,7 +317,6 @@ namespace UsbGuard
                 return;
             if (!Ask("Cho phép USB \"" + dev.Name + "\"")) return;
             AddEntry(entry);
-            UsbDisks.RetryBlockedDevices();
             Msg("Đã cho phép USB này. Nếu ổ chưa hiện trong This PC sau vài giây, rút ra cắm lại.", MessageBoxIcon.Information);
         }
 
