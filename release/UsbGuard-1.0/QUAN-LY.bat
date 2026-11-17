@@ -34,5 +34,6 @@ if "%c%"=="7" UsbGuard.exe whitelist list
 if "%c%"=="8" UsbGuard.exe passwd
 if "%c%"=="0" exit /b 0
 echo.
-pause
+set "_="
+set /p _=Bam Enter de quay lai menu... 
 goto menu
