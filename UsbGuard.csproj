@@ -9,7 +9,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <Nullable>disable</Nullable>
     <Version>1.0.0</Version>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="src\**\*.cs" />
