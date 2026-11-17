@@ -74,9 +74,9 @@ Say ""
 Say "--- TC01 Cài đặt dịch vụ ---"
 $r = Run-Exe @('install', $Pw)
 $t = Wait-Until { (Svc-State) -eq 'Running' } 15000
-$svc = Get-Service $Svc -ErrorAction SilentlyContinue
+$svcObj = Get-Service $Svc -ErrorAction SilentlyContinue
 Check 'TC01' 'Cài đặt, dịch vụ chạy' ($r.rc -eq 0 -and $t -ge 0) ("mã thoát $($r.rc), trạng thái " + (Svc-State))
-Check 'TC02' 'Khởi động tự động cùng Windows' ($svc -and [string]$svc.StartType -eq 'Automatic') ("StartType = " + $svc.StartType)
+Check 'TC02' 'Khởi động tự động cùng Windows' ($svcObj -and [string]$svcObj.StartType -eq 'Automatic') ("StartType = " + $svcObj.StartType)
 $qf = Run-Cmd 'sc.exe' "qfailure $Svc"
 Check 'TC03' 'Cấu hình tự khởi động lại khi bị kill' ($qf.out -match 'RESTART') 'sc qfailure có RESTART'
 $qc = Run-Cmd 'sc.exe' "qc $Svc"
@@ -130,11 +130,14 @@ Set-Service seclogon -StartupType Manual -ErrorAction SilentlyContinue
 Start-Service seclogon -ErrorAction SilentlyContinue
 
 $cred = New-Object Management.Automation.PSCredential($uName, (ConvertTo-SecureString $uPw -AsPlainText -Force))
+function Ran($r) { return $r.rc -ge 0 -and $r.out -match 'EXIT=' }
 function Run-AsUser([string]$label, [string]$cmdline) {
     $bat = "$work\$label.cmd"; $out = "$work\$label.txt"
     Set-Content $bat "@echo off`r`nchcp 65001 >nul`r`nwhoami`r`n$cmdline`r`necho EXIT=%ERRORLEVEL%" -Encoding ASCII
     try {
-        Start-Process cmd.exe -ArgumentList "/c `"$bat`" > `"$out`" 2>&1" -Credential $cred -WorkingDirectory $work -Wait -WindowStyle Hidden -LoadUserProfile
+        # Đường dẫn không có dấu cách nên không bọc nháy (cmd /c bóc nháy sai khi có nhiều cặp nháy)
+        $p = Start-Process cmd.exe -ArgumentList "/c $bat > $out 2>&1" -Credential $cred -WorkingDirectory $work -Wait -PassThru -LoadUserProfile
+        Say ("  (tiến trình user thường kết thúc, mã " + $p.ExitCode + ")")
     } catch { Say ("  Không chạy được bằng user thường: " + $_.Exception.Message); return @{ rc = -999; out = '' } }
     $txt = if (Test-Path $out) { Get-Content $out -Raw -Encoding UTF8 } else { '' }
     $rc = if ($txt -match 'EXIT=(-?\d+)') { [int]$Matches[1] } else { -998 }
@@ -150,11 +153,11 @@ Check 'TC12' 'User thường không đổi được kiểu khởi động' ($r.r
 $r = Run-AsUser 'u3' "sc.exe delete $Svc"
 Check 'TC13' 'User thường không xoá được dịch vụ' ($r.rc -eq 5 -and (Svc-State) -eq 'Running') ("mã $($r.rc)")
 $r = Run-AsUser 'u4' "reg.exe query HKLM\SOFTWARE\UsbGuard"
-Check 'TC14' 'User thường không đọc được cấu hình/mã băm mật khẩu' ($r.rc -ne 0 -and $r.out -notmatch 'pbkdf2') ("mã $($r.rc)")
+Check 'TC14' 'User thường không đọc được cấu hình/mã băm mật khẩu' ((Ran $r) -and $r.rc -ne 0 -and $r.out -notmatch 'pbkdf2') ("mã $($r.rc)")
 $r = Run-AsUser 'u5' "UsbGuard.exe uninstall $Pw"
-Check 'TC15' 'User thường gỡ cài đặt bị từ chối (kể cả biết mật khẩu)' ($r.rc -ne 0 -and (Svc-State) -eq 'Running') ("mã $($r.rc)")
+Check 'TC15' 'User thường gỡ cài đặt bị từ chối (kể cả biết mật khẩu)' ((Ran $r) -and $r.rc -ne 0 -and (Svc-State) -eq 'Running') ("mã $($r.rc)")
 $r = Run-AsUser 'u6' "reg.exe add HKLM\SYSTEM\CurrentControlSet\Services\USBSTOR /v Start /t REG_DWORD /d 3 /f"
-Check 'TC16' 'User thường không mở lại được driver USB' ($r.rc -ne 0 -and ((-not $hasUsbStor) -or (Get-Start) -eq 4)) ("mã $($r.rc)")
+Check 'TC16' 'User thường không mở lại được driver USB' ((Ran $r) -and $r.rc -ne 0 -and ((-not $hasUsbStor) -or (Get-Start) -eq 4)) ("mã $($r.rc)")
 
 # ---------- TC17-22: chức năng quản trị ----------
 Say ""; Say "--- TC17 Chức năng quản trị (Administrator) ---"
@@ -195,7 +198,8 @@ Check 'TC28' 'Gỡ với sai mật khẩu bị từ chối' ($r.rc -eq 3 -and (S
 $sw = [Diagnostics.Stopwatch]::StartNew()
 $r = Run-Exe @('uninstall', $Pw)
 $ms = $sw.ElapsedMilliseconds
-Check 'TC29' 'Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá' ($r.rc -eq 0 -and (Svc-State) -eq 'KHÔNG CÓ') ("mất $ms ms")
+$q = Run-Cmd 'sc.exe' "query $Svc"
+Check 'TC29' 'Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá' ($r.rc -eq 0 -and $q.rc -eq 1060) ("mất $ms ms, sc query trả 1060 (không còn dịch vụ)")
 $clean = ((-not $hasUsbStor) -or (Get-Start) -eq 3) -and (Get-DenyAll) -eq $null -and -not (Test-Path 'HKLM:\SOFTWARE\UsbGuard') -and -not (Test-Path "$env:ProgramFiles\UsbGuard")
 Check 'TC30' 'Trả lại mặc định Windows sau khi gỡ' $clean ("USBSTOR Start = " + (Get-Start) + ", Deny_All = " + (Get-DenyAll) + ", không còn khoá cấu hình và thư mục cài")
 
