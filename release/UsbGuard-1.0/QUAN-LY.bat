@@ -1,5 +1,4 @@
 @echo off
-chcp 65001 >nul
 title Quan ly UsbGuard
 net session >nul 2>&1
 if errorlevel 1 (
