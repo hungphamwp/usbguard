@@ -298,3 +298,13 @@ Thực hiện quét toàn bộ văn bản bằng PyMuPDF trên cả 2 tệp `BAO
 | 54 | Phụ lục A: Hướng dẫn chi tiết tập lệnh dòng lệnh CLI của UsbGuard | Trang 43 | Trang 43 | Khớp chính xác 100% |
 | 55 | Phụ lục B: Kịch bản kiểm thử tích hợp PowerShell (tests/integration.ps1) | Trang 43 | Trang 43 | Khớp chính xác 100% |
 | 56 | Phụ lục C: Cấu hình quy trình CI GitHub Actions (.github/workflows/windows.yml) | Trang 44 | Trang 44 | Khớp chính xác 100% |
+
+## Lần 3 (bản 1.1)
+
+- Báo cáo: 49 trang (yêu cầu 35-50). Slide: 19 slide (tối đa 20), chữ nội dung từ 16pt trở lên, không tràn chân trang.
+- Số liệu: toàn bộ đọc từ `tests/ket-qua/` qua `report/ket_qua.py` (json, md, trx); thiếu tệp thì script dừng và báo lỗi. Không ghi số hiệu lần chạy CI, chỉ ghi "GitHub Actions".
+- Kết quả đọc được: unit 12/12 (2 bản Windows Server), tích hợp 34/34 trên Windows Server 2022 và 34/34 trên Windows Server 2025, cắm USB thật 17/17 trên Windows 10 và 17/17 trên Windows 11.
+- Mục lục, danh mục hình, danh mục bảng so với PDF thật bằng bộ đọc độc lập: 71 mục, lệch: 0.
+- Quét PDF báo cáo và slide: không có "30/30", "30 ca", "2 lớp", "UsbGuard 1.0", "1.0.0", "chờ kiểm thử USB vật lý", "nhóm tác giả", "C# 7.3", "Claude", "nháp", "TODO", "agy". Có đủ "34/34", "17/17", "Windows 10", "Windows 11", "tầng 3". Số viết bằng chữ số (đã sửa "Ba lỗi" thành "3 lỗi").
+- Đã xem ảnh từng trang đã đổi: không tràn chữ, không hình vỡ; trang 9 (cuối bảng thuật ngữ) và trang 3 (nhận xét giảng viên) còn trống vì cuối phần.
+- Điểm cần lưu ý: ổ USB trong kiểm thử là ổ ảo QEMU, không phải phần cứng thật; ảnh e01 trong thư mục kết quả là màn hình cài Windows nên không dùng; "lần đầu đạt 11/17" lấy từ đề bài, không có trong tệp kết quả (báo cáo chỉ ghi chung 3 lỗi phát hiện).

@@ -8,16 +8,17 @@ Quy tắc: Chữ >= 18pt, tối đa 5 ý mỗi slide, dùng lại hình vẽ tro
 
 import os
 
-# ---- Số liệu kiểm thử đọc từ tests/ket-qua (không gõ tay) ----
-import json as _json, glob as _glob, re as _re
-def _kq(ver):
-    f = sorted(_glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "ket-qua", f"integration-*{ver}*.json")))[0]
-    d = _json.load(open(f, encoding="utf-8-sig"))
-    md = open(f[:-5] + ".md", encoding="utf-8-sig").read()
-    m = _re.search(r"TC29 .*?mất (\d+) ms", md)
-    d["go_ms"] = int(m.group(1)) if m else None
-    return d
-K22, K25 = _kq("2022"), _kq("2025")
+# ---- Số liệu kiểm thử đọc từ tests/ket-qua qua report/ket_qua.py (không gõ tay) ----
+import sys as _sys
+_sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "report"))
+import ket_qua as kq
+K22, K25 = kq.tich_hop(2022), kq.tich_hop(2025)
+W10, W11 = kq.e2e(10), kq.e2e(11)
+U22, U25 = kq.unit(2022), kq.unit(2025)
+for _d in (K22, K25, W10, W11, U22, U25):
+    if _d["dat"] != _d["tong"]:
+        raise SystemExit(f"[LỖI] Có ca không đạt trong {_d['_tep']}: {_d['dat']}/{_d['tong']}")
+SO_TEP, SO_DONG = len(kq.ma_nguon()), sum(n for _, n in kq.ma_nguon())
 import pathlib
 import shutil
 import subprocess
@@ -79,7 +80,7 @@ class SlideBuilder:
         line.line.fill.background()
 
         # Chân trang (Footer)
-        self.tx(sl, 0.8, 7.05, 10.0, 0.3, "Báo cáo Seminar Chuyên đề · Đề tài: UsbGuard 1.0 — Ngăn chặn cắm USB Flash Disk trên Windows",
+        self.tx(sl, 0.8, 7.05, 10.0, 0.3, "Báo cáo Seminar Chuyên đề · Đề tài: UsbGuard 1.1 — Ngăn chặn cắm USB Flash Disk trên Windows",
                 size=10, color=C_MUTE)
         self.tx(sl, 11.5, 7.05, 1.0, 0.3, str(self.slide_count), size=10, color=C_MUTE, align=PP_ALIGN.RIGHT)
 
@@ -151,7 +152,7 @@ class SlideBuilder:
 
     def pic(self, sl, filename, x, y, w, h, border=True):
         """Thêm hình ảnh với tỷ lệ co giãn phù hợp."""
-        path = HINH_DIR / filename
+        path = filename if isinstance(filename, pathlib.Path) else HINH_DIR / filename
         if not path.exists():
             return None
         iw, ih = Image.open(path).size
@@ -226,7 +227,7 @@ def tao_toan_bo_slide():
     sb.tx(sl1, 0.9, 2.2, 11.5, 1.8,
           "XÂY DỰNG ỨNG DỤNG NGĂN CẮM USB FLASH DISK\nTRÊN WINDOWS, CHẠY NHƯ DỊCH VỤ KHÔNG TẮT ĐƯỢC",
           size=28, bold=True, color=C_NAVY)
-    sb.tx(sl1, 0.9, 4.1, 11.5, 0.5, "Sản phẩm phần mềm: UsbGuard 1.0", size=20, italic=True, bold=True, color=C_BLUE)
+    sb.tx(sl1, 0.9, 4.1, 11.5, 0.5, "Sản phẩm phần mềm: UsbGuard 1.1", size=20, italic=True, bold=True, color=C_BLUE)
 
     # Khung tác giả
     box_info = sl1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.9), Inches(4.9), Inches(7.5), Inches(1.6))
@@ -260,32 +261,32 @@ def tao_toan_bo_slide():
         "Mục tiêu 2 — Bảo vệ chuột và bàn phím: Giữ nguyên hoạt động của các thiết bị ngoại vi giao tiếp người dùng chuẩn HID, không gây gián đoạn công việc.",
         "Mục tiêu 3 — Vận hành 'không tắt được': Từ chối lệnh dừng từ SCM (lỗi 1052), từ chối người dùng thường (lỗi 5), và tự động khởi chạy lại sau khoảng 5 giây nếu bị kill.",
         "Mục tiêu 4 — Quản trị bảo mật: Hỗ trợ 3 chế độ (Chặn tất cả, Danh sách cho phép, Tạm dừng); xác thực mật khẩu PBKDF2 100000 vòng lặp; bảo vệ Registry DACL.",
-        "Phạm vi & Ranh giới: Áp dụng trên Windows 10, 11 và Windows Server (64-bit); là phần mềm Device Control chính quy, không phải mã độc ẩn mình (rootkit)."
+        "Phạm vi: Dịch vụ chặn 3 tầng, giao diện quản lý, bộ cài setup.exe và kiểm thử cắm USB thật trên Windows 10 và Windows 11; là phần mềm Device Control chính quy, không phải rootkit."
     ], size=19, gap=16)
 
     # --------------------------------------------------------------------------
     # SLIDE 4: KIẾN TRÚC TỔNG THỂ 2 LỚP BẢO VỆ
     # --------------------------------------------------------------------------
-    sl4 = sb.add_slide("Kiến trúc tổng thể 2 lớp bảo vệ (Defense in Depth)", "2. Kiến trúc & Thiết kế")
+    sl4 = sb.add_slide("Kiến trúc 3 tầng chặn và lớp gỡ thiết bị", "2. Kiến trúc & Thiết kế")
     sb.bullets(sl4, 0.8, 1.8, 5.8, 4.8, [
-        "Nguyên lý phòng thủ đa tầng: Kết hợp chặn tại chính sách hệ điều hành và gỡ bỏ chủ động tại tầng phần cứng.",
-        "Lớp 1 (Chính sách & Driver): Tắt driver USBSTOR, UASPStor (Start = 4); Chính sách Removable Storage Deny_All = 1.",
-        "Lớp 2 (Quét phần cứng & Gỡ an toàn): SetupAPI lọc ổ đĩa USB (BusType = 7), gửi lệnh CM_Request_Device_Eject.",
-        "Phản ứng nhanh: Bắt sự kiện WMI __InstanceCreationEvent kết hợp chu kỳ quét dự phòng 2 giây.",
-        "Cảnh báo người dùng: Đẩy thông báo WTSSendMessage trực tiếp ra màn hình desktop của phiên làm việc."
+        "Tầng 1 (Driver): Tắt USBSTOR và UASPStor (Start = 4).",
+        "Tầng 2 (Chính sách): Removable Storage Deny_All = 1, chặn đọc, ghi, chạy.",
+        "Tầng 3 (Cài thiết bị): Device Installation Restrictions cấm ID lớp 08, không đụng chuột, bàn phím.",
+        "Lớp gỡ: SetupAPI + IOCTL (BusType 7), eject, buộc tháo ổ khi đang mở tệp, nạp lại thiết bị khi bỏ chặn.",
+        "Thông báo: Driver chặn thì dịch vụ vẫn báo người dùng qua WTSSendMessage."
     ], size=16, gap=10)
-    sb.pic(sl4, "hinh1_kien_truc_2_lop.png", 6.8, 1.8, 5.8, 4.8)
+    sb.pic(sl4, "hinh1_kien_truc_3_tang.png", 6.8, 1.8, 5.8, 4.8)
 
     # --------------------------------------------------------------------------
     # SLIDE 5: SƠ ĐỒ THÀNH PHẦN HỆ THỐNG
     # --------------------------------------------------------------------------
     sl5 = sb.add_slide("Sơ đồ thành phần hệ thống & Tổ chức mã nguồn", "2. Kiến trúc & Thiết kế")
     sb.bullets(sl5, 0.8, 1.8, 5.8, 4.8, [
-        "Khối CLI & Quản trị: Program.cs, Cli.cs, Installer.cs, Password.cs xử lý tương tác dòng lệnh và cài đặt dịch vụ.",
-        "Khối Dịch vụ cốt lõi: Worker.cs điều phối vòng kiểm tra; Enforcer.cs quản lý Registry driver; UsbDisks.cs quét và eject đĩa.",
+        "Khối CLI & Giao diện: Program.cs, Cli.cs, Gui.cs, Installer.cs, Password.cs xử lý dòng lệnh, giao diện và cài dịch vụ.",
+        "Khối Dịch vụ cốt lõi: Worker.cs điều phối vòng kiểm tra; Enforcer.cs đặt 3 tầng chặn; UsbDisks.cs quét, eject, buộc tháo ổ.",
         "Khối Bảo mật & Lưu trữ: Auth.cs băm mật khẩu PBKDF2; Settings.cs đọc ghi cấu hình; Reg.cs thiết lập phân quyền DACL.",
         "Khối Tương tác tầng thấp: Native.cs khai báo Win32 P/Invoke (SetupAPI, CfgMgr32, Kernel32, Wtsapi32); Sys.cs và Log.cs phụ trợ.",
-        "Quy mô tinh gọn: 15 tệp mã nguồn C#, tổng cộng 1197 dòng lệnh thực tế, tối ưu hóa hiệu năng hệ thống."
+        f"Quy mô tinh gọn: {SO_TEP} tệp mã nguồn C#, tổng cộng {SO_DONG} dòng, gồm cả giao diện Gui.cs."
     ], size=16, gap=10)
     sb.pic(sl5, "hinh2_so_do_thanh_phan.png", 6.8, 1.8, 5.8, 4.8)
 
@@ -329,19 +330,6 @@ def tao_toan_bo_slide():
     sb.pic(sl8, "hinh9_mo_hinh_bao_mat_pbkdf2.png", 6.8, 1.8, 5.8, 4.8)
 
     # --------------------------------------------------------------------------
-    # SLIDE 9: CÂY THIẾT BỊ & BẢO TOÀN THIẾT BỊ HID
-    # --------------------------------------------------------------------------
-    sl9 = sb.add_slide("Cây thiết bị PnP & Bảo toàn chuột, bàn phím", "2. Kiến trúc & Thiết kế")
-    sb.bullets(sl9, 0.8, 1.8, 5.8, 4.8, [
-        "Vấn đề gỡ nhầm ngoại vi: Nếu phần mềm gỡ nhầm cổng Hub, chuột và bàn phím cắm cùng cổng sẽ bị ngắt.",
-        "Lọc chính xác lớp thiết bị: Chỉ truy vấn GUID_DEVINTERFACE_DISK, bỏ qua GUID_DEVINTERFACE_HID.",
-        "Ranh giới cô lập MaxDepth = 2: Chỉ duyệt từ Nút đĩa (Disk Node) lên Nút thiết bị USB cha (Parent USB Node).",
-        "Không can thiệp nút Hub: Dừng lại trước nút Generic Hub / Root Hub, giữ nguyên kết nối cho chuột và bàn phím.",
-        "Dự phòng pnputil an toàn: Nếu CM_Request_Device_Eject bị từ chối do khóa tệp, chỉ disable đúng nút USB cha."
-    ], size=16, gap=10)
-    sb.pic(sl9, "hinh7_cay_thiet_bi_usb.png", 6.8, 1.8, 5.8, 4.8)
-
-    # --------------------------------------------------------------------------
     # SLIDE 10: QUY TRÌNH GỠ CÀI ĐẶT AN TOÀN
     # --------------------------------------------------------------------------
     sl10 = sb.add_slide("Quy trình gỡ cài đặt an toàn & Khôi phục hệ thống", "2. Kiến trúc & Thiết kế")
@@ -349,10 +337,36 @@ def tao_toan_bo_slide():
         "Xác thực đa tầng: Yêu cầu quyền Administrator (UAC) và xác thực chính xác mật khẩu qua Auth.Verify.",
         "Đồng bộ qua cờ Registry: Ghi Uninstalling = 1; tiến trình Worker phát hiện cờ và chủ động gọi Stop().",
         "Chờ kết thúc an toàn: Vòng lặp chờ tối đa 20 giây cho dịch vụ chuyển hẳn sang STOPPED trước khi xóa.",
-        "Hoàn trả cài đặt gốc: Trả USBSTOR và UASPStor về Start = 3, xóa Deny_All, bật lại thiết bị tắt bởi pnputil.",
+        "Hoàn trả cài đặt gốc: Trả USBSTOR và UASPStor về Start = 3, xóa Deny_All và chỉ các mục UsbGuardN của tầng 3, bật lại thiết bị bị chặn.",
         "Dọn dẹp hệ thống: Xóa toàn bộ khóa Registry HKLM\\SOFTWARE\\UsbGuard và xóa thư mục cài đặt."
     ], size=16, gap=10)
     sb.pic(sl10, "hinh6_luong_go_cai_dat.png", 6.8, 1.8, 5.8, 4.8)
+
+    # --------------------------------------------------------------------------
+    # SLIDE: GIAO DIỆN QUẢN LÝ
+    # --------------------------------------------------------------------------
+    slg = sb.add_slide("Giao diện quản lý đồ họa", "3. Triển khai & Sử dụng")
+    sb.bullets(slg, 0.8, 1.8, 5.8, 4.8, [
+        "Thanh trạng thái màu: Đỏ chặn tất cả, xanh chỉ cho phép danh sách, vàng tạm dừng, xám chưa cài.",
+        "3 tab: USB đang cắm, Danh sách cho phép, Nhật ký.",
+        "Cho phép 1 USB bằng 1 lần bấm: chọn USB đang bị chặn rồi bấm Cho phép, không cần rút ra.",
+        "Mọi thao tác hỏi mật khẩu quản trị; nhập sai 5 lần thì khoá 60 giây.",
+        "Tự xin quyền Administrator (UAC) khi mở."
+    ], size=16, gap=10)
+    sb.pic(slg, PROJECT_ROOT / "release" / "anh" / "gui-quan-ly.png", 6.8, 1.8, 5.8, 4.8)
+
+    # --------------------------------------------------------------------------
+    # SLIDE: BỘ CÀI SETUP.EXE
+    # --------------------------------------------------------------------------
+    sls = sb.add_slide("Bộ cài setup.exe", "3. Triển khai & Sử dụng")
+    sb.bullets(sls, 0.8, 1.8, 5.2, 4.8, [
+        "Đóng gói Inno Setup 6, giao diện tiếng Việt.",
+        "Trang đặt mật khẩu quản trị: 2 ô nhập, tối thiểu 8 ký tự.",
+        "Mật khẩu chuyển qua biến môi trường USBGUARD_ADMIN_PW, không hiện trên dòng lệnh.",
+        "Tạo lối tắt Start Menu, Desktop và mục Apps & features.",
+        "Trình gỡ bắt buộc đúng mật khẩu; cài im lặng bằng /VERYSILENT /ADMINPW=..."
+    ], size=16, gap=10)
+    sb.pic(sls, "hinh11_bo_cai_setup.png", 6.2, 2.2, 6.4, 3.6)
 
     # --------------------------------------------------------------------------
     # SLIDE 11: TẬP LỆNH ĐIỀU KHIỂN DÒNG LỆNH CLI
@@ -372,89 +386,82 @@ def tao_toan_bo_slide():
     sb.table(sl11, 0.8, 1.8, 11.7, headers_cli, rows_cli, [3.2, 1.2, 7.3], size=14, row_height=0.48)
 
     # --------------------------------------------------------------------------
-    # SLIDE 12: CHIẾN LƯỢC KIỂM THỬ ĐA TẦNG
+    # SLIDE: CHIẾN LƯỢC KIỂM THỬ 3 CẤP
     # --------------------------------------------------------------------------
-    sl12 = sb.add_slide("Chiến lược kiểm thử đa tầng bảo đảm chất lượng", "4. Kiểm thử & Đánh giá")
+    sl12 = sb.add_slide("Chiến lược kiểm thử 3 cấp bảo đảm chất lượng", "4. Kiểm thử & Đánh giá")
     sb.bullets(sl12, 0.8, 1.8, 11.7, 5.0, [
-        "Tầng 1 — Unit Test tự động (tests/AuthTests.cs): 12 ca kiểm thử xUnit độc lập, kiểm tra thuật toán băm PBKDF2 và so khớp Whitelist.",
-        "Tầng 2 — Kiểm thử tích hợp CI (tests/integration.ps1): 30 ca kiểm thử tự động trên Windows Server 2022 và Windows Server 2025.",
-        "Kiểm thử hành vi SCM thật: Kiểm tra từ chối sc stop của Admin (lỗi 1052), kiểm tra từ chối tài khoản thường (lỗi 5).",
-        "Đo đạc chỉ số thời gian: Đo thời gian tự sửa Registry khi bị đổi tay và thời gian tự khởi động lại sau khi bị taskkill cưỡng chế.",
-        "Tầng 3 — Kiểm thử thực nghiệm với USB vật lý: 7 kịch bản kiểm tra trên máy tính có cổng USB thật, đánh giá gỡ đĩa và bảo toàn chuột/phím."
+        f"Cấp 1 — Unit test (xUnit): {U22['dat']}/{U22['tong']} ca đạt trên Windows Server 2022 và {U25['dat']}/{U25['tong']} ca đạt trên Windows Server 2025, kiểm tra băm PBKDF2 và so khớp danh sách cho phép.",
+        f"Cấp 2 — Tích hợp trên Windows Server: {K22['dat']}/{K22['tong']} ca đạt trên Windows Server 2022 và {K25['dat']}/{K25['tong']} ca đạt trên Windows Server 2025, qua GitHub Actions.",
+        f"Cấp 3 — Cắm USB thật trên Windows 10 và Windows 11: {W10['dat']}/{W10['tong']} ca đạt trên Windows 10 và {W11['dat']}/{W11['tong']} ca đạt trên Windows 11, cài bằng setup.exe rồi cắm, rút USB.",
+        "Máy ảo QEMU chạy Windows 10 Pro và Windows 11 Pro trên GitHub Actions; ổ USB cắm nóng bằng lệnh device_add và device_del.",
+        "Mọi con số trong báo cáo và slide được đọc trực tiếp từ các tệp kết quả của lần chạy."
     ], size=19, gap=16)
 
     # --------------------------------------------------------------------------
-    # SLIDE 13: KẾT QUẢ KIỂM THỬ UNIT TEST (12/12 ĐẠT)
+    # SLIDE: KẾT QUẢ TÍCH HỢP WINDOWS SERVER
     # --------------------------------------------------------------------------
-    sl13 = sb.add_slide("Kết quả kiểm thử Unit Test xUnit (12/12 Đạt)", "4. Kiểm thử & Đánh giá")
-    headers_ut = ["Mã test", "Phương thức kiểm thử", "Mục đích kiểm tra", "Kết quả"]
-    rows_ut = [
-        ["UT01", "Hash_RoiVerify_DungMatKhau_PhaiDung", "Băm và xác thực lại đúng mật khẩu ban đầu.", "ĐẠT (PASS)"],
-        ["UT02", "Verify_SaiMatKhau_PhaiSai", "Xác thực với mật khẩu sai khác trả về false.", "ĐẠT (PASS)"],
-        ["UT03", "Verify_ChuoiLuuRong_PhaiSai", "Chuỗi băm rỗng trả về false, không crash.", "ĐẠT (PASS)"],
-        ["UT04", "Verify_SaiDinhDang_KhongDuocNem", "Chuỗi băm sai định dạng không ném ngoại lệ.", "ĐẠT (PASS)"],
-        ["UT05", "Hash_HaiLanGoiLienTiep_RaMuoiKhacNhau", "2 lần băm cùng mật khẩu sinh 2 muối khác nhau.", "ĐẠT (PASS)"],
-        ["UT06", "Verify_ThieuIteration_PhaiSai", "Từ chối số vòng lặp < 1000 chống hash giả mạo.", "ĐẠT (PASS)"],
-        ["UT07", "IsValidEntry_ChuoiQuaNgan_KhongHopLe", "Mục whitelist rỗng hoặc < 4 ký tự không hợp lệ.", "ĐẠT (PASS)"],
-        ["UT08", "IsValidEntry_DuDaiToiThieu_HopLe", "Mục whitelist từ 4 ký tự trở lên (VID_0951) hợp lệ.", "ĐẠT (PASS)"],
-        ["UT09", "Matches_ThietBiCoIdNamTrongWhitelist", "Thiết bị có ID khớp whitelist được cấp phép.", "ĐẠT (PASS)"],
-        ["UT10", "Matches_KhongPhanBietHoaThuong", "So khớp không phân biệt chữ hoa, chữ thường.", "ĐẠT (PASS)"],
-        ["UT11", "Matches_WhitelistRong_KhongKhopGi", "Whitelist rỗng thì từ chối toàn bộ thiết bị.", "ĐẠT (PASS)"],
-        ["UT12", "Matches_MucWhitelistQuaNgan_BiBoQua", "Mục whitelist < 4 ký tự tự động bị bỏ qua.", "ĐẠT (PASS)"]
-    ]
-    sb.table(sl13, 0.8, 1.8, 11.7, headers_ut, rows_ut, [0.9, 4.3, 4.9, 1.6], size=11, row_height=0.34)
-
-    # --------------------------------------------------------------------------
-    # SLIDE 14: KẾT QUẢ KIỂM THỬ TÍCH HỢP TRÊN WINDOWS SERVER
-    # --------------------------------------------------------------------------
-    sl14 = sb.add_slide("Kết quả kiểm thử tích hợp CI trên Windows Server", "4. Kiểm thử & Đánh giá")
+    sl14 = sb.add_slide(f"Kiểm thử tích hợp Windows Server: {K22['dat']}/{K22['tong']} ca đạt", "4. Kiểm thử & Đánh giá")
     sb.bullets(sl14, 0.8, 1.8, 5.8, 4.8, [
-        "100% ca kiểm thử đạt (30/30 ca): Chạy tự động qua GitHub Actions trên cả Windows Server 2022 và Windows Server 2025.",
-        f"Cơ chế 'không tắt được': Admin sc stop bị chặn (lỗi 1052); User thường bị chặn (lỗi 5); Taskkill tự hồi sinh sau {K22['chay_lai_ms']} ms (2022) và {K25['chay_lai_ms']} ms (2025).",
-        f"Thời gian tự sửa Registry: khôi phục Start = 4 sau {K22['tu_sua_ms']} ms (Win 2022) và {K25['tu_sua_ms']} ms (Win 2025) khi bị đổi tay.",
-        f"Tài nguyên thực tế (đo 60 giây không tải): Win 2022 dùng {K22['ram_tb_mb']} MB RAM, CPU {K22['cpu_pct']}%; Win 2025 dùng {K25['ram_tb_mb']} MB RAM, CPU {K25['cpu_pct']}%.",
-        f"Gỡ cài đặt trả về mặc định: dịch vụ tự dừng và bị xoá sau {K22['go_ms']} ms (2022) / {K25['go_ms']} ms (2025), xoá tệp, khôi phục cấu hình USB."
+        f"Kết quả: {K22['dat']}/{K22['tong']} ca đạt trên Windows Server 2022 và {K25['dat']}/{K25['tong']} ca đạt trên Windows Server 2025.",
+        f"Cơ chế 'không tắt được': sc stop bị chặn (lỗi 1052); taskkill thì dịch vụ chạy lại sau {K22['chay_lai_ms']} ms (2022) và {K25['chay_lai_ms']} ms (2025).",
+        f"Tự sửa Registry: khôi phục Start = 4 sau {K22['tu_sua_ms']} ms (2022) và {K25['tu_sua_ms']} ms (2025).",
+        f"Tài nguyên: Server 2022 dùng {K22['ram_tb_mb']} MB RAM, CPU {K22['cpu_pct']}%; Server 2025 dùng {K25['ram_tb_mb']} MB RAM, CPU {K25['cpu_pct']}%.",
+        f"Gỡ cài đặt: dịch vụ dừng và bị xoá sau {K22['go_ms']} ms (2022) và {K25['go_ms']} ms (2025), chỉ xoá mục của UsbGuard."
     ], size=16, gap=10)
     sb.pic(sl14, "hinh10_terminal_log.png", 6.8, 1.8, 5.8, 4.8)
 
     # --------------------------------------------------------------------------
-    # SLIDE 15: ĐÁNH GIÁ ĐÁP ỨNG MỤC TIÊU ĐỀ TÀI
+    # SLIDE: KIỂM THỬ CẮM USB THẬT
+    # --------------------------------------------------------------------------
+    sl_e = sb.add_slide(f"Cắm USB thật: {W10['dat']}/{W10['tong']} ca đạt trên Windows 10 và Windows 11", "4. Kiểm thử & Đánh giá")
+    def _kqe(d, m):
+        return "Đạt" if d["theo_ma"][m]["dat"] else "Không đạt"
+    chon = [("E03", "Chặn tất cả: cắm USB không có ổ, không ghi được"),
+            ("E05", "Chuột, bàn phím vẫn chạy, cắm thêm bàn phím vẫn nhận"),
+            ("E06", "Tạm dừng: USB đang cắm dùng được, không cần rút"),
+            ("E10", "Danh sách cho phép: USB lạ bị gỡ, USB được phép dùng"),
+            ("E14", "Kill dịch vụ khi đang cắm: Windows chạy lại, USB vẫn bị chặn"),
+            ("E16", "Gỡ đúng mật khẩu: trả lại cấu hình USB")]
+    rows_e = [[m, mo, _kqe(W10, m), _kqe(W11, m)] for m, mo in chon]
+    sb.table(sl_e, 0.8, 1.8, 11.7, ["Ca", "Kịch bản", "Windows 10", "Windows 11"], rows_e, [0.9, 7.6, 1.6, 1.6], size=16, row_height=0.62)
+    sb.tx(sl_e, 0.8, 6.55, 11.7, 0.4, f"Tổng cộng {W10['tong']} ca (E01 đến E{W10['tong']:02d}) chạy trên máy ảo QEMU, USB cắm nóng bằng device_add.", size=16, color=C_MUTE)
+
+    # --------------------------------------------------------------------------
+    # SLIDE: 3 LỖI PHÁT HIỆN KHI CẮM USB THẬT
+    # --------------------------------------------------------------------------
+    sl_l = sb.add_slide("3 lỗi phát hiện khi cắm USB thật và cách sửa", "4. Kiểm thử & Đánh giá")
+    sb.bullets(sl_l, 0.8, 1.8, 11.7, 4.8, [
+        "Lỗi 1 — Bật lại chặn khi USB đang mở tệp: Windows từ chối eject. Sửa: buộc tháo ổ (khoá và dismount volume) rồi eject lại.",
+        "Lỗi 2 — Lệnh pnputil /disable-device trả mã 3010 mà không được ghi lại: thiết bị bị vô hiệu hoá vĩnh viễn. Sửa: ghi nhận mã 3010, bật lại hoặc xoá nút thiết bị khi bỏ chặn.",
+        "Lỗi 3 — USB cắm lần đầu lúc đang chặn: tầng 3 làm Windows đánh dấu 'cài thất bại', sau cho phép vẫn không lên. Sửa: xoá nút thiết bị bằng pnputil /remove-device rồi quét lại.",
+        f"Kết quả: sau sửa đạt {W10['dat']}/{W10['tong']} ca trên Windows 10 và {W11['dat']}/{W11['tong']} ca trên Windows 11; Windows Server vẫn đạt {K22['dat']}/{K22['tong']}.",
+    ], size=18, gap=14)
+
+    # --------------------------------------------------------------------------
+    # SLIDE: ĐÁNH GIÁ ĐÁP ỨNG
     # --------------------------------------------------------------------------
     sl15 = sb.add_slide("Đánh giá mức độ đáp ứng các yêu cầu đề tài", "4. Kiểm thử & Đánh giá")
-    headers_dg = ["Mã yêu cầu", "Tiêu chuẩn thiết kế", "Kết quả thực tế đạt được", "Đánh giá"]
+    headers_dg = ["Yêu cầu", "Tiêu chuẩn", "Kết quả", "Đánh giá"]
     rows_dg = [
-        ["YC-CN01", "Chặn USB lưu trữ trong <= 2 giây.", "Theo thiết kế: sự kiện WMI + quét 2s; đo thực tế kịch bản 2.", "Đáp ứng theo thiết kế, chờ kiểm thử USB vật lý"],
-        ["YC-CN02", "Bảo vệ chuột, bàn phím HID.", "Theo thiết kế: MaxDepth = 2 cô lập nút USB; đo thực tế kịch bản 6.", "Đáp ứng theo thiết kế, chờ kiểm thử USB vật lý"],
-        ["YC-CN03", "Hỗ trợ 3 chế độ hoạt động.", "Chuyển đổi chính xác giữa 3 chế độ (All/Allow/Pause).", "Đáp ứng (30/30 ca CI đạt)"],
-        ["YC-CN06", "Xác thực mật khẩu quản trị.", "Băm PBKDF2 100000 vòng lặp, thời gian hằng.", "Đáp ứng (12/12 unit test đạt)"],
-        ["YC-PCN01", "Cơ chế 'không tắt được'.", "SCM từ chối sc stop (lỗi 1052); User thường bị chặn (lỗi 5).", "Đáp ứng (đã kiểm thử CI)"],
-        ["YC-PCN02", "Tự phục hồi sau khi bị kill.", "Windows tự khởi động lại sau khoảng 5 giây qua sc failure.", "Đáp ứng (đã kiểm thử CI)"],
-        ["YC-PCN03", "Tiêu chuẩn: CPU < 1%, RAM < 50 MB.", f"Thực tế: RAM {min(K22['ram_tb_mb'],K25['ram_tb_mb'])} - {max(K22['ram_max_mb'],K25['ram_max_mb'])} MB, CPU {min(K22['cpu_pct'],K25['cpu_pct'])}% - {max(K22['cpu_pct'],K25['cpu_pct'])}%.", "Đáp ứng (đo trên Win Server 2022/2025)"]
+        ["YC-CN01", "Chặn USB <= 2 giây", "E03, E10 đạt", "Đáp ứng (USB thật)"],
+        ["YC-CN02", "Bảo toàn chuột, phím", "E05 đạt", "Đáp ứng (USB thật)"],
+        ["YC-CN03", "3 chế độ", f"{K22['dat']}/{K22['tong']} ca tích hợp", "Đáp ứng"],
+        ["YC-CN06", "Mật khẩu quản trị", f"{U22['dat']}/{U22['tong']} unit test", "Đáp ứng"],
+        ["YC-PCN01", "Không tắt được", "Lỗi 1052 và 5", "Đáp ứng"],
+        ["YC-PCN03", "CPU < 1%, RAM < 50 MB", f"RAM {min(K22['ram_tb_mb'],K25['ram_tb_mb'])} - {max(K22['ram_max_mb'],K25['ram_max_mb'])} MB, CPU {max(K22['cpu_pct'],K25['cpu_pct'])}%", "Đáp ứng"]
     ]
-    sb.table(sl15, 0.8, 1.8, 11.7, headers_dg, rows_dg, [1.3, 3.2, 4.6, 2.6], size=12, row_height=0.55)
+    sb.table(sl15, 0.8, 1.8, 11.7, headers_dg, rows_dg, [1.8, 3.4, 3.6, 2.9], size=16, row_height=0.6)
 
     # --------------------------------------------------------------------------
-    # SLIDE 16: HẠN CHẾ CỦA GIẢI PHÁP HIỆN TẠI
+    # SLIDE: HẠN CHẾ VÀ HƯỚNG PHÁT TRIỂN
     # --------------------------------------------------------------------------
-    sl16 = sb.add_slide("Hạn chế kỹ thuật của giải pháp hiện tại", "5. Kết luận & Mở rộng")
+    sl16 = sb.add_slide("Hạn chế và hướng phát triển", "5. Kết luận & Mở rộng")
     sb.bullets(sl16, 0.8, 1.8, 11.7, 5.0, [
-        "Nhận diện VID/PID với thiết bị trùng model: Với các USB giá rẻ không có số serial duy nhất, việc thêm VID/PID vào whitelist sẽ áp dụng cho mọi USB cùng loại; giải pháp là ưu tiên dùng chế độ pause có thời hạn.",
-        "Giới hạn quyền Administrator cấp cao nhất: Administrator can thiệp vào Safe Mode hoặc tháo ổ cứng sửa Registry ngoại tuyến (offline) vẫn có thể vô hiệu hóa dịch vụ (giới hạn tự nhiên của mô hình phân quyền phần mềm).",
-        "Chưa có giao diện đồ họa (GUI): Hiện tại hệ thống vận hành hoàn toàn qua dòng lệnh CLI, rất thuận tiện cho quản trị viên và kịch bản tự động nhưng chưa thân thiện với người dùng phổ thông.",
-        "Giới hạn phân loại thiết bị: Phiên bản hiện tại tập trung kiểm soát thiết bị lưu trữ dạng khối (USB Mass Storage và UAS), chưa chặn giao thức truyền thông đa phương tiện MTP/PTP (điện thoại thông minh).",
-        "Vận hành độc lập: Chưa có máy chủ quản trị tập trung để điều khiển và thu thập nhật ký đồng loạt cho hàng nghìn máy trạm trong mạng nội bộ."
-    ], size=17, gap=12)
-
-    # --------------------------------------------------------------------------
-    # SLIDE 17: HƯỚNG PHÁT TRIỂN TRONG TƯƠNG LAI
-    # --------------------------------------------------------------------------
-    sl17 = sb.add_slide("Hướng nghiên cứu & Phát triển tiếp theo", "5. Kết luận & Mở rộng")
-    sb.bullets(sl17, 0.8, 1.8, 11.7, 5.0, [
-        "Xây dựng Dashboard quản lý tập trung qua mạng: Cho phép quản trị viên an ninh mạng phân phối Whitelist, phát lệnh khóa/mở và giám sát nhật ký vi phạm thời gian thực qua giao diện Web.",
-        "Phát triển Kernel-Mode Filter Driver: Chuyển dịch cơ chế chặn xuống trình điều khiển lọc tầng nhân để can thiệp ngay trong giai đoạn nạp ngăn xếp I/O, giảm thiểu tối đa độ trễ phần cứng.",
-        "Ký số chứng chỉ số WHQL (Microsoft): Đăng ký chứng chỉ phần cứng Windows Hardware Quality Labs để bộ cài đặt đạt độ tin cậy cao với hệ điều hành và phần mềm diệt virus.",
-        "Mở rộng kiểm soát thiết bị ngoại vi: Tích hợp bộ lọc kiểm soát giao thức truyền thông MTP (điện thoại thông minh), giao tiếp Bluetooth và cổng Thunderbolt/FireWire.",
-        "Tích hợp xác thực 2 yếu tố (2FA): Bổ sung xác thực OTP hoặc khóa bảo mật FIDO2 khi quản trị viên thực hiện các lệnh nhạy cảm như tạm dừng hoặc gỡ cài đặt."
+        "Chưa có chứng chỉ ký số thương mại: Windows SmartScreen có thể cảnh báo khi cài; hướng phát triển là mua chứng chỉ ký mã.",
+        "Chưa chặn MTP/PTP, ổ CD/DVD và Bluetooth: bổ sung bộ lọc cho các loại thiết bị này.",
+        "Administrator hiểu sâu hệ thống vẫn can thiệp được (Safe Mode, sửa Registry ngoại tuyến): giới hạn của giải pháp phần mềm.",
+        "USB giá rẻ không có số serial nên chỉ khớp theo VID/PID: ưu tiên dùng số serial hoặc chế độ tạm dừng.",
+        "Hướng phát triển: máy chủ quản trị tập trung nhiều máy trạm, driver lọc chế độ nhân, xác thực 2 yếu tố."
     ], size=17, gap=12)
 
     # --------------------------------------------------------------------------
@@ -523,7 +530,7 @@ def main():
     print("HOÀN TẤT TẠO SLIDE:")
     print(f"- Tệp PPTX: {pptx_file} ({pptx_file.stat().st_size // 1024} KB)")
     print(f"- Tệp PDF:  {pdf_file} ({pdf_file.stat().st_size // 1024} KB)")
-    print(f"- Tổng số slide: {sb.slide_count} slide (Yêu cầu: 15-18 slide).")
+    print(f"- Tổng số slide: {sb.slide_count} slide (Yêu cầu: tối đa 20 slide).")
     print("=================================================================")
 
 

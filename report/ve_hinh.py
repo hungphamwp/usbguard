@@ -66,63 +66,57 @@ def draw_arrow(ax, x1, y1, x2, y2, label="", color=C_NAVY, lw=1.5, style="->", l
 
 
 # ==============================================================================
-# HÌNH 1: Kiến trúc tổng thể 2 lớp bảo vệ
+# HÌNH 1: Kiến trúc 3 tầng chặn ở mức hệ điều hành và lớp gỡ thiết bị
 # ==============================================================================
 def ve_hinh1():
-    fig, ax = plt.subplots(figsize=(10, 6.5), dpi=200)
+    fig, ax = plt.subplots(figsize=(10, 7.6), dpi=200)
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis('off')
 
-    # Tiêu đề
-    ax.text(0.5, 0.96, "KIẾN TRÚC TỔNG THỂ 2 LỚP BẢO VỆ CỦA USBGUARD",
+    ax.text(0.5, 0.975, "KIẾN TRÚC 3 TẦNG CHẶN VÀ LỚP GỠ THIẾT BỊ CỦA USBGUARD 1.1",
             ha='center', va='center', fontsize=13, fontweight='bold', color=C_NAVY)
 
-    # Khối thiết bị USB cắm vào
-    draw_box(ax, 0.05, 0.72, 0.22, 0.17, "Thiết bị USB cắm vào",
-             ["- USB Flash Disk (BOT/UAS)", "- Ổ cứng di động USB", "- Thiết bị lưu trữ ngoài"],
+    # Cột trái
+    draw_box(ax, 0.03, 0.70, 0.24, 0.22, "Thiết bị USB cắm vào",
+             ["- USB flash disk (BOT/UAS)", "- Ổ cứng di động USB", "- Thiết bị lưu trữ ngoài"],
              bg_color=C_YELLOW, border_color=C_ORANGE, title_color=C_ORANGE)
-
-    # Khối Lớp 1
-    draw_box(ax, 0.35, 0.58, 0.60, 0.32, "LỚP 1: Chặn ở mức Driver & Chính sách (Enforcer)",
-             ["• Tắt driver lưu trữ: HKLM\\...\\Services\\USBSTOR (Start = 4)",
-              "• Tắt driver UAS: HKLM\\...\\Services\\UASPStor (Start = 4)",
-              "• Áp dụng chính sách Group Policy di động: RemovableStorageDevices\\Deny_All = 1",
-              "• Cấm quyền truy cập phân lớp đĩa: Deny_Read=1, Deny_Write=1, Deny_Execute=1",
-              "-> Ngăn chặn Windows tự động nạp driver lưu trữ ngay từ tầng gốc hệ điều hành."],
-             bg_color=C_LIGHT_BLUE, border_color=C_NAVY, title_color=C_NAVY)
-
-    # Khối Lớp 2
-    draw_box(ax, 0.35, 0.18, 0.60, 0.34, "LỚP 2: Quét phần cứng & Gỡ an toàn (UsbDisks)",
-             ["• Liệt kê giao diện ổ đĩa: SetupAPI (GUID_DEVINTERFACE_DISK)",
-              "• Truy vấn thuộc tính bus: IOCTL_STORAGE_QUERY_PROPERTY (BusType = 7 USB)",
-              "• So khớp danh sách cho phép (Whitelist) theo VID/PID hoặc số serial",
-              "• Gỡ bỏ an toàn: CM_Request_Device_Eject (lên tới nút USB cha, độ sâu <= 2)",
-              "• Dự phòng: pnputil /disable-device khi thiết bị bị khóa tệp bởi tiến trình khác",
-              "-> Xử lý các thiết bị cắm sẵn trước khi chạy hoặc driver đã nạp."],
-             bg_color=C_LIGHT_GREEN, border_color=C_GREEN, title_color=C_GREEN)
-
-    # Khối Điều phối & Giám sát
-    draw_box(ax, 0.05, 0.30, 0.22, 0.34, "Điều phối trung tâm\n(Worker Service)",
-             ["- WMI Event Watcher:", "  Bắt sự kiện tức thì", "  __InstanceCreationEvent",
-              "- Timer định kỳ 2 giây:", "  Kiểm tra bổ trợ", "  Tự sửa Registry",
-              "- Điều phối 3 chế độ", "- Phục hồi khi bị kill"],
+    draw_box(ax, 0.03, 0.26, 0.24, 0.38, "Điều phối trung tâm\n(Worker Service)",
+             ["- WMI Event Watcher:", "  sự kiện cắm ổ tức thì", "- Timer định kỳ 2 giây:", "  kiểm tra bổ trợ,",
+              "  tự sửa Registry", "- Điều phối 3 chế độ", "- Tự chạy lại khi bị kill"],
              bg_color=C_LIGHT_GRAY, border_color=C_GRAY, title_color=C_NAVY)
-
-    # Khối Cảnh báo
-    draw_box(ax, 0.05, 0.05, 0.22, 0.18, "Cảnh báo người dùng",
-             ["- WTSSendMessage", "- Hộp thoại cảnh báo", "- Ghi nhật ký (Log)"],
+    draw_box(ax, 0.03, 0.02, 0.24, 0.20, "Báo người dùng",
+             ["- Hộp thoại WTSSendMessage", "- Ghi nhật ký (Log)", "- Cả khi bị chặn từ driver"],
              bg_color=C_LIGHT_RED, border_color=C_RED, title_color=C_RED)
 
-    # Mũi tên kết nối
-    draw_arrow(ax, 0.27, 0.80, 0.35, 0.80, "Cắm vào", C_NAVY)
-    draw_arrow(ax, 0.16, 0.72, 0.16, 0.64, "Sự kiện", C_NAVY)
-    draw_arrow(ax, 0.27, 0.50, 0.35, 0.65, "Kích hoạt Lớp 1", C_NAVY)
-    draw_arrow(ax, 0.27, 0.40, 0.35, 0.32, "Kích hoạt Lớp 2", C_NAVY)
-    draw_arrow(ax, 0.35, 0.25, 0.27, 0.12, "Gỡ thiết bị / Báo động", C_RED)
+    # Cột phải: 3 tầng chặn + lớp gỡ
+    x0, w = 0.40, 0.57
+    draw_box(ax, x0, 0.755, w, 0.165, "TẦNG 1: Tắt driver lưu trữ (Enforcer)",
+             ["• USBSTOR và UASPStor: Start = 4, Windows không nạp driver cho ổ USB"],
+             bg_color=C_LIGHT_BLUE, border_color=C_NAVY, title_color=C_NAVY, text_size=8.5)
+    draw_box(ax, x0, 0.565, w, 0.165, "TẦNG 2: Chính sách Removable Storage Deny_All",
+             ["• RemovableStorageDevices: Deny_All = 1 (cấm đọc, ghi, chạy trên ổ rời)"],
+             bg_color=C_LIGHT_BLUE, border_color=C_NAVY, title_color=C_NAVY, text_size=8.5)
+    draw_box(ax, x0, 0.31, w, 0.23, "TẦNG 3: Cấm cài thiết bị lưu trữ USB (Device Installation)",
+             ["• DenyDeviceIDs = 1, giá trị UsbGuard1..3: USB\\Class_08",
+              "  (kèm SubClass_06 với Prot_50, Prot_62)",
+              "• Chỉ lớp Mass Storage, không đụng chuột/bàn phím (Class 03)"],
+             bg_color=C_LIGHT_BLUE, border_color=C_NAVY, title_color=C_NAVY, text_size=8.5)
+    draw_box(ax, x0, 0.02, w, 0.25, "LỚP GỠ THIẾT BỊ (UsbDisks)",
+             ["• SetupAPI + IOCTL BusType = 7: nhận ổ USB, so khớp danh sách",
+              "• CM_Request_Device_Eject (lên nút USB cha, độ sâu <= 2)",
+              "• ForceDismount (file đang mở); nạp lại thiết bị khi bỏ chặn"],
+             bg_color=C_LIGHT_GREEN, border_color=C_GREEN, title_color=C_GREEN, text_size=8.5)
+
+    # Mũi tên
+    draw_arrow(ax, 0.15, 0.70, 0.15, 0.64, "", C_NAVY)
+    draw_arrow(ax, 0.27, 0.84, 0.40, 0.84, "Cắm vào", C_NAVY, label_offset=0.012)
+    draw_arrow(ax, 0.27, 0.58, 0.40, 0.65, "Bật 3 tầng", C_NAVY, label_pos=0.45, label_offset=-0.03)
+    draw_arrow(ax, 0.27, 0.36, 0.40, 0.20, "Quét, gỡ", C_NAVY, label_pos=0.78, label_offset=0.012)
+    draw_arrow(ax, 0.40, 0.08, 0.27, 0.11, "Báo động", C_RED, label_pos=0.5, label_offset=0.012)
 
     plt.tight_layout()
-    plt.savefig(os.path.join(OUT_DIR, "hinh1_kien_truc_2_lop.png"), dpi=200)
+    plt.savefig(os.path.join(OUT_DIR, "hinh1_kien_truc_3_tang.png"), dpi=200)
     plt.close()
 
 
@@ -138,11 +132,13 @@ def ve_hinh2():
     ax.text(0.5, 0.96, "SƠ ĐỒ THÀNH PHẦN HỆ THỐNG VÀ CÁC TỆP MÃ NGUỒN C#",
             ha='center', va='center', fontsize=13, fontweight='bold', color=C_NAVY)
 
-    # Nhóm 1: Giao diện CLI & Quản trị
-    draw_box(ax, 0.04, 0.64, 0.28, 0.27, "Thành phần CLI & Quản trị",
-             ["• Program.cs: Điểm khởi nhập CLI",
-              "• Cli.cs: Xử lý lệnh pause, resume,",
+    # Nhóm 1: Giao diện CLI, giao diện quản lý & Quản trị
+    draw_box(ax, 0.04, 0.55, 0.28, 0.36, "CLI, giao diện & Quản trị",
+             ["• Program.cs: Điểm khởi nhập",
+              "• Cli.cs: Lệnh pause, resume,",
               "  whitelist, passwd, devices",
+              "• Gui.cs: Giao diện quản lý",
+              "  WinForms (3 tab)",
               "• Password.cs: Nhập mật khẩu ẩn",
               "• Installer.cs: Cài đặt / Gỡ dịch vụ"],
              bg_color=C_LIGHT_BLUE, border_color=C_NAVY)
@@ -152,9 +148,10 @@ def ve_hinh2():
              ["• Worker.cs: ServiceBase, vòng lặp 2s,",
               "  lắng nghe WMI __InstanceCreationEvent,",
               "  điều phối 3 chế độ hoạt động",
-              "• Enforcer.cs: Khóa driver & Registry policy",
-              "• UsbDisks.cs: Quét SetupAPI, IOCTL,",
-              "  gỡ đĩa CM_Request_Device_Eject",
+              "• Enforcer.cs: Khóa driver và 2 chính sách",
+              "  (tầng 1, 2, 3)",
+              "• UsbDisks.cs: Quét SetupAPI, IOCTL, gỡ đĩa,",
+              "  ForceDismount, nạp lại thiết bị",
               "• Whitelist.cs: So khớp chuỗi định danh"],
              bg_color=C_VERY_LIGHT_BLUE, border_color=C_BLUE)
 
@@ -179,8 +176,8 @@ def ve_hinh2():
              bg_color=C_LIGHT_GRAY, border_color=C_GRAY, title_color=C_DARK)
 
     # Mũi tên tương tác
-    draw_arrow(ax, 0.32, 0.75, 0.36, 0.75, "Gọi dịch vụ", C_NAVY)
-    draw_arrow(ax, 0.66, 0.75, 0.70, 0.75, "Đọc/Ghi", C_NAVY)
+    draw_arrow(ax, 0.32, 0.72, 0.36, 0.72, "Gọi dịch vụ", C_NAVY)
+    draw_arrow(ax, 0.66, 0.75, 0.70, 0.75, "", C_NAVY)
     draw_arrow(ax, 0.50, 0.50, 0.50, 0.42, "P/Invoke API", C_NAVY)
 
     plt.tight_layout()
@@ -204,7 +201,7 @@ def ve_hinh3():
     sys_box = patches.FancyBboxPatch((0.26, 0.05), 0.48, 0.86, boxstyle="round,pad=0,rounding_size=0.02",
                                      facecolor="#FAFAFA", edgecolor=C_NAVY, linewidth=2, linestyle='--')
     ax.add_patch(sys_box)
-    ax.text(0.50, 0.88, "HỆ THỐNG USBGUARD 1.0", ha='center', va='center', fontsize=11, fontweight='bold', color=C_NAVY)
+    ax.text(0.50, 0.88, "HỆ THỐNG USBGUARD 1.1", ha='center', va='center', fontsize=11, fontweight='bold', color=C_NAVY)
 
     # Actor 1: Người dùng thường (bên trái)
     ax.plot(0.10, 0.70, 'o', markersize=14, color=C_NAVY)
@@ -677,7 +674,7 @@ def ve_hinh10_terminal():
     import glob as _glob
     _md = sorted(_glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "ket-qua", "integration-*2022*.md")))[0]
     _raw = open(_md, encoding="utf-8-sig").read().split("## Nhật ký chạy", 1)[1].strip("`\n ").splitlines()
-    _keep = ("TC01 ", "TC02 ", "TC05 ", "TC07 ", "TC08 ", "TC10 ", "TC11 ", "TC14 ", "TC20 ", "TC29 ", "TC30 ")
+    _keep = ("TC01 ", "TC02 ", "TC05 ", "TC07 ", "TC08 ", "TC10 ", "TC11 ", "TC14 ", "TC20 ", "TC29 ", "TC31 ", "TC34 ")
     log_lines = []
     for _l in _raw[:3]:
         log_lines.append((_l.replace("=== KIỂM THỬ", "=== KIỂM THỬ"), "#9CDCFE" if not _l.startswith("===") else "#4EC9B0", _l.startswith("===")))
@@ -703,9 +700,68 @@ def ve_hinh10_terminal():
     plt.close()
 
 
+# ==============================================================================
+# HÌNH 11: Các bước của bộ cài setup.exe
+# ==============================================================================
+def ve_hinh11():
+    fig, ax = plt.subplots(figsize=(10, 4.6), dpi=200)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis('off')
+    ax.text(0.5, 0.95, "CÁC BƯỚC CỦA BỘ CÀI SETUP.EXE VÀ TRÌNH GỠ CÀI ĐẶT", ha='center', va='center',
+            fontsize=13, fontweight='bold', color=C_NAVY)
+    buoc = [("1. Điều khoản", ["Trang giấy phép", "bằng tiếng Việt"]),
+            ("2. Đặt mật khẩu", ["2 ô nhập, tối thiểu", "8 ký tự, phải khớp"]),
+            ("3. Cài đặt", ["Chép tệp, đăng ký dịch vụ", "mật khẩu qua biến môi trường", "USBGUARD_ADMIN_PW"]),
+            ("4. Hoàn tất", ["Lối tắt Start Menu,", "Desktop; mục trong", "Settings > Apps"])]
+    w, g = 0.20, 0.05
+    for i, (t, ls) in enumerate(buoc):
+        x = 0.03 + i * (w + g)
+        draw_box(ax, x, 0.52, w, 0.30, t, ls, bg_color=C_LIGHT_BLUE, border_color=C_NAVY, text_size=8.5)
+        if i < 3:
+            draw_arrow(ax, x + w, 0.67, x + w + g, 0.67, "", C_NAVY)
+    draw_box(ax, 0.03, 0.08, 0.45, 0.30, "Trình gỡ cài đặt",
+             ["• Bắt buộc nhập đúng mật khẩu quản trị", "• Sai mật khẩu: dừng, không gỡ", "• Đúng: xóa dịch vụ, tệp, mục Apps"],
+             bg_color=C_LIGHT_RED, border_color=C_RED, title_color=C_RED, text_size=8.5)
+    draw_box(ax, 0.52, 0.08, 0.45, 0.30, "Cài và gỡ im lặng cho IT",
+             ["• setup.exe /VERYSILENT /ADMINPW=...", "• Mật khẩu không lộ trên dòng lệnh", "• Phù hợp triển khai hàng loạt"],
+             bg_color=C_LIGHT_GREEN, border_color=C_GREEN, title_color=C_GREEN, text_size=8.5)
+    plt.tight_layout()
+    plt.savefig(os.path.join(OUT_DIR, "hinh11_bo_cai_setup.png"), dpi=200)
+    plt.close()
+
+
+# ==============================================================================
+# HÌNH 12: Môi trường kiểm thử cắm USB thật
+# ==============================================================================
+def ve_hinh12():
+    fig, ax = plt.subplots(figsize=(10, 3.9), dpi=200)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis('off')
+    ax.text(0.5, 0.94, "MÔI TRƯỜNG KIỂM THỬ CẮM USB THẬT TRÊN WINDOWS 10 VÀ WINDOWS 11", ha='center', va='center',
+            fontsize=13, fontweight='bold', color=C_NAVY)
+    draw_box(ax, 0.02, 0.18, 0.26, 0.64, "GitHub Actions",
+             ["Máy chủ Ubuntu", "bật KVM", "", "Chạy kịch bản", "host.py và", "e2e-usb.ps1"],
+             bg_color=C_LIGHT_GRAY, border_color=C_GRAY, title_color=C_NAVY, text_size=9)
+    draw_box(ax, 0.36, 0.18, 0.30, 0.62, "Máy ảo QEMU",
+             ["Windows 10 Pro hoặc", "Windows 11 Pro", "(dockur/windows)", "", "Cổng USB 3 (xHCI)", "UsbGuard cài bằng", "setup.exe"],
+             bg_color=C_LIGHT_BLUE, border_color=C_NAVY, text_size=9)
+    draw_box(ax, 0.74, 0.18, 0.24, 0.62, "Ổ USB thật",
+             ["QEMU usb-storage", "cắm nóng bằng", "device_add và", "device_del", "", "Windows nhận:", "bus USB, USBSTOR"],
+             bg_color=C_YELLOW, border_color=C_ORANGE, title_color=C_ORANGE, text_size=9)
+    draw_arrow(ax, 0.28, 0.55, 0.36, 0.55, "Điều khiển", C_NAVY)
+    draw_arrow(ax, 0.74, 0.30, 0.66, 0.30, "Cắm / rút", C_ORANGE, label_offset=0.03)
+    ax.text(0.5, 0.06, "Mỗi ca kiểm thử ghi kết quả (Đạt/Không đạt), chi tiết và ảnh chụp màn hình Windows thật",
+            ha='center', va='center', fontsize=9, color=C_GRAY)
+    plt.tight_layout()
+    plt.savefig(os.path.join(OUT_DIR, "hinh12_moi_truong_e2e.png"), dpi=200)
+    plt.close()
+
+
 def main():
     print("Bắt đầu vẽ các hình minh họa kỹ thuật...")
-    ve_hinh1(); print("- Hình 1: Kiến trúc tổng thể 2 lớp")
+    ve_hinh1(); print("- Hình 1: Kiến trúc 3 tầng chặn và lớp gỡ")
     ve_hinh2(); print("- Hình 2: Sơ đồ thành phần hệ thống")
     ve_hinh3(); print("- Hình 3: Sơ đồ ca sử dụng")
     ve_hinh4(); print("- Hình 4: Sơ đồ luồng vòng kiểm tra")
@@ -715,7 +771,9 @@ def main():
     ve_hinh8(); print("- Hình 8: Cơ chế không tắt được & tự phục hồi")
     ve_hinh9(); print("- Hình 9: Thiết kế bảo mật PBKDF2 & Phân quyền DACL")
     ve_hinh10_terminal(); print("- Hình 10: Nhật ký chạy kiểm thử tích hợp trên Windows Server")
-    print(f"Hoàn tất vẽ 10 hình kỹ thuật trong {OUT_DIR}")
+    ve_hinh11(); print("- Hình 11: Bộ cài setup.exe")
+    ve_hinh12(); print("- Hình 12: Môi trường kiểm thử cắm USB thật")
+    print(f"Hoàn tất vẽ 12 hình kỹ thuật trong {OUT_DIR}")
 
 
 if __name__ == "__main__":
