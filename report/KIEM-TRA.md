@@ -97,3 +97,204 @@ Thời điểm hoàn thành: **Ngày 17 tháng 11 năm 2026**
 9. **Loại bỏ đường dẫn tuyệt đối `/Users/` trong mã nguồn:**
    - *Hiện tượng:* Biến `SOFFICE` chứa chuỗi `/Users/hungpham/...`.
    - *Khắc phục:* Chuyển sang sử dụng `os.path.expanduser("~/homebrew/bin/soffice")` để mã nguồn không chứa bất kỳ đường dẫn người dùng cục bộ nào.
+
+---
+
+# Lần 2: Sửa đổi và tự kiểm tra chất lượng (Sau khi duyệt)
+
+Thời điểm thực hiện: **Ngày 17 tháng 11 năm 2026**  
+Tài liệu nộp: **Báo cáo Seminar Chuyên đề (`report/BAO-CAO-UsbGuard.pdf`)** và **Bài thuyết trình Slide (`slide/SLIDE-UsbGuard.pdf`)**
+
+---
+
+## 1. Số liệu mới cập nhật (từ `tests/ket-qua/*.json`)
+
+Dữ liệu kiểm thử tự động được đồng bộ trực tiếp từ các tệp nhật ký thực thi `tests/ket-qua/integration-Microsoft-Windows-Server-*.json` (đo trong 60 giây khi dịch vụ chạy không tải trên máy ảo 4 lõi):
+
+| Thông số kỹ thuật | Windows Server 2022 Datacenter (10.0.20348) | Windows Server 2025 Datacenter (10.0.26100) |
+|---|---|---|
+| **Tỷ lệ ca kiểm thử tích hợp đạt** | **30/30 ca (100% PASS)** | **30/30 ca (100% PASS)** |
+| **Thời gian tự sửa Registry (`tu_sua_ms`)** | **1316 ms** (nhanh hơn chu kỳ Timer 2s) | **560 ms** (nhanh hơn chu kỳ Timer 2s) |
+| **Thời gian tự khởi chạy lại sau khi kill (`chay_lai_ms`)** | **5412 ms** (khớp cấu hình SCM 5000 ms) | **5508 ms** (khớp cấu hình SCM 5000 ms) |
+| **Bộ nhớ RAM trung bình (`ram_tb_mb`)** | **21.8 MB** | **24.9 MB** |
+| **Bộ nhớ RAM cao nhất (`ram_max_mb`)** | **21.9 MB** | **25.1 MB** |
+| **Chiếm dụng CPU trung bình (`cpu_pct`)** | **0.0 %** | **0.02 %** |
+
+Hình 10 (Hình 5.1 trong báo cáo, Hình trên slide 14) đã được vẽ lại khớp hoàn toàn với nhật ký kiểm thử mới nhất từ `tests/ket-qua/integration-Microsoft-Windows-Server-2022-Datacenter.md`.
+
+---
+
+## 2. Thông số tổng hợp sản phẩm sau khi sửa lần 2
+
+| Tiêu chí | Báo cáo chi tiết (DOCX / PDF) | Bài thuyết trình Slide (PPTX / PDF) | Tiêu chuẩn quy định | Đánh giá |
+|---|---|---|---|---|
+| **Số trang / slide** | **44 trang** (3078 KB PDF, 2710 KB DOCX) | **18 slide** (2055 KB PDF, 2117 KB PPTX) | Báo cáo: 35–45 trang; Slide: 15–18 slide | **ĐẠT CHUẨN** |
+| **Số hình vẽ kỹ thuật** | **10 hình** (vẽ bằng matplotlib, 200 dpi) | Tái sử dụng hình ảnh chất lượng cao | Tối thiểu 8 hình kỹ thuật | **ĐẠT CHUẨN** |
+| **Số bảng biểu số liệu** | **10 bảng** dữ liệu chi tiết | 3 bảng tóm tắt | Đầy đủ bảng số liệu thực tế | **ĐẠT CHUẨN** |
+| **Quy định số lượng** | Toàn bộ viết bằng chữ số (kể cả đầu câu) | Toàn bộ viết bằng chữ số | Tuyệt đối không viết số bằng chữ | **ĐẠT CHUẨN** |
+| **Dữ liệu kiểm thử** | Đọc động từ JSON `tests/ket-qua/` | Đọc động từ JSON `tests/ket-qua/` | Số liệu thật, không bịa đặt | **ĐẠT CHUẨN** |
+| **Từ ngữ cấm & nội bộ** | 0 lỗi (không từ cấm, không từ nội bộ) | 0 lỗi (không từ cấm, không từ nội bộ) | Sạch hoàn toàn | **ĐẠT CHUẨN** |
+
+---
+
+## 3. Chi tiết xử lý 7 nhóm lỗi theo yêu cầu duyệt (Lỗi 1 – 7)
+
+### Lỗi 1: Mục lục sai số trang (từ mục 4.3.4 trở đi ghi trang 5) & Bảng 4.1 rớt số trang
+- **Hiện tượng:** Mục lục ở trang 4 và trang 5; do trang 5 là trang 2 của Mục lục không chứa từ khóa "MỤC LỤC" ở dòng đầu nên PyMuPDF nhận nhầm các tiêu đề hiển thị trên chính trang 5 là vị trí xuất hiện trong tài liệu. Ngoài ra, dòng Bảng 4.1 trong Danh mục bảng quá dài khiến tab leader bị đẩy xuống dòng riêng.
+- **Khắc phục:**
+  1. Nâng cấp hàm `trich_xuat_so_trang_pdf` trong `report/tao_bao_cao.py`: Tự động tìm vị trí trang bắt đầu của Chương 1 (`body_start = 10`), chỉ thực hiện dò tìm số trang tiêu đề trong phạm vi `range(body_start - 1, total_pages)`. Đồng thời chuẩn hóa chuỗi (`re.sub(r'\s+', ' ', text)`) để nhận diện chính xác kể cả khi tiêu đề bị ngắt dòng trong PDF.
+  2. Rút gọn tiêu đề Bảng 4.1 thành: `"Bảng 4.1: Cấu trúc tệp mã nguồn và số dòng lệnh của UsbGuard"`; rút gọn tiêu đề Hình 3.8 và Hình 5.1.
+- **Kết quả:**
+  - Báo cáo Trang 4, 5 (Mục lục): 56/56 tiêu đề hiển thị số trang thật chính xác (4.3.4 ở trang 31, Chương 5 ở trang 33, Chương 6 ở trang 39, Phụ lục ở trang 43).
+  - Báo cáo Trang 6 (Danh mục hình): 10/10 hình nằm gọn trên 1 dòng duy nhất có chấm nối đẹp mắt.
+  - Báo cáo Trang 7 (Danh mục bảng): 10/10 bảng nằm gọn trên 1 dòng duy nhất, không còn bất kỳ dòng nào bị rớt số trang.
+
+### Lỗi 2: Bỏ các số liệu không có thật
+- **Hiện tượng:** Cụm từ "gỡ bỏ trong < 0.5 giây", "bảo toàn 100% chuột/bàn phím", "CPU ~0%, RAM 15–22 MB" là số liệu ước lượng hoặc chưa đo trên thiết bị vật lý thật.
+- **Khắc phục:**
+  1. Mã YC-CN01: Sửa kết quả thực tế thành `"Theo thiết kế: sự kiện WMI (WITHIN 1) + chu kỳ quét 2 giây; thời gian gỡ thực tế cần đo trên máy có cổng USB (kịch bản 2, Bảng 5.3)"`. Cột đánh giá: `"Đáp ứng theo thiết kế, chờ kiểm thử USB vật lý"`.
+  2. Mã YC-CN02 (chuột/bàn phím): Sửa kết quả thực tế thành `"Theo thiết kế: MaxDepth = 2 cô lập nút USB, không can thiệp hub; cần đo trên máy có cổng USB (kịch bản 6, Bảng 5.3)"`. Cột đánh giá: `"Đáp ứng theo thiết kế, chờ kiểm thử USB vật lý"`.
+  3. Mã YC-PCN03: Tiêu chuẩn trong Bảng 3.1 sửa thành `"CPU < 1%, RAM < 50 MB"`. Kết quả ghi số đo thật: RAM trung bình 21.8 MB (cao nhất 21.9 MB), CPU 0.0% trên Win 2022; RAM trung bình 24.9 MB (cao nhất 25.1 MB), CPU 0.02% trên Win 2025. Đánh giá: `"Đáp ứng (đo trên Windows Server 2022/2025)"`.
+- **Trang sửa:**
+  - Báo cáo: Trang 18 (Bảng 3.1), Trang 35-36 (Mục 5.3), Trang 37-38 (Bảng 5.4).
+  - Slide: Slide 14, Slide 15.
+
+### Lỗi 3: Bỏ các từ ngữ phóng đại, khẳng định quá mức
+- **Hiện tượng:** Xuất hiện các từ "100%", "TOÀN DIỆN", "tuyệt đối", "triệt để", "đúng 5 giây".
+- **Khắc phục:**
+  - Thay thế "100% chuột, bàn phím", "100% Hub", "100% các bản phát hành" bằng từ ngữ trung thực, khách quan ("chuột và bàn phím", "nút hub", "các bản phát hành").
+  - Đổi "ĐÁP ỨNG TOÀN DIỆN" / "ĐẠT TOÀN DIỆN" thành "Đáp ứng" / "Đáp ứng theo thiết kế" / "Đã kiểm thử".
+  - Đổi "đúng 5 giây" thành "khoảng 5 giây (cấu hình 5000 ms)".
+  - Thay thế toàn bộ các từ "triệt để", "tuyệt đối" bằng các diễn đạt khoa học: "hiệu quả", "chặt chẽ", "độ tin cậy cao".
+- **Trang sửa:**
+  - Báo cáo: Trang 11, 13, 16, 17, 18, 19, 23, 24, 25, 28, 30, 33, 37, 38, 39, 40.
+  - Slide: Slide 3, 4, 7, 8, 9, 10, 12, 14, 15, 17.
+
+### Lỗi 4: Sai sự thật kỹ thuật phiên bản C#
+- **Hiện tượng:** Báo cáo ghi "C# 7.3".
+- **Khắc phục:** Đã sửa thành: `"C# 9.0 (LangVersion 9.0 trong UsbGuard.csproj)"`, khớp chính xác với thuộc tính `<LangVersion>9.0</LangVersion>` trong tệp cấu hình dự án.
+- **Trang sửa:** Báo cáo Trang 28 (Mục 4.1), Trang 39 (Mục 6.1).
+
+### Lỗi 5: Đề tài nghiên cứu cá nhân
+- **Hiện tượng:** Xuất hiện từ "nhóm tác giả".
+- **Khắc phục:** Đã rà soát và chuyển đổi 100% các vị trí sang `"tác giả"` để phản ánh đúng đề tài do 1 sinh viên thực hiện.
+- **Trang sửa:** Báo cáo Trang 17 (Mục 2.10), Trang 33 (Mục 5.1), Trang 37 (Mục 5.4).
+
+### Lỗi 6: Trang 18 bị trống do 2 dòng bảng tràn sang
+- **Hiện tượng:** Ở bản cũ, Bảng 2.1 bị tràn 2 dòng cuối sang trang 18, khiến trang 18 gần như trống hoàn toàn trước khi sang Chương 3.
+- **Khắc phục:**
+  1. Cô đọng 4 gạch đầu dòng giới thiệu các dự án nguồn mở ở Mục 2.10 thành 1 đoạn văn súc tích, giải phóng khoảng 140pt chiều cao.
+  2. Toàn bộ Bảng 2.1 (7 dòng) nằm trọn vẹn trong Trang 17.
+  3. Chương 3 bắt đầu từ đầu Trang 18.
+  4. Đặt ngắt trang chủ động trước Mục 3.11 giúp Trang 26 và Trang 27 được phân bổ nội dung đầy đặn, đẹp mắt (Trang 26 chứa Mục 3.10 + Hình 3.8; Trang 27 chứa Mục 3.11 + Hình 3.9). Không có bất kỳ trang nào bị trống quá nửa.
+- **Trang sửa:** Báo cáo Trang 17, 18, 26, 27.
+
+### Lỗi 7: Hoàn thiện định dạng Slide thuyết trình
+- **Hiện tượng:** Chữ tràn đè chân trang ở các slide 4, 6, 7, 9, 10; Slide 1 ngắt dòng tiêu đề xấu ("FLASH DISK" đứng riêng 1 dòng); Slide 13 ghi 12/12 Đạt nhưng bảng chỉ có 8 dòng; Slide 14 thiếu số đo RAM/CPU thật.
+- **Khắc phục:**
+  1. **Chân trang:** Rút gọn nội dung từng ý (mỗi ý ≤ 2 dòng), giảm cỡ chữ xuống 16pt, đặt khoảng cách đoạn gap=10pt. Kết quả kiểm tra khoảng trống từ khối chữ dưới cùng đến chân trang trên toàn bộ 18 slide:
+     - Slide 1: 0.93 inch
+     - Slide 2: 1.21 inch
+     - Slide 3: 1.21 inch
+     - Slide 4: 0.97 inch (trước đây bị tràn, nay đạt chuẩn ≥ 0.4 inch)
+     - Slide 5: 1.24 inch
+     - Slide 6: 1.51 inch (trước đây bị tràn, nay đạt chuẩn ≥ 0.4 inch)
+     - Slide 7: 2.04 inch (trước đây bị tràn, nay đạt chuẩn ≥ 0.4 inch)
+     - Slide 8: 2.04 inch
+     - Slide 9: 1.24 inch (trước đây bị tràn, nay đạt chuẩn ≥ 0.4 inch)
+     - Slide 10: 2.04 inch (trước đây bị tràn, nay đạt chuẩn ≥ 0.4 inch)
+     - Slide 11: 1.06 inch
+     - Slide 12: 1.21 inch
+     - Slide 13: 0.92 inch
+     - Slide 14: 0.97 inch
+     - Slide 15: 0.94 inch
+     - Slide 16: 1.48 inch
+     - Slide 17: 1.76 inch
+     - Slide 18: 0.83 inch
+     *(Toàn bộ 18/18 slide đều có khoảng trống ≥ 0.83 inch, vượt xa tiêu chuẩn quy định ≥ 0.4 inch)*.
+  2. **Slide 1:** Chia tiêu đề thành 2 dòng cân đối, trang trọng:
+     `"XÂY DỰNG ỨNG DỤNG NGĂN CẮM USB FLASH DISK"`
+     `"TRÊN WINDOWS, CHẠY NHƯ DỊCH VỤ KHÔNG TẮT ĐƯỢC"`
+  3. **Slide 13:** Bảng hiển thị đầy đủ 12/12 ca kiểm thử Unit Test (UT01 đến UT12), rút gọn cột mô tả, cỡ chữ 11pt, chiều cao dòng 0.34 inch, vừa vặn thẩm mỹ.
+  4. **Slide 14:** Bổ sung dòng thông số tài nguyên thực tế: `"Tài nguyên thực tế (đo 60 giây không tải): Win 2022 tiêu thụ 21.8 MB RAM, CPU 0.0%; Win 2025 tiêu thụ 24.9 MB RAM, CPU 0.02%"`.
+  5. **Slide 15:** Cập nhật bảng đánh giá theo tiêu chuẩn thiết kế và thực nghiệm thật, bỏ số liệu giả định.
+
+---
+
+## 4. Kết quả quét tự động nội dung văn bản PDF (Tự kiểm soát chặt chẽ)
+
+Thực hiện quét toàn bộ văn bản bằng PyMuPDF trên cả 2 tệp `BAO-CAO-UsbGuard.pdf` và `SLIDE-UsbGuard.pdf`:
+
+| Từ khóa / Mẫu cần rà soát | Số lần xuất hiện trong Báo cáo | Số lần xuất hiện trong Slide | Đánh giá |
+|---|---|---|---|
+| `"0.5 giây"`, `"0,5 giây"` | **0 lần** | **0 lần** | **ĐẠT** |
+| `"15 MB"`, `"15–22 MB"`, `"15-22 MB"` | **0 lần** | **0 lần** | **ĐẠT** |
+| `"~0%"` | **0 lần** | **0 lần** | **ĐẠT** |
+| `"TOÀN DIỆN"` / `"toàn diện"` | **0 lần** | **0 lần** | **ĐẠT** |
+| `"C# 7.3"` | **0 lần** | **0 lần** | **ĐẠT** |
+| `"nhóm tác giả"` | **0 lần** | **0 lần** | **ĐẠT** |
+| `"100%"` (ngoài tỷ lệ ca test đạt) | **0 lần** | **0 lần** | **ĐẠT** |
+| Từ nội bộ: TODO, Claude, mini, /Users/ | **0 lần** | **0 lần** | **ĐẠT** |
+
+---
+
+## 5. Bảng đối chiếu chi tiết 56 mục trong Mục lục với số trang thực tế trong PDF
+
+| STT | Tiêu đề mục | Số trang ghi trong Mục lục | Số trang xuất hiện thực tế | Trạng thái đối chiếu |
+|---|---|---|---|---|
+| 1 | CHƯƠNG 1: TỔNG QUAN VỀ ĐỀ TÀI | Trang 10 | Trang 10 | Khớp chính xác 100% |
+| 2 | 1.1. Đề tài và bối cảnh nghiên cứu | Trang 10 | Trang 10 | Khớp chính xác 100% |
+| 3 | 1.2. Lý do chọn đề tài và tính cấp thiết | Trang 10 | Trang 10 | Khớp chính xác 100% |
+| 4 | 1.3. Mục tiêu nghiên cứu và phát triển sản phẩm | Trang 11 | Trang 11 | Khớp chính xác 100% |
+| 5 | 1.4. Đối tượng, phạm vi và giới hạn của đề tài | Trang 11 | Trang 11 | Khớp chính xác 100% |
+| 6 | 1.5. Phương pháp nghiên cứu và thực hiện | Trang 12 | Trang 12 | Khớp chính xác 100% |
+| 7 | 1.6. Bố cục của báo cáo | Trang 12 | Trang 12 | Khớp chính xác 100% |
+| 8 | CHƯƠNG 2: CƠ SỞ LÝ THUYẾT VÀ KHẢO SÁT HIỆN TRẠNG | Trang 13 | Trang 13 | Khớp chính xác 100% |
+| 9 | 2.1. Chuẩn giao tiếp và giao thức lưu trữ USB Mass Storage | Trang 13 | Trang 13 | Khớp chính xác 100% |
+| 10 | 2.2. Mô hình Driver và cơ chế Plug and Play (PnP) của Windows | Trang 13 | Trang 13 | Khớp chính xác 100% |
+| 11 | 2.3. Kiến trúc Windows Service và Service Control Manager (SCM) | Trang 14 | Trang 14 | Khớp chính xác 100% |
+| 12 | 2.4. Cấu trúc Windows Registry và các khóa quản lý phần cứng | Trang 14 | Trang 14 | Khớp chính xác 100% |
+| 13 | 2.5. Chính sách Group Policy về thiết bị lưu trữ di động | Trang 15 | Trang 15 | Khớp chính xác 100% |
+| 14 | 2.6. Bộ giao diện lập trình Win32 API tầng thấp | Trang 15 | Trang 15 | Khớp chính xác 100% |
+| 15 | 2.7. Cơ chế theo dõi sự kiện qua Windows Management Instrumentation (WMI) | Trang 15 | Trang 15 | Khớp chính xác 100% |
+| 16 | 2.8. Mô hình phân quyền bảo mật Windows (SID, ACL/DACL và UAC) | Trang 16 | Trang 16 | Khớp chính xác 100% |
+| 17 | 2.9. Chuẩn băm và dẫn xuất khóa bảo mật PBKDF2 | Trang 16 | Trang 16 | Khớp chính xác 100% |
+| 18 | 2.10. Khảo sát các giải pháp hiện có và bảng so sánh | Trang 17 | Trang 17 | Khớp chính xác 100% |
+| 19 | CHƯƠNG 3: PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG | Trang 18 | Trang 18 | Khớp chính xác 100% |
+| 20 | 3.1. Yêu cầu hệ thống | Trang 18 | Trang 18 | Khớp chính xác 100% |
+| 21 | 3.2. Phân tích tác nhân và biểu đồ ca sử dụng (Use Case) | Trang 18 | Trang 18 | Khớp chính xác 100% |
+| 22 | 3.3. Thiết kế kiến trúc tổng thể 2 lớp bảo vệ (Defense in Depth) | Trang 19 | Trang 19 | Khớp chính xác 100% |
+| 23 | 3.4. Sơ đồ thành phần hệ thống và tổ chức mã nguồn | Trang 20 | Trang 20 | Khớp chính xác 100% |
+| 24 | 3.5. Thiết kế luồng xử lý vòng kiểm tra dịch vụ (Worker.Tick) | Trang 21 | Trang 21 | Khớp chính xác 100% |
+| 25 | 3.6. Thiết kế chuyển đổi trạng thái 3 chế độ hoạt động | Trang 22 | Trang 22 | Khớp chính xác 100% |
+| 26 | 3.7. Thiết kế cây thiết bị và ranh giới cô lập an toàn | Trang 23 | Trang 23 | Khớp chính xác 100% |
+| 27 | 3.8. Thiết kế cấu trúc lưu trữ cấu hình trong Windows Registry | Trang 24 | Trang 24 | Khớp chính xác 100% |
+| 28 | 3.9. Thiết kế cơ chế 'không tắt được' và tự phục hồi dịch vụ | Trang 24 | Trang 24 | Khớp chính xác 100% |
+| 29 | 3.10. Thiết kế bảo mật thông tin và phân quyền Registry DACL | Trang 25 | Trang 25 | Khớp chính xác 100% |
+| 30 | 3.11. Thiết kế quy trình gỡ cài đặt an toàn có xác thực mật khẩu | Trang 27 | Trang 27 | Khớp chính xác 100% |
+| 31 | CHƯƠNG 4: CÀI ĐẶT VÀ TRIỂN KHAI ỨNG DỤNG | Trang 28 | Trang 28 | Khớp chính xác 100% |
+| 32 | 4.1. Môi trường phát triển và công nghệ sử dụng | Trang 28 | Trang 28 | Khớp chính xác 100% |
+| 33 | 4.2. Cấu trúc mã nguồn chi tiết | Trang 28 | Trang 28 | Khớp chính xác 100% |
+| 34 | 4.3. Phân tích các trích đoạn mã nguồn quan trọng | Trang 29 | Trang 29 | Khớp chính xác 100% |
+| 35 | 4.3.1. Điều phối vòng lặp và xử lý chế độ (Worker.Tick) | Trang 29 | Trang 29 | Khớp chính xác 100% |
+| 36 | 4.3.2. Chặn ở mức Driver và Chính sách (Enforcer.Block) | Trang 30 | Trang 30 | Khớp chính xác 100% |
+| 37 | 4.3.3. Truy vấn thuộc tính phần cứng và BusType (UsbDisks.Inspect) | Trang 30 | Trang 30 | Khớp chính xác 100% |
+| 38 | 4.3.4. Quy trình gỡ cài đặt có cờ đồng bộ (Installer.Uninstall) | Trang 31 | Trang 31 | Khớp chính xác 100% |
+| 39 | 4.3.5. Băm mật khẩu và so sánh thời gian hằng (Auth.cs) | Trang 31 | Trang 31 | Khớp chính xác 100% |
+| 40 | 4.4. Hướng dẫn cài đặt và tập lệnh điều khiển CLI | Trang 31 | Trang 31 | Khớp chính xác 100% |
+| 41 | 4.5. Hướng dẫn vận hành dành cho quản trị viên hệ thống | Trang 32 | Trang 32 | Khớp chính xác 100% |
+| 42 | CHƯƠNG 5: KIỂM THỬ VÀ ĐÁNH GIÁ KẾT QUẢ | Trang 33 | Trang 33 | Khớp chính xác 100% |
+| 43 | 5.1. Chiến lược kiểm thử hệ thống | Trang 33 | Trang 33 | Khớp chính xác 100% |
+| 44 | 5.2. Kết quả kiểm thử Unit Test | Trang 33 | Trang 33 | Khớp chính xác 100% |
+| 45 | 5.3. Kết quả kiểm thử tích hợp tự động trên Windows Server (30 ca kiểm thử) | Trang 34 | Trang 34 | Khớp chính xác 100% |
+| 46 | 5.4. Kịch bản kiểm thử thực nghiệm với thiết bị USB vật lý | Trang 37 | Trang 37 | Khớp chính xác 100% |
+| 47 | 5.5. Đánh giá mức độ đáp ứng các yêu cầu hệ thống | Trang 37 | Trang 37 | Khớp chính xác 100% |
+| 48 | CHƯƠNG 6: KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN | Trang 39 | Trang 39 | Khớp chính xác 100% |
+| 49 | 6.1. Các kết quả chính đã đạt được | Trang 39 | Trang 39 | Khớp chính xác 100% |
+| 50 | 6.2. Hạn chế của giải pháp hiện tại | Trang 39 | Trang 39 | Khớp chính xác 100% |
+| 51 | 6.3. Hướng nghiên cứu và phát triển tiếp theo | Trang 40 | Trang 40 | Khớp chính xác 100% |
+| 52 | TÀI LIỆU THAM KHẢO | Trang 41 | Trang 41 | Khớp chính xác 100% |
+| 53 | PHỤ LỤC | Trang 43 | Trang 43 | Khớp chính xác 100% |
+| 54 | Phụ lục A: Hướng dẫn chi tiết tập lệnh dòng lệnh CLI của UsbGuard | Trang 43 | Trang 43 | Khớp chính xác 100% |
+| 55 | Phụ lục B: Kịch bản kiểm thử tích hợp PowerShell (tests/integration.ps1) | Trang 43 | Trang 43 | Khớp chính xác 100% |
+| 56 | Phụ lục C: Cấu hình quy trình CI GitHub Actions (.github/workflows/windows.yml) | Trang 44 | Trang 44 | Khớp chính xác 100% |

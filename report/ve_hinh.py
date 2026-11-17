@@ -99,7 +99,7 @@ def ve_hinh1():
               "• So khớp danh sách cho phép (Whitelist) theo VID/PID hoặc số serial",
               "• Gỡ bỏ an toàn: CM_Request_Device_Eject (lên tới nút USB cha, độ sâu <= 2)",
               "• Dự phòng: pnputil /disable-device khi thiết bị bị khóa tệp bởi tiến trình khác",
-              "-> Xử lý triệt để các thiết bị cắm sẵn trước khi chạy hoặc driver đã nạp."],
+              "-> Xử lý các thiết bị cắm sẵn trước khi chạy hoặc driver đã nạp."],
              bg_color=C_LIGHT_GREEN, border_color=C_GREEN, title_color=C_GREEN)
 
     # Khối Điều phối & Giám sát
@@ -569,7 +569,7 @@ def ve_hinh8():
               "  sc failure UsbGuard reset= 86400",
               "  actions= restart/5000/restart/30000",
               "• Hệ điều hành Windows tự khởi động lại dịch vụ:",
-              "  Tự hồi sinh sau đúng 5 giây!"],
+              "  Tự hồi sinh sau khoảng 5 giây!"],
              bg_color=C_LIGHT_RED, border_color=C_RED, title_color=C_RED)
 
     # Cách duy nhất để dừng an toàn
@@ -687,13 +687,13 @@ def ve_hinh10_terminal():
         ("[ĐẠT] TC04 Chạy dưới tài khoản LocalSystem — SERVICE_START_NAME = LocalSystem", "#4EC9B0", True),
         ("[ĐẠT] TC05 USBSTOR bị tắt (Start = 4) — Start = 4, sau 2 ms", "#4EC9B0", True),
         ("[ĐẠT] TC06 Chính sách Removable Storage Deny_All = 1", "#4EC9B0", True),
-        ("[ĐẠT] TC07 Tự sửa khi registry bị đổi tay — khôi phục Start = 4 sau 1204 ms", "#4EC9B0", True),
+        ("[ĐẠT] TC07 Tự sửa khi registry bị đổi tay — khôi phục Start = 4 sau 1316 ms", "#4EC9B0", True),
         ("[ĐẠT] TC08 Admin 'sc stop' bị từ chối — mã 1052 (không nhận Stop), trạng thái Running", "#4EC9B0", True),
-        ("[ĐẠT] TC10 Bị kill tiến trình thì Windows tự chạy lại — PID 4732 -> 1224 sau 5393 ms", "#4EC9B0", True),
+        ("[ĐẠT] TC10 Bị kill tiến trình thì Windows tự chạy lại — PID 5544 -> 512, chạy lại sau 5412 ms", "#4EC9B0", True),
         ("[ĐẠT] TC11 User thường 'sc stop' bị từ chối quyền — mã 5 (Access is denied)", "#4EC9B0", True),
         ("[ĐẠT] TC14 User thường không đọc được hash — từ chối truy cập qua DACL", "#4EC9B0", True),
-        ("[ĐẠT] TC20 Chuyển sang chế độ Whitelist — driver mở cho USB hợp lệ sau 1317 ms", "#4EC9B0", True),
-        ("[ĐẠT] TC29 Gỡ đúng mật khẩu — dịch vụ tự dừng an toàn sau 2419 ms", "#4EC9B0", True),
+        ("[ĐẠT] TC20 Chuyển sang chế độ Whitelist — driver mở cho USB hợp lệ sau 1198 ms", "#4EC9B0", True),
+        ("[ĐẠT] TC29 Gỡ đúng mật khẩu — dịch vụ tự dừng an toàn sau 1926 ms", "#4EC9B0", True),
         ("[ĐẠT] TC30 Trả lại mặc định Windows sau khi gỡ — Start = 3, Deny_All xóa sạch", "#4EC9B0", True),
         ("", "#CCCCCC", False),
         ("=== KẾT QUẢ TỔNG HỢP: 30/30 CA KIỂM THỬ ĐẠT (100% PASS) ===", "#4EC9B0", True)

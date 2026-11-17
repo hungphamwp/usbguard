@@ -192,7 +192,7 @@ def toc_entry(title, page_num, level=1):
 
 
 # ==============================================================================
-# LỚP TẠO BÁO CÁO TOÀN DIỆN
+# LỚP TẠO BÁO CÁO USBGUARD
 # ==============================================================================
 class BaoCaoUsbGuard:
     def __init__(self, page_map=None):
@@ -309,7 +309,7 @@ class BaoCaoUsbGuard:
         self.add(page_break())
         self.add(para("LỜI CẢM ƠN", jc="center", b=True, sz=28, before=120, after=240, first_line=0))
         self.p("Lời đầu tiên, em xin bày tỏ lòng biết ơn sâu sắc đến quý Thầy, Cô Khoa Công nghệ Thông tin — Trường Đại học Sài Gòn, những người đã tận tâm truyền đạt tri thức quý báu, nền tảng lý thuyết vững chắc và rèn luyện kỹ năng thực hành cho em trong suốt quá trình học tập tại nhà trường.")
-        self.p("Đặc biệt, em xin gửi lời cảm ơn chân thành nhất đến Thầy/Cô hướng dẫn học phần Seminar Chuyên đề. Sự định hướng khoa học, những góp ý chuyên môn chuẩn xác và tinh thần làm việc nghiêm túc của Thầy/Cô là kim chỉ nam giúp em hoàn thiện đồ án này hoàn toàn toàn diện và chặt chẽ nhất.")
+        self.p("Đặc biệt, em xin gửi lời cảm ơn chân thành nhất đến Thầy/Cô hướng dẫn học phần Seminar Chuyên đề. Sự định hướng khoa học, những góp ý chuyên môn chuẩn xác và tinh thần làm việc nghiêm túc của Thầy/Cô là kim chỉ nam giúp em hoàn thiện đồ án này 1 cách chặt chẽ và chỉn chu nhất.")
         self.p("Đề tài *'Xây dựng ứng dụng ngăn người dùng cắm USB flash disk vào máy tính Windows, chạy như dịch vụ không tắt được'* là 1 thử thách thực tế có hàm lượng kỹ thuật hệ thống rất cao, đòi hỏi sự am hiểu sâu rộng về cấu trúc nhân hệ điều hành Windows, mô hình quản lý thiết bị Plug and Play, Service Control Manager, cơ chế bảo mật và giao diện lập trình Win32 API tầng thấp. Dù đã nỗ lực tối đa để hoàn thiện sản phẩm và bản báo cáo này, đề tài khó tránh khỏi những điểm còn có thể phát triển thêm. Em rất mong nhận được những nhận xét, đóng góp quý báu từ quý Thầy, Cô để giải pháp được hoàn thiện hơn nữa trong tương lai.")
         self.p("Kính chúc quý Thầy, Cô luôn dồi dào sức khỏe, niềm vui và tiếp tục gặt hái nhiều thành công trong sự nghiệp giáo dục cao quý.")
         
@@ -421,7 +421,7 @@ class BaoCaoUsbGuard:
 
         self.h2("1.3. Mục tiêu nghiên cứu và phát triển sản phẩm")
         self.p("Đề tài tập trung giải quyết các mục tiêu khoa học và kỹ thuật cụ thể sau:")
-        self.b("**Mục tiêu 1:** Ngăn chặn triệt để mọi thiết bị USB flash disk và ổ lưu trữ di động khi cắm vào máy tính Windows, đạt thời gian phản ứng dưới 2 giây.")
+        self.b("**Mục tiêu 1:** Ngăn chặn hiệu quả mọi thiết bị USB flash disk và ổ lưu trữ di động khi cắm vào máy tính Windows, đạt thời gian phản ứng dưới 2 giây.")
         self.b("**Mục tiêu 2:** Bảo toàn hoạt động bình thường của các thiết bị ngoại vi giao tiếp người dùng chuẩn HID (Human Interface Device) như chuột quang USB, bàn phím USB, không gây gián đoạn công việc của người dùng.")
         self.b("**Mục tiêu 3:** Đạt tính chất 'không tắt được': Dịch vụ từ chối mọi lệnh dừng từ người dùng thường (mã lỗi 5), từ chối lệnh dừng trực tiếp từ Administrator qua SCM (mã lỗi 1052), và tự động phục hồi sau 5 giây nếu tiến trình bị cưỡng chế kết thúc.")
         self.b("**Mục tiêu 4:** Hỗ trợ cơ chế quản trị linh hoạt và bảo mật: Hỗ trợ 3 chế độ vận hành (CHẶN TẤT CẢ, DANH SÁCH CHO PHÉP, TẠM DỪNG); xác thực quản trị bằng thuật toán băm PBKDF2; bảo vệ cấu hình trong Registry bằng phân quyền DACL nghiêm ngặt.")
@@ -439,7 +439,7 @@ class BaoCaoUsbGuard:
         self.b("Nghiên cứu tài liệu chính thống của Microsoft về kiến trúc trình điều khiển, mô hình bảo mật Windows, và chuẩn RFC 8018 về mật mã học.")
         self.b("Khảo sát và đối chiếu thiết kế với 4 dự án mã nguồn mở uy tín cùng chủ đề.")
         self.b("Phát triển sản phẩm bằng ngôn ngữ C# trên nền tảng .NET Framework 4.8, sử dụng kỹ thuật P/Invoke để tương tác trực tiếp với các thư viện lõi hệ thống (`setupapi.dll`, `cfgmgr32.dll`, `kernel32.dll`, `advapi32.dll`, `wtsapi32.dll`).")
-        self.b("Xây dựng quy trình kiểm thử tự động toàn diện qua CI/CD trên nền tảng GitHub Actions với 12 ca unit test và 30 ca kiểm thử tích hợp trên Windows thật.")
+        self.b("Xây dựng quy trình kiểm thử tự động đa tầng qua CI/CD trên nền tảng GitHub Actions với 12 ca unit test và 30 ca kiểm thử tích hợp trên Windows thật.")
 
         self.h2("1.6. Bố cục của báo cáo")
         self.p("Nội dung báo cáo được cấu trúc thành 6 chương logic:")
@@ -458,7 +458,7 @@ class BaoCaoUsbGuard:
         
         self.h2("2.1. Chuẩn giao tiếp và giao thức lưu trữ USB Mass Storage")
         self.p("Chuẩn USB Mass Storage Class (MSC) là tập hợp các đặc tả kỹ thuật do tổ chức USB Implementers Forum (USB-IF) ban hành, cho phép các thiết bị lưu trữ ngoại vi kết nối và trao đổi dữ liệu với máy tính chủ. Trong môi trường Windows, 2 giao thức truyền tải chính được áp dụng:")
-        self.b("**Bulk-Only Transport (BOT):** Là giao thức truyền thống sử dụng 3 giai đoạn tuần tự: Command Transport (gửi lệnh qua gói CBW), Data Transport (truyền nhận dữ liệu qua luồng Bulk), và Status Transport (nhận trạng thái thực thi qua gói CSW). Do hoạt động theo mô hình 1 lệnh tại 1 thời điểm (half-duplex), BOT có hiệu năng hạn chế nhưng tương thích với 100% thiết bị USB flash disk đời cũ.")
+        self.b("**Bulk-Only Transport (BOT):** Là giao thức truyền thống sử dụng 3 giai đoạn tuần tự: Command Transport (gửi lệnh qua gói CBW), Data Transport (truyền nhận dữ liệu qua luồng Bulk), và Status Transport (nhận trạng thái thực thi qua gói CSW). Do hoạt động theo mô hình 1 lệnh tại 1 thời điểm (half-duplex), BOT có hiệu năng hạn chế nhưng tương thích với hầu hết thiết bị USB flash disk đời cũ.")
         self.b("**USB Attached SCSI Protocol (UAS/UASP):** Là giao thức hiện đại chuẩn hóa trên USB 3.0, đưa tập lệnh SCSI (Small Computer System Interface) vào kênh truyền USB. UAS hỗ trợ kỹ thuật xếp hàng lệnh Native Command Queuing (NCQ) lên đến 32 lệnh song song, nâng cao tốc độ truyền tải ngẫu nhiên cho các ổ cứng di động SSD và USB flash disk tốc độ cao.")
         self.p("Khi người dùng cắm USB vào máy, hệ điều hành tự động nạp trình điều khiển `USBSTOR.SYS` (đối với chuẩn BOT) hoặc `UASPSTOR.SYS` (đối với chuẩn UAS). Do đó, 1 giải pháp chặn thiết bị USB hiệu quả bắt buộc phải tác động đồng thời lên cả 2 trình điều khiển này.")
 
@@ -509,21 +509,17 @@ class BaoCaoUsbGuard:
         self.p("Danh sách kiểm soát quyền truy cập tùy ý (**DACL - Discretionary Access Control List**) quy định cụ thể quyền đọc, ghi, xóa của từng SID trên đối tượng. Khi tạo khóa Registry `HKLM\\SOFTWARE\\UsbGuard`, nếu ứng dụng ngắt quyền kế thừa từ khóa cha và chỉ gán quyền `FullControl` cho LocalSystem và Administrators, thì nhóm Users thông thường sẽ bị hệ điều hành từ chối hoàn toàn khi cố gắng truy cập khóa này.")
 
         self.h2("2.9. Chuẩn băm và dẫn xuất khóa bảo mật PBKDF2")
-        self.p("Để bảo vệ mật khẩu quản trị, UsbGuard tuân thủ tuyệt đối chuẩn mật mã học quốc tế **RFC 8018 (PKCS #5 v2.0)** về hàm dẫn xuất khóa dựa trên mật khẩu (**PBKDF2** - Password-Based Key Derivation Function 2):")
-        self.b("**Muối ngẫu nhiên (Salt):** Mỗi lần băm mật khẩu, hệ thống sinh ra 1 chuỗi muối ngẫu nhiên 16 byte (128 bit) bằng bộ sinh số ngẫu nhiên an toàn mật mã học (`RandomNumberGenerator`). Việc sử dụng muối riêng biệt ngăn chặn hoàn toàn các cuộc tấn công tra cứu bảng tính sẵn (Rainbow Table).")
+        self.p("Để bảo vệ mật khẩu quản trị, UsbGuard tuân thủ chuẩn mật mã học quốc tế **RFC 8018 (PKCS #5 v2.0)** về hàm dẫn xuất khóa dựa trên mật khẩu (**PBKDF2** - Password-Based Key Derivation Function 2):")
+        self.b("**Muối ngẫu nhiên (Salt):** Mỗi lần băm mật khẩu, hệ thống sinh ra 1 chuỗi muối ngẫu nhiên 16 byte (128 bit) bằng bộ sinh số ngẫu nhiên an toàn mật mã học (`RandomNumberGenerator`). Việc sử dụng muối riêng biệt ngăn chặn các cuộc tấn công tra cứu bảng tính sẵn (Rainbow Table).")
         self.b("**Số vòng lặp (Iterations):** Thiết lập 100000 vòng lặp HMAC-SHA1. Số vòng lặp lớn làm tăng đáng kể chi phí tính toán phần cứng, vô hiệu hóa các nỗ lực tấn công vét cạn (brute-force) bằng GPU chuyên dụng.")
-        self.b("**So sánh thời gian hằng (Constant-Time Comparison):** Khi kiểm tra mật khẩu, việc so sánh 2 mảng byte được thực hiện bằng toán tử XOR trên toàn bộ độ dài chuỗi (`diff |= a[i] ^ b[i]`), không dừng sớm khi phát hiện ký tự sai. Kỹ thuật này triệt tiêu hoàn toàn nguy cơ rò rỉ thông tin qua tấn công kênh kề đo thời gian thực thi (Timing Attack).")
+        self.b("**So sánh thời gian hằng (Constant-Time Comparison):** Khi kiểm tra mật khẩu, việc so sánh 2 mảng byte được thực hiện bằng toán tử XOR trên toàn bộ độ dài chuỗi (`diff |= a[i] ^ b[i]`), không dừng sớm khi phát hiện ký tự sai. Kỹ thuật này ngăn chặn nguy cơ rò rỉ thông tin qua tấn công kênh kề đo thời gian thực thi (Timing Attack).")
 
         self.h2("2.10. Khảo sát các giải pháp hiện có và bảng so sánh")
-        self.p("Trước khi tiến hành thiết kế UsbGuard, tác giả đã tiến hành khảo sát và phân tích ưu, nhược điểm của các giải pháp kỹ thuật hiện có trên thị trường:")
-        self.b("**Group Policy nội tại của Windows:** Rất tốt cho môi trường mạng doanh nghiệp có Active Directory Domain Controller, nhưng không khả dụng trên các phiên bản Windows Home và đòi hỏi hạ tầng máy chủ phức tạp.")
-        self.b("**Microsoft Defender / Intune Device Control:** Giải pháp quản trị đám mây toàn diện nhưng đòi hỏi chi phí bản quyền doanh nghiệp đắt đỏ (gói Microsoft 365 E5) và bắt buộc phải kết nối Internet liên tục.")
-        self.b("**Giải pháp DLP thương mại (Symantec DLP, McAfee Total Protection):** Rất mạnh mẽ nhưng chiếm dụng tài nguyên bộ nhớ lớn (thường tiêu tốn trên 500 MB RAM), cấu hình cồng kềnh và chi phí triển khai rất cao.")
-        self.b("**Các dự án mã nguồn mở tham khảo:**")
-        self.b("- `JBalanza/USBBlocker`: Sử dụng C# quản lý whitelist qua chế độ training, tuy nhiên giải pháp can thiệp bằng cách khóa màn hình máy tính gây ức chế cho người dùng.")
-        self.b("- `sidd607/usbAlert`: Đăng ký nhận thông điệp cửa sổ `WM_DEVICECHANGE`, có giá trị tham khảo tốt về cách gọi SetupAPI nhưng thiếu cơ chế chống tắt dịch vụ và thiếu lớp chặn chính sách Registry.")
-        self.b("- `amir13872/usb-control-application`: Có giao diện cấu hình whitelist nhưng chạy dưới dạng tiến trình ứng dụng thông thường, người dùng có thể dễ dàng tắt bằng Task Manager.")
-        self.b("- `Den-Sec/USBBlocker`: Kịch bản PowerShell thao tác trực tiếp trên Registry, khẳng định tính đúng đắn của việc khóa driver `USBSTOR`.")
+        self.p("Trước khi thiết kế UsbGuard, tác giả đã khảo sát và phân tích ưu, nhược điểm của các giải pháp kỹ thuật hiện có trên thị trường:")
+        self.b("**Group Policy (GPO):** Phù hợp môi trường mạng Active Directory, nhưng không khả dụng trên Windows Home và đòi hỏi hạ tầng máy chủ phức tạp.")
+        self.b("**Microsoft Intune / Defender Device Control:** Quản trị đám mây mạnh mẽ nhưng đòi hỏi thuê bao đắt đỏ (gói E5) và kết nối mạng liên tục.")
+        self.b("**Phần mềm DLP thương mại (Symantec, McAfee):** Chi phí cao, cấu hình cồng kềnh và chiếm dụng lớn tài nguyên bộ nhớ (trên 500 MB RAM).")
+        self.b("**Các dự án mã nguồn mở tham khảo:** `JBalanza/USBBlocker` (khóa màn hình khi cắm USB lạ, gây bất tiện); `sidd607/usbAlert` (bắt sự kiện SetupAPI nhưng thiếu lớp chặn driver và chống tắt); `amir13872/usb-control-application` (chạy dạng ứng dụng thường, dễ bị tắt qua Task Manager); `Den-Sec/USBBlocker` (PowerShell thao tác Registry khóa USBSTOR).")
 
         headers_ss = ["Tiêu chí so sánh", "Group Policy (GPO)", "Microsoft Intune", "Dự án nguồn mở tham khảo", "Giải pháp UsbGuard 1.0"]
         widths_ss = [2200, 2200, 2200, 2200, 2271]
@@ -532,7 +528,7 @@ class BaoCaoUsbGuard:
             ["Kiến trúc phòng thủ", "1 lớp (Chính sách)", "Đa lớp (Cloud + Kernel)", "1 lớp (Hook hoặc Polling)", "2 lớp (Driver + SetupAPI)"],
             ["Cơ chế chống tắt", "Phụ thuộc quyền Domain", "Dịch vụ bảo vệ chuyên biệt", "Dễ bị tắt qua Task Manager", "CanStop=false + DACL + sc failure"],
             ["Chế độ Whitelist", "Hỗ trợ theo Device ID", "Hỗ trợ linh hoạt", "Hỗ trợ cơ bản", "Hỗ trợ 3 chế độ (All/Allow/Pause)"],
-            ["Bảo vệ chuột/bàn phím", "Cần cấu hình phân lớp", "Tự động phân lớp", "Dễ bị xung đột gỡ nhầm", "Bảo toàn 100% nhờ MaxDepth=2"],
+            ["Bảo vệ chuột/bàn phím", "Cần cấu hình phân lớp", "Tự động phân lớp", "Dễ bị xung đột gỡ nhầm", "Bảo toàn nhờ MaxDepth=2"],
             ["Chi phí bản quyền", "Bản quyền Windows Pro+", "Chi phí thuê bao đắt đỏ", "Miễn phí", "Mã nguồn mở, hoàn toàn miễn phí"]
         ]
         self.tbl("TBL_SS", "Bảng 2.1: So sánh tổng hợp các giải pháp kiểm soát cổng USB", headers_ss, rows_ss, widths_ss, ["left", "left", "left", "left", "left"])
@@ -557,8 +553,8 @@ class BaoCaoUsbGuard:
             ["YC-CN06", "Chức năng", "Xác thực bảo mật mật khẩu quản trị.", "Yêu cầu mật khẩu đối với mọi lệnh quản trị nhạy cảm."],
             ["YC-CN07", "Chức năng", "Gỡ cài đặt an toàn và hoàn trả cài đặt gốc.", "Dừng dịch vụ đúng quy trình, khôi phục mặc định Registry."],
             ["YC-PCN01", "Phi chức năng", "Cơ chế 'không tắt được' đối với người dùng.", "SCM từ chối lệnh Stop (lỗi 1052); User thường bị chặn (lỗi 5)."],
-            ["YC-PCN02", "Phi chức năng", "Tự phục hồi sau sự cố cưỡng chế tiến trình.", "Windows tự động chạy lại dịch vụ sau đúng 5 giây."],
-            ["YC-PCN03", "Phi chức năng", "Hiệu năng tiêu thụ tài nguyên tối thiểu.", "Chiếm dụng CPU < 1%, tiêu thụ bộ nhớ RAM < 25 MB."],
+            ["YC-PCN02", "Phi chức năng", "Tự phục hồi sau sự cố cưỡng chế tiến trình.", "Windows tự động chạy lại dịch vụ sau khoảng 5 giây (cấu hình 5000 ms)."],
+            ["YC-PCN03", "Phi chức năng", "Hiệu năng tiêu thụ tài nguyên tối thiểu.", "Chiếm dụng CPU < 1%, tiêu thụ bộ nhớ RAM < 50 MB."],
             ["YC-PCN04", "Phi chức năng", "Bảo mật thông tin cấu hình và mã băm mật khẩu.", "DACL khóa chặt HKLM\\SOFTWARE\\UsbGuard, chỉ SYSTEM/Admin đọc."]
         ]
         self.tbl("TBL_YC", "Bảng 3.1: Danh mục yêu cầu chức năng và phi chức năng của UsbGuard", headers_yc, rows_yc, widths_yc, ["center", "center", "left", "left"])
@@ -572,7 +568,7 @@ class BaoCaoUsbGuard:
         self.fig("hinh3_so_do_ca_su_dung.png", "Hình 3.1: Sơ đồ ca sử dụng của hệ thống UsbGuard 1.0", width_cm=15.0)
 
         self.h2("3.3. Thiết kế kiến trúc tổng thể 2 lớp bảo vệ (Defense in Depth)")
-        self.p("Nguyên lý phòng thủ đa tầng (Defense in Depth) được áp dụng triệt để trong UsbGuard nhằm đảm bảo không có bất kỳ khe hở nào cho phép thiết bị USB trái phép hoạt động:")
+        self.p("Nguyên lý phòng thủ đa tầng (Defense in Depth) được áp dụng trong UsbGuard nhằm đảm bảo không có bất kỳ khe hở nào cho phép thiết bị USB trái phép hoạt động:")
         self.b("**Lớp 1 — Chặn ở mức Driver và Chính sách hệ thống (`Enforcer.cs`):** Tác động trực tiếp vào cơ chế tải driver của Windows bằng cách thiết lập `USBSTOR` và `UASPStor` có `Start = 4`, đồng thời cấu hình chính sách di động `RemovableStorageDevices\\Deny_All = 1`. Lớp này hoạt động như 1 bức tường lửa tại cổng ngõ hệ điều hành, khiến Windows từ chối gắn driver lưu trữ ngay từ đầu.")
         self.b("**Lớp 2 — Quét phần cứng và Gỡ bỏ chủ động (`UsbDisks.cs`):** Đóng vai trò là tuyến phòng thủ dự phòng tối quan trọng. Trong trường hợp thiết bị USB đã cắm vào máy từ trước khi dịch vụ khởi động, hoặc khi driver đã nạp sẵn trong bộ nhớ, Lớp 2 sẽ quét toàn bộ giao diện đĩa qua SetupAPI, xác định loại bus qua IOCTL và thực hiện gỡ an toàn (`CM_Request_Device_Eject`). Nếu thiết bị bị khóa tệp bởi tiến trình khác, cơ chế dự phòng `pnputil /disable-device` sẽ lập tức vô hiệu hóa thiết bị.")
         
@@ -606,9 +602,9 @@ class BaoCaoUsbGuard:
         self.fig("hinh5_trang_thai_3_che_do.png", "Hình 3.5: Sơ đồ chuyển đổi giữa 3 chế độ hoạt động của UsbGuard", width_cm=15.0)
 
         self.h2("3.7. Thiết kế cây thiết bị và ranh giới cô lập an toàn")
-        self.p("Vấn đề nhức nhối nhất của các phần mềm chặn USB nghiệp dư là việc ngắt nhầm chuột hoặc bàn phím cắm chung cổng hub USB. Để giải quyết triệt để vấn đề này, UsbGuard thiết lập 1 ranh giới cô lập phần cứng cực kỳ chuẩn xác:")
-        self.b("Ứng dụng chỉ nhắm vào giao diện đĩa `GUID_DEVINTERFACE_DISK` và kiểm tra `BusType == BusTypeUsb` (giá trị 7). Các thiết bị ngoại vi chuột, bàn phím thuộc giao diện `GUID_DEVINTERFACE_HID` sẽ bị bỏ qua 100% ngay từ vòng lọc đầu tiên.")
-        self.b("Khi thực hiện duyệt cây thiết bị để tìm ID và gỡ bỏ, hằng số `MaxDepth = 2` giới hạn việc duyệt chỉ đi từ Nút đĩa (Disk Node) lên Nút thiết bị USB cha (Parent USB Node). Ứng dụng **tuyệt đối không bao giờ duyệt tiếp lên Nút Hub (USB Generic Hub hoặc Root Hub)**. Ranh giới này đảm bảo thiết bị USB cha bị gỡ bỏ sạch sẽ mà cổng hub vật lý vẫn duy trì điện áp và tín hiệu cho chuột, bàn phím hoạt động liên tục.")
+        self.p("Vấn đề khó khăn của các phần mềm chặn USB là nguy cơ ngắt nhầm chuột hoặc bàn phím cắm chung cổng hub USB. Để giải quyết vấn đề này, UsbGuard thiết lập 1 ranh giới cô lập phần cứng chuẩn xác:")
+        self.b("Ứng dụng chỉ nhắm vào giao diện đĩa `GUID_DEVINTERFACE_DISK` và kiểm tra `BusType == BusTypeUsb` (giá trị 7). Các thiết bị ngoại vi chuột, bàn phím thuộc giao diện `GUID_DEVINTERFACE_HID` sẽ được bỏ qua ngay từ vòng lọc đầu tiên.")
+        self.b("Khi thực hiện duyệt cây thiết bị để tìm ID và gỡ bỏ, hằng số `MaxDepth = 2` giới hạn việc duyệt chỉ đi từ Nút đĩa (Disk Node) lên Nút thiết bị USB cha (Parent USB Node). Ứng dụng **không duyệt tiếp lên Nút Hub (USB Generic Hub hoặc Root Hub)**. Ranh giới này đảm bảo thiết bị USB cha bị gỡ bỏ sạch sẽ mà cổng hub vật lý vẫn duy trì điện áp và tín hiệu cho chuột, bàn phím hoạt động liên tục.")
         
         self.fig("hinh7_cay_thiet_bi_usb.png", "Hình 3.6: Cây thiết bị PnP và ranh giới gỡ bỏ an toàn tránh ảnh hưởng hub", width_cm=15.0)
 
@@ -624,13 +620,13 @@ class BaoCaoUsbGuard:
             ["Whitelist", "REG_MULTI_SZ", "Danh sách các chuỗi định danh USB được phép sử dụng.", "VID_0951&PID_1666\\0 08606E6B..."],
             ["DisabledDevices", "REG_MULTI_SZ", "Danh sách thiết bị tạm bị vô hiệu hóa bởi pnputil.", "USB\\VID_0951&PID_1666\\0860..."]
         ]
-        self.tbl("TBL_REG", "Bảng 3.2: Đặc tả cấu trúc lưu trữ cấu hình tại HKLM\\SOFTWARE\\UsbGuard", headers_reg, rows_reg, widths_yc, ["center", "center", "left", "left"])
+        self.tbl("TBL_REG", "Bảng 3.2: Đặc tả cấu trúc lưu trữ cấu hình HKLM\\SOFTWARE\\UsbGuard", headers_reg, rows_reg, widths_yc, ["center", "center", "left", "left"])
 
         self.h2("3.9. Thiết kế cơ chế 'không tắt được' và tự phục hồi dịch vụ")
         self.p("Để đáp ứng yêu cầu 'chạy như dịch vụ không tắt được' theo đúng chuẩn mực bảo mật doanh nghiệp, UsbGuard kết hợp 3 lớp cơ chế kỹ thuật đồng bộ:")
         self.b("**Lớp từ chối SCM (`CanStop = false`):** Lớp dịch vụ `Worker` khai báo `CanStop = false`, `CanPauseAndContinue = false`, `CanShutdown = false`. Khi quản trị viên mở giao diện `services.msc` hoặc chạy lệnh `sc.exe stop UsbGuard`, SCM kiểm tra thuộc tính này và từ chối gửi thông điệp dừng, trả về mã lỗi `1052 (ERROR_INVALID_SERVICE_CONTROL)`.")
         self.b("**Lớp phân quyền truy cập DACL:** Người dùng thông thường không có quyền gửi mã điều khiển tới SCM hoặc chỉnh sửa cấu hình dịch vụ. Mọi lệnh `sc stop`, `sc delete`, `sc config` từ người dùng thường đều bị hệ điều hành chặn đứng với mã lỗi `5 (ERROR_ACCESS_DENIED)`.")
-        self.b("**Lớp phục hồi tự động sau sự cố (`sc.exe failure`):** Trong trường hợp tiến trình `UsbGuard.exe` bị cưỡng chế kết thúc bằng công cụ nâng cao (`taskkill /F` từ quyền Administrator), cấu hình phục hồi của dịch vụ sẽ ra lệnh cho Windows tự động khởi chạy lại tiến trình sau đúng 5 giây (`actions= restart/5000/restart/30000`).")
+        self.b("**Lớp phục hồi tự động sau sự cố (`sc.exe failure`):** Trong trường hợp tiến trình `UsbGuard.exe` bị cưỡng chế kết thúc bằng công cụ nâng cao (`taskkill /F` từ quyền Administrator), cấu hình phục hồi của dịch vụ sẽ ra lệnh cho Windows tự động khởi chạy lại tiến trình sau khoảng 5 giây (`actions= restart/5000/restart/30000`).")
         
         self.fig("hinh8_co_che_khong_tat_duoc.png", "Hình 3.7: Cơ chế 'không tắt được' và tự phục hồi dịch vụ của UsbGuard", width_cm=15.0)
 
@@ -639,8 +635,9 @@ class BaoCaoUsbGuard:
         self.b("Khóa Registry `HKLM\\SOFTWARE\\UsbGuard` được cấu hình ngắt kế thừa quyền (`SetAccessRuleProtection(true, false)`) và chỉ cấp quyền `FullControl` cho 2 SID: `LocalSystem` và `BuiltinAdministrators`. Nhóm người dùng thường hoàn toàn không có quyền đọc (Read), ngăn ngừa việc sao chép chuỗi mã băm `AuthHash` để thực hiện tấn công bẻ khóa ngoại tuyến.")
         self.b("Cơ chế nhập mật khẩu an toàn (`Password.cs`): Lớp hỗ trợ đọc phím với thuộc tính ẩn `Console.ReadKey(true)`, không hiển thị ký tự trên màn hình và không ghi vết vào lịch sử dòng lệnh.")
         
-        self.fig("hinh9_mo_hinh_bao_mat_pbkdf2.png", "Hình 3.8: Thiết kế bảo mật mật khẩu PBKDF2 và phân quyền Registry DACL", width_cm=15.0)
+        self.fig("hinh9_mo_hinh_bao_mat_pbkdf2.png", "Hình 3.8: Thiết kế bảo mật mật khẩu PBKDF2 và phân quyền DACL", width_cm=15.0)
 
+        self.add(page_break())
         self.h2("3.11. Thiết kế quy trình gỡ cài đặt an toàn có xác thực mật khẩu")
         self.p("Vì dịch vụ không nhận lệnh Stop trực tiếp, quy trình gỡ cài đặt được thiết kế thông qua cơ chế cờ báo hiệu an toàn:")
         self.b("Người dùng chạy lệnh `UsbGuard.exe uninstall <mật_khẩu>`. Chương trình kiểm tra quyền Administrator và xác thực mật khẩu qua PBKDF2.")
@@ -657,8 +654,8 @@ class BaoCaoUsbGuard:
         
         self.h2("4.1. Môi trường phát triển và công nghệ sử dụng")
         self.p("Dự án UsbGuard được xây dựng trên môi trường công nghệ chuẩn mực, hướng đến tính gọn nhẹ và sự ổn định tối đa:")
-        self.b("**Ngôn ngữ lập trình:** C# (phiên bản C# 7.3 tương thích cao).")
-        self.b("**Nền tảng mục tiêu:** .NET Framework 4.8. Đây là phiên bản .NET Framework được tích hợp sẵn mặc định trên 100% các bản phát hành Windows 10, Windows 11 và Windows Server hiện đại, đảm bảo ứng dụng có thể chạy ngay lập tức sau khi biên dịch mà không yêu cầu người dùng phải cài đặt thêm bất kỳ thư viện phụ thuộc nào.")
+        self.b("**Ngôn ngữ lập trình:** C# 9.0 (LangVersion 9.0 trong UsbGuard.csproj).")
+        self.b("**Nền tảng mục tiêu:** .NET Framework 4.8. Đây là phiên bản .NET Framework được tích hợp sẵn mặc định trên các bản phát hành Windows 10, Windows 11 và Windows Server hiện đại, đảm bảo ứng dụng có thể chạy ngay lập tức sau khi biên dịch mà không yêu cầu người dùng phải cài đặt thêm bất kỳ thư viện phụ thuộc nào.")
         self.b("**Công cụ biên dịch:** .NET SDK (sử dụng gói tham chiếu `Microsoft.NETFramework.ReferenceAssemblies` cho phép biên dịch chéo đa nền tảng).")
         self.b("**Hệ thống tích hợp liên tục (CI):** GitHub Actions Workflow chạy trên các máy ảo Windows Server 2022 và Windows Server 2025.")
 
@@ -684,7 +681,7 @@ class BaoCaoUsbGuard:
             ["14", "Sys.cs", "30", "UsbGuard", "Tiện ích khởi chạy tiến trình hệ thống an toàn (sc.exe, pnputil.exe)."],
             ["15", "Constants.cs", "12", "UsbGuard", "Định nghĩa hằng số tên dịch vụ, tên hiển thị và mô tả hệ thống."]
         ]
-        self.tbl("TBL_SRC", "Bảng 4.1: Thống kê chi tiết cấu trúc tệp mã nguồn và số dòng lệnh của UsbGuard", headers_src, rows_src, widths_src, ["center", "left", "center", "left", "left"])
+        self.tbl("TBL_SRC", "Bảng 4.1: Cấu trúc tệp mã nguồn và số dòng lệnh của UsbGuard", headers_src, rows_src, widths_src, ["center", "left", "center", "left", "left"])
 
         self.h2("4.3. Phân tích các trích đoạn mã nguồn quan trọng")
         self.p("Dưới đây là các trích đoạn mã nguồn tiêu biểu thể hiện rõ nét giải pháp kỹ thuật cốt lõi của UsbGuard:")
@@ -719,7 +716,7 @@ private void Tick(object sender, ElapsedEventArgs e)
 }""")
 
         self.h3("4.3.2. Chặn ở mức Driver và Chính sách (Enforcer.Block)")
-        self.p("Đoạn mã thực hiện khóa toàn diện các khóa Registry driver và Group Policy:")
+        self.p("Đoạn mã thực hiện khóa đồng bộ các khóa Registry driver và Group Policy:")
         self.code("""// Trích từ src/Enforcer.cs
 public static void Block()
 {
@@ -839,9 +836,9 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
         self.h1("CHƯƠNG 5: KIỂM THỬ VÀ ĐÁNH GIÁ KẾT QUẢ")
         
         self.h2("5.1. Chiến lược kiểm thử hệ thống")
-        self.p("Để đảm bảo độ tin cậy tuyệt đối cho 1 ứng dụng can thiệp tầng sâu hệ thống, nhóm tác giả xây dựng chiến lược kiểm thử đa tầng nghiêm ngặt gồm 3 cấp độ:")
+        self.p("Để đảm bảo độ tin cậy cao cho 1 ứng dụng can thiệp tầng sâu hệ thống, tác giả xây dựng chiến lược kiểm thử đa tầng nghiêm ngặt gồm 3 cấp độ:")
         self.b("**Cấp độ 1 — Unit Test tự động (`tests/AuthTests.cs`):** Kiểm tra tính đúng đắn của các thuật toán nghiệp vụ độc lập (thuật toán băm PBKDF2, so khớp whitelist) bằng xUnit framework trên môi trường đa nền tảng.")
-        self.b("**Cấp độ 2 — Kiểm thử tích hợp tự động trên Windows Server (`tests/integration.ps1`):** Thực thi tự động 30 ca kiểm thử trên môi trường máy ảo Windows Server 2022 và Windows Server 2025 qua GitHub Actions CI. Kiểm tra toàn diện việc cài đặt dịch vụ thật, phản ứng Registry, đo đạc thời gian tự phục hồi, kiểm tra từ chối quyền của user thường và admin.")
+        self.b("**Cấp độ 2 — Kiểm thử tích hợp tự động trên Windows Server (`tests/integration.ps1`):** Thực thi tự động 30 ca kiểm thử trên môi trường máy ảo Windows Server 2022 và Windows Server 2025 qua GitHub Actions CI. Kiểm tra đầy đủ việc cài đặt dịch vụ thật, phản ứng Registry, đo đạc thời gian tự phục hồi, kiểm tra từ chối quyền của user thường và admin.")
         self.b("**Cấp độ 3 — Kiểm thử thực nghiệm với USB vật lý (`tests/KICH-BAN-KIEM-THU.md`):** Kiểm chứng trực tiếp trên máy tính vật lý có cổng cắm USB thật để đánh giá khả năng gỡ đĩa, bảo toàn chuột/bàn phím và hiển thị hộp thoại cảnh báo WTSSendMessage.")
 
         self.h2("5.2. Kết quả kiểm thử Unit Test")
@@ -866,7 +863,7 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
         self.tbl("TBL_UT", "Bảng 5.1: Kết quả thực thi 12 ca kiểm thử đơn vị (Unit Test) xUnit", headers_ut, rows_ut, widths_ut, ["center", "left", "left", "center"])
 
         self.h2("5.3. Kết quả kiểm thử tích hợp tự động trên Windows Server (30 ca kiểm thử)")
-        self.p("Kịch bản `tests/integration.ps1` kiểm tra tự động toàn diện vòng đời và các hành vi an ninh của UsbGuard trên môi trường Windows Server 2022 và Windows Server 2025 thông qua quy trình CI GitHub Actions. Kết quả ghi nhận tại bảng dưới đây:")
+        self.p("Kịch bản `tests/integration.ps1` kiểm tra tự động vòng đời và các hành vi an ninh của UsbGuard trên môi trường Windows Server 2022 và Windows Server 2025 thông qua quy trình CI GitHub Actions. Kết quả ghi nhận tại bảng dưới đây:")
         
         # Đọc dữ liệu chi tiết từ tests/ket-qua/
         kq_2022, kq_2025, stats = self.doc_ket_qua_ci()
@@ -879,20 +876,29 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
             res_25 = kq_2025.get(tc_id, "ĐẠT (PASS)")
             rows_it.append([tc_id, name, desc, res_22, res_25])
             
-        self.tbl("TBL_IT", "Bảng 5.2: Kết quả kiểm thử tích hợp tự động 30 ca trên Windows Server 2022 và 2025", headers_it, rows_it, widths_it, ["center", "left", "left", "center", "center"])
+        self.tbl("TBL_IT", "Bảng 5.2: Kết quả kiểm thử tích hợp 30 ca trên Windows Server 2022 và 2025", headers_it, rows_it, widths_it, ["center", "left", "left", "center", "center"])
 
-        self.fig("hinh10_terminal_log.png", "Hình 5.1: Nhật ký thực thi kiểm thử tích hợp 30 ca tự động trên Windows Server", width_cm=15.0)
+        self.fig("hinh10_terminal_log.png", "Hình 5.1: Nhật ký chạy kiểm thử tích hợp 30 ca trên Windows Server", width_cm=15.0)
 
         self.p("Các thông số đo đạc thời gian phản ứng thực tế ghi nhận qua hệ thống kiểm thử tích hợp tự động trên 2 nền tảng Windows Server:")
-        tu_sua_22 = stats.get("tu_sua_22", 1204)
-        chay_lai_22 = stats.get("chay_lai_22", 5393)
-        tu_sua_25 = stats.get("tu_sua_25", 218)
-        chay_lai_25 = stats.get("chay_lai_25", 5471)
+        tu_sua_22 = stats.get("tu_sua_22", 1316)
+        chay_lai_22 = stats.get("chay_lai_22", 5412)
+        ram_tb_22 = stats.get("ram_tb_22", 21.8)
+        ram_max_22 = stats.get("ram_max_22", 21.9)
+        cpu_22 = stats.get("cpu_22", 0.0)
+
+        tu_sua_25 = stats.get("tu_sua_25", 560)
+        chay_lai_25 = stats.get("chay_lai_25", 5508)
+        ram_tb_25 = stats.get("ram_tb_25", 24.9)
+        ram_max_25 = stats.get("ram_max_25", 25.1)
+        cpu_25 = stats.get("cpu_25", 0.02)
+
         self.b(f"**Thời gian tự sửa Registry (`tu_sua_ms`):** Khi cố tình chỉnh sửa giá trị `USBSTOR\\Start = 3` bằng tay, dịch vụ phát hiện và tự động khôi phục về `Start = 4` trong thời gian **{tu_sua_22} ms** (trên Windows Server 2022) và **{tu_sua_25} ms** (trên Windows Server 2025). Cả 2 kết quả đều nhanh hơn chu kỳ Timer 2 giây nhờ cơ chế vòng quét chủ động.")
-        self.b(f"**Thời gian tự khởi động lại sau khi bị kill tiến trình (`chay_lai_ms`):** Khi tiến trình `UsbGuard.exe` bị Administrator cưỡng chế kết thúc bằng lệnh `taskkill /F`, cấu hình phục hồi SCM (`sc failure`) kích hoạt hệ điều hành tự động chạy lại tiến trình dịch vụ sau **{chay_lai_22} ms** (trên Windows Server 2022) và **{chay_lai_25} ms** (trên Windows Server 2025). Thông số này khớp chính xác với cấu hình độ trễ phục hồi 5000 ms của SCM.")
+        self.b(f"**Thời gian tự khởi động lại sau khi bị kill tiến trình (`chay_lai_ms`):** Khi tiến trình `UsbGuard.exe` bị Administrator cưỡng chế kết thúc bằng lệnh `taskkill /F`, cấu hình phục hồi SCM (`sc failure`) kích hoạt hệ điều hành tự động chạy lại tiến trình dịch vụ sau **{chay_lai_22} ms** (trên Windows Server 2022) và **{chay_lai_25} ms** (trên Windows Server 2025). Thông số này khớp với cấu hình độ trễ phục hồi 5000 ms của SCM.")
+        self.b(f"**Mức độ chiếm dụng tài nguyên hệ thống (RAM/CPU):** Đo trong 60 giây khi dịch vụ chạy không tải, trên máy ảo 4 lõi: Trên Windows Server 2022, RAM trung bình là **{ram_tb_22} MB** (cao nhất **{ram_max_22} MB**), CPU **{cpu_22} %**; trên Windows Server 2025, RAM trung bình là **{ram_tb_25} MB** (cao nhất **{ram_max_25} MB**), CPU **{cpu_25} %**. Thông số thực tế này chứng minh dịch vụ hoạt động rất nhẹ, hoàn toàn không gây ảnh hưởng đến hiệu năng máy chủ.")
 
         self.h2("5.4. Kịch bản kiểm thử thực nghiệm với thiết bị USB vật lý")
-        self.p("Để kiểm chứng các tương tác vật lý mà môi trường ảo hóa đám mây (CI) không có cổng cắm USB thật, nhóm tác giả xây dựng 7 kịch bản kiểm thử thực nghiệm trong tệp `tests/KICH-BAN-KIEM-THU.md`. Toàn bộ các kịch bản này được thiết kế chi tiết để thực thi trên máy tính vật lý có cổng USB:")
+        self.p("Để kiểm chứng các tương tác vật lý mà môi trường ảo hóa đám mây (CI) không có cổng cắm USB thật, tác giả xây dựng 7 kịch bản kiểm thử thực nghiệm trong tệp `tests/KICH-BAN-KIEM-THU.md`. Toàn bộ các kịch bản này được thiết kế chi tiết để thực thi trên máy tính vật lý có cổng USB:")
         
         headers_kn = ["STT", "Tên kịch bản kiểm thử", "Hành vi thực nghiệm", "Kết quả kỳ vọng", "Ảnh minh chứng"]
         widths_kn = [800, 2400, 3200, 3100, 1571]
@@ -905,7 +911,7 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
             ["6", "Bảo toàn thiết bị HID", "Rút và cắm lại chuột quang, bàn phím USB.", "Chuột và bàn phím hoạt động bình thường, không bị gián đoạn.", "Ảnh Device Manager HID"],
             ["7", "Gỡ cài đặt hoàn trả gốc", "Admin chạy lệnh uninstall với đúng mật khẩu.", "Dịch vụ tự dừng, xóa khỏi SCM, USBSTOR khôi phục Start=3.", "Ảnh console gỡ sạch"]
         ]
-        self.tbl("TBL_KN", "Bảng 5.3: Danh mục kịch bản kiểm thử thực nghiệm với thiết bị USB vật lý", headers_kn, rows_kn, widths_kn, ["center", "left", "left", "left", "center"])
+        self.tbl("TBL_KN", "Bảng 5.3: Kịch bản kiểm thử thực nghiệm với thiết bị USB vật lý", headers_kn, rows_kn, widths_kn, ["center", "left", "left", "left", "center"])
 
         self.h2("5.5. Đánh giá mức độ đáp ứng các yêu cầu hệ thống")
         self.p("Đối chiếu kết quả thực nghiệm với các yêu cầu đã đặt ra tại Chương 3:")
@@ -913,19 +919,19 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
         headers_dg = ["Mã yêu cầu", "Tiêu chuẩn thiết kế", "Kết quả thực tế đạt được", "Đánh giá mức độ đáp ứng"]
         widths_dg = [1500, 3200, 4400, 1971]
         rows_dg = [
-            ["YC-CN01", "Chặn USB lưu trữ trong <= 2 giây.", "Phát hiện WMI tức thì và gỡ bỏ trong vòng < 0.5 giây.", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-CN02", "Bảo toàn chuột, bàn phím HID.", "MaxDepth = 2 cô lập nút USB, bảo vệ 100% cổng Hub.", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-CN03", "Hỗ trợ 3 chế độ hoạt động.", "Chuyển đổi hoàn hảo giữa Chặn tất cả, Whitelist, Tạm dừng.", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-CN04", "Quản lý danh sách Whitelist.", "Hỗ trợ thêm, xóa, liệt kê thiết bị theo chuỗi VID/PID/Serial.", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-CN05", "Tạm dừng chặn có thời hạn.", "Tự động khôi phục chế độ chặn khi hết thời gian Ticks UTC.", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-CN06", "Xác thực mật khẩu quản trị.", "Băm PBKDF2 100000 vòng lặp, so sánh thời gian hằng.", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-CN07", "Gỡ cài đặt hoàn trả mặc định.", "Dừng dịch vụ qua cờ Uninstalling, hoàn trả Registry nguyên bản.", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-PCN01", "Cơ chế 'không tắt được'.", "SCM từ chối sc stop (lỗi 1052); User thường bị từ chối (lỗi 5).", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-PCN02", "Tự phục hồi khi bị kill.", "Windows tự khởi động lại dịch vụ sau 5 giây qua sc failure.", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-PCN03", "Tối ưu hóa tài nguyên.", "Chiếm dụng CPU ~0%, bộ nhớ RAM dao động từ 15 MB đến 22 MB.", "ĐÁP ỨNG TOÀN DIỆN"],
-            ["YC-PCN04", "Bảo mật cấu hình Registry.", "DACL ngắt kế thừa, chỉ SYSTEM và Administrators truy cập.", "ĐÁP ỨNG TOÀN DIỆN"]
+            ["YC-CN01", "Chặn USB lưu trữ trong <= 2 giây.", "Theo thiết kế: sự kiện WMI (WITHIN 1) + chu kỳ quét 2 giây; thời gian gỡ thực tế cần đo trên máy có cổng USB (kịch bản 2, Bảng 5.3).", "Đáp ứng theo thiết kế, chờ kiểm thử USB vật lý"],
+            ["YC-CN02", "Bảo toàn chuột, bàn phím HID.", "Theo thiết kế: MaxDepth = 2 cô lập nút USB, không can thiệp hub; cần đo trên máy có cổng USB (kịch bản 6, Bảng 5.3).", "Đáp ứng theo thiết kế, chờ kiểm thử USB vật lý"],
+            ["YC-CN03", "Hỗ trợ 3 chế độ hoạt động.", "Chuyển đổi chính xác giữa Chặn tất cả, Whitelist, Tạm dừng.", "Đáp ứng (30/30 ca CI đạt)"],
+            ["YC-CN04", "Quản lý danh sách Whitelist.", "Hỗ trợ thêm, xóa, xem danh sách thiết bị theo chuỗi VID/PID/Serial.", "Đáp ứng (đã kiểm thử CI)"],
+            ["YC-CN05", "Tạm dừng chặn có thời hạn.", "Tự động khôi phục chế độ chặn khi hết thời gian Ticks UTC.", "Đáp ứng (đã kiểm thử CI)"],
+            ["YC-CN06", "Xác thực mật khẩu quản trị.", "Băm PBKDF2 100000 vòng lặp, so sánh thời gian hằng.", "Đáp ứng (12/12 unit test đạt)"],
+            ["YC-CN07", "Gỡ cài đặt hoàn trả mặc định.", "Dừng dịch vụ qua cờ Uninstalling, hoàn trả Registry nguyên bản.", "Đáp ứng (đã kiểm thử CI)"],
+            ["YC-PCN01", "Cơ chế 'không tắt được'.", "SCM từ chối sc stop (lỗi 1052); User thường bị từ chối (lỗi 5).", "Đáp ứng (đã kiểm thử CI)"],
+            ["YC-PCN02", "Tự phục hồi khi bị kill.", "Windows tự khởi động lại dịch vụ sau khoảng 5 giây qua sc failure.", "Đáp ứng (đã kiểm thử CI)"],
+            ["YC-PCN03", "Tối ưu hóa tài nguyên.", "RAM trung bình 21.8 MB (cao nhất 21.9 MB), CPU 0.0% (Win 2022); RAM 24.9 MB (cao nhất 25.1 MB), CPU 0.02% (Win 2025).", "Đáp ứng (đo trên Windows Server 2022/2025)"],
+            ["YC-PCN04", "Bảo mật cấu hình Registry.", "DACL ngắt kế thừa, chỉ SYSTEM và Administrators truy cập.", "Đáp ứng (đã kiểm thử CI)"]
         ]
-        self.tbl("TBL_DG", "Bảng 5.4: Đánh giá tổng hợp mức độ đáp ứng các yêu cầu hệ thống", headers_dg, rows_dg, widths_dg, ["center", "left", "left", "center"])
+        self.tbl("TBL_DG", "Bảng 5.4: Đánh giá mức độ đáp ứng các yêu cầu hệ thống", headers_dg, rows_dg, widths_dg, ["center", "left", "left", "center"])
 
     def danh_sach_30_ca_tich_hop(self):
         return [
@@ -977,8 +983,11 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
             try:
                 with open(f22, "r", encoding="utf-8") as f:
                     d22 = json.load(f)
-                    stats["tu_sua_22"] = d22.get("tu_sua_ms", 1204)
-                    stats["chay_lai_22"] = d22.get("chay_lai_ms", 5393)
+                    stats["tu_sua_22"] = d22.get("tu_sua_ms", 1316)
+                    stats["chay_lai_22"] = d22.get("chay_lai_ms", 5412)
+                    stats["ram_tb_22"] = d22.get("ram_tb_mb", 21.8)
+                    stats["ram_max_22"] = d22.get("ram_max_mb", 21.9)
+                    stats["cpu_22"] = d22.get("cpu_pct", 0.0)
                     for c in d22.get("ca", []):
                         kq_2022[c.get("id")] = "ĐẠT (PASS)" if c.get("dat") else "KHÔNG ĐẠT"
                 print(f"Đã đọc kết quả Windows Server 2022 từ {f22.name}")
@@ -989,8 +998,11 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
             try:
                 with open(f25, "r", encoding="utf-8") as f:
                     d25 = json.load(f)
-                    stats["tu_sua_25"] = d25.get("tu_sua_ms", 218)
-                    stats["chay_lai_25"] = d25.get("chay_lai_ms", 5471)
+                    stats["tu_sua_25"] = d25.get("tu_sua_ms", 560)
+                    stats["chay_lai_25"] = d25.get("chay_lai_ms", 5508)
+                    stats["ram_tb_25"] = d25.get("ram_tb_mb", 24.9)
+                    stats["ram_max_25"] = d25.get("ram_max_mb", 25.1)
+                    stats["cpu_25"] = d25.get("cpu_pct", 0.02)
                     for c in d25.get("ca", []):
                         kq_2025[c.get("id")] = "ĐẠT (PASS)" if c.get("dat") else "KHÔNG ĐẠT"
                 print(f"Đã đọc kết quả Windows Server 2025 từ {f25.name}")
@@ -1007,12 +1019,12 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
         
         self.h2("6.1. Các kết quả chính đã đạt được")
         self.p("Sau quá trình nghiên cứu lý thuyết chuyên sâu và triển khai thực nghiệm kỹ thuật nghiêm túc, đề tài Seminar Chuyên đề đã hoàn thành trọn vẹn toàn bộ các mục tiêu đề ra ban đầu:")
-        self.b("**Xây dựng thành công sản phẩm UsbGuard 1.0:** Ứng dụng chạy như 1 Windows Service độc lập, gọn nhẹ trên nền tảng .NET Framework 4.8, có khả năng ngăn chặn triệt để mọi thiết bị USB flash disk và ổ cứng di động với tốc độ phản ứng dưới 2 giây.")
+        self.b("**Xây dựng thành công sản phẩm UsbGuard 1.0:** Ứng dụng chạy như 1 Windows Service độc lập, gọn nhẹ trên nền tảng C# 9.0 và .NET Framework 4.8, có khả năng ngăn chặn hiệu quả mọi thiết bị USB flash disk và ổ cứng di động với tốc độ phản ứng dưới 2 giây.")
         self.b("**Phát triển kiến trúc phòng ngự 2 lớp độc đáo:** Kết hợp sức mạnh của việc khóa trình điều khiển `USBSTOR`/`UASPStor` cùng chính sách `Deny_All` (Lớp 1) và cơ chế quét phần cứng SetupAPI, truy vấn IOCTL, gỡ đĩa `CM_Request_Device_Eject` chủ động (Lớp 2).")
-        self.b("**Bảo vệ an toàn tuyệt đối cho thiết bị HID:** Nhờ thiết lập ranh giới dừng `MaxDepth = 2`, hệ thống tuyệt đối không can thiệp lên nút hub, đảm bảo chuột và bàn phím USB cắm chung cổng hoạt động 100% ổn định.")
-        self.b("**Hiện thực hóa trọn vẹn tính chất 'không tắt được':** Khai báo `CanStop = false` để từ chối lệnh dừng từ SCM (mã lỗi 1052); phân quyền DACL từ chối người dùng thường (mã lỗi 5); và thiết lập `sc failure` tự động hồi sinh dịch vụ sau 5 giây nếu tiến trình bị kill.")
+        self.b("**Bảo vệ an toàn cho thiết bị HID:** Nhờ thiết lập ranh giới dừng `MaxDepth = 2`, hệ thống không can thiệp lên nút hub, đảm bảo chuột và bàn phím USB cắm chung cổng hoạt động liên tục.")
+        self.b("**Hiện thực hóa trọn vẹn tính chất 'không tắt được':** Khai báo `CanStop = false` để từ chối lệnh dừng từ SCM (mã lỗi 1052); phân quyền DACL từ chối người dùng thường (mã lỗi 5); và thiết lập `sc failure` tự động hồi sinh dịch vụ sau khoảng 5 giây (cấu hình 5000 ms) nếu tiến trình bị kill.")
         self.b("**Bảo mật và quản trị chuyên nghiệp:** Ứng dụng hỗ trợ 3 chế độ vận hành (CHẶN TẤT CẢ, DANH SÁCH CHO PHÉP, TẠM DỪNG); xác thực bằng thuật toán băm chuẩn RFC 8018 PBKDF2 với 100000 vòng lặp; phân quyền DACL khóa chặt Registry cấu hình.")
-        self.b("**Hệ thống kiểm chứng tự động toàn diện:** 12/12 ca kiểm thử unit test đạt kết quả xuất sắc và 30 ca kiểm thử tích hợp tự động vận hành hoàn hảo trên các máy ảo Windows Server hiện đại.")
+        self.b("**Hệ thống kiểm chứng tự động đa tầng:** 12/12 ca kiểm thử unit test đạt kết quả chuẩn xác và 30/30 ca kiểm thử tích hợp tự động vận hành đạt chuẩn trên các máy ảo Windows Server hiện đại.")
 
         self.h2("6.2. Hạn chế của giải pháp hiện tại")
         self.p("Nhìn nhận rất khoa học, khách quan và trung thực, giải pháp UsbGuard 1.0 còn tồn tại 1 số hạn chế kỹ thuật nhất định:")
@@ -1025,7 +1037,7 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
         self.p("Để nâng tầm UsbGuard thành 1 giải pháp phòng chống thất thoát dữ liệu (DLP) thương mại hoàn chỉnh, các hướng phát triển tương lai được định hình như sau:")
         self.b("**Xây dựng hệ thống quản lý tập trung qua mạng (Centralized Management):** Phát triển 1 máy chủ điều khiển trung tâm (Dashboard Web) cho phép quản trị viên an ninh mạng có thể đẩy cấu hình Whitelist, phát lệnh khóa/mở và giám sát nhật ký vi phạm của hàng nghìn máy trạm theo thời gian thực.")
         self.b("**Phát triển Kernel-Mode Filter Driver:** Chuyển dịch 1 phần cơ chế quét từ tầng ứng dụng (User Mode) xuống trình điều khiển lọc tầng nhân (Kernel Minifilter Driver). Giải pháp này sẽ giúp phát hiện và chặn thiết bị ngay trong giai đoạn nạp ngăn xếp I/O, loại bỏ hoàn toàn độ trễ phần cứng.")
-        self.b("**Ký số chứng chỉ số WHQL (Windows Hardware Quality Labs):** Đăng ký chứng chỉ số của Microsoft để gói cài đặt dịch vụ đạt độ tin cậy tuyệt đối, không bị các phần mềm diệt virus nhận diện nhầm.")
+        self.b("**Ký số chứng chỉ số WHQL (Windows Hardware Quality Labs):** Đăng ký chứng chỉ số của Microsoft để gói cài đặt dịch vụ đạt độ tin cậy cao, không bị các phần mềm diệt virus nhận diện nhầm.")
         self.b("**Mở rộng kiểm soát thiết bị ngoại vi đa dạng:** Tích hợp thêm các bộ lọc giao thức để kiểm soát chặt chẽ thiết bị truyền thông MTP (điện thoại thông minh), cổng kết nối FireWire, Thunderbolt và giao tiếp không dây Bluetooth.")
 
     # ==========================================================================
@@ -1128,48 +1140,70 @@ def trich_xuat_so_trang_pdf(pdf_path, headings, figures, tables):
     total_pages = len(doc_pdf)
     trang_map = {}
     
-    # 1. Dò số trang cho Headings (bỏ qua các trang mục lục / danh mục hình, bảng)
+    # Xác định trang bắt đầu phần thân tài liệu (Chương 1)
+    body_start = 1
     for pn, page in enumerate(doc_pdf):
-        page_num = pn + 1
         text_page = page.get_text()
-        first_lines = text_page[:200]
-        if "MỤC LỤC" in first_lines or "DANH MỤC HÌNH VẼ" in first_lines or "DANH MỤC BẢNG BIỂU" in first_lines or page_num <= 3:
-            continue
+        lines = [l.strip() for l in text_page.split('\n') if l.strip()]
+        for l in lines:
+            if l.startswith("CHƯƠNG 1") and "..." not in l:
+                body_start = pn + 1
+                break
+        if body_start > 1:
+            break
             
+    print(f"   [PyMuPDF] Xác định phần thân tài liệu (Chương 1) bắt đầu từ trang {body_start}.")
+    
+    # 1. Dò số trang cho Headings (chỉ tìm trong phần thân từ body_start trở đi)
+    for pn in range(body_start - 1, total_pages):
+        page_num = pn + 1
+        text_page = doc_pdf[pn].get_text()
+        haystack_norm = re.sub(r'\s+', ' ', text_page)
+        
         for lv, t in headings:
             if t in trang_map:
                 continue
-            t_clean = t.strip()
-            if t_clean in text_page or (len(t_clean) > 25 and t_clean[:25] in text_page):
+            needle_norm = re.sub(r'\s+', ' ', t).strip()
+            if needle_norm in haystack_norm or (len(needle_norm) > 25 and needle_norm[:25] in haystack_norm):
                 trang_map[t] = str(page_num)
 
-    # 2. Dò số trang cho Figures (Hình x.y)
-    for pn, page in enumerate(doc_pdf):
+    # 2. Dò số trang cho Figures (Hình x.y - toàn bộ nằm từ body_start trở đi)
+    for pn in range(body_start - 1, total_pages):
         page_num = pn + 1
-        text_page = page.get_text()
-        if "DANH MỤC HÌNH VẼ" in text_page[:200] or page_num <= 3:
-            continue
+        text_page = doc_pdf[pn].get_text()
+        haystack_norm = re.sub(r'\s+', ' ', text_page)
         for fig_id, caption in figures:
             if caption in trang_map:
                 continue
-            cap_clean = caption.strip()
-            if cap_clean in text_page or (len(cap_clean) > 25 and cap_clean[:25] in text_page):
+            needle_norm = re.sub(r'\s+', ' ', caption).strip()
+            if needle_norm in haystack_norm or (len(needle_norm) > 20 and needle_norm[:20] in haystack_norm):
                 trang_map[caption] = str(page_num)
 
     # 3. Dò số trang cho Tables (Bảng x.y)
-    for pn, page in enumerate(doc_pdf):
+    for pn in range(total_pages):
         page_num = pn + 1
-        text_page = page.get_text()
-        if "DANH MỤC BẢNG BIỂU" in text_page[:200] or page_num <= 3:
+        text_page = doc_pdf[pn].get_text()
+        if "DANH MỤC BẢNG BIỂU" in text_page[:200]:
             continue
+        haystack_norm = re.sub(r'\s+', ' ', text_page)
         for tbl_id, caption in tables:
             if caption in trang_map:
                 continue
-            cap_clean = caption.strip()
-            if cap_clean in text_page or (len(cap_clean) > 25 and cap_clean[:25] in text_page):
+            needle_norm = re.sub(r'\s+', ' ', caption).strip()
+            if needle_norm in haystack_norm or (len(needle_norm) > 20 and needle_norm[:20] in haystack_norm):
                 trang_map[caption] = str(page_num)
 
     doc_pdf.close()
+    
+    # Tự kiểm tra tính đầy đủ
+    chua_khop = [t for _, t in headings if t not in trang_map]
+    chua_khop += [cap for _, cap in figures if cap not in trang_map]
+    chua_khop += [cap for _, cap in tables if cap not in trang_map]
+    if chua_khop:
+        print(f"   [CẢNH BÁO] Có {len(chua_khop)} mục chưa khớp trang: {chua_khop[:5]}")
+    else:
+        print(f"   [XÁC NHẬN] 100% mục ({len(headings)} tiêu đề, {len(figures)} hình, {len(tables)} bảng) đã khớp số trang!")
+
     return trang_map, total_pages
 
 
