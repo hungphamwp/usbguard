@@ -68,6 +68,14 @@ Say ("Máy: $env:COMPUTERNAME | " + $os.Caption + " " + $os.Version + " | " + (G
 Say ("Chạy bằng: " + [Security.Principal.WindowsIdentity]::GetCurrent().Name)
 Say ("USBSTOR trước khi cài: Start = " + (Get-Start))
 $hasUsbStor = Test-Path $UsbStor
+# Giả lập công ty đã có sẵn 1 mục chính sách cấm cài thiết bị: UsbGuard không được đè hay xoá mục này.
+$DevRestr = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions'
+$DenyList = "$DevRestr\DenyDeviceIDs"
+New-Item -Path $DenyList -Force | Out-Null
+Set-ItemProperty $DevRestr -Name DenyDeviceIDs -Value 1 -Type DWord
+Set-ItemProperty $DenyList -Name '1' -Value 'USB\VID_DEAD&PID_BEEF'
+Say "Chính sách có sẵn của 'công ty': DenyDeviceIDs\1 = USB\VID_DEAD&PID_BEEF"
+function Get-OurDeny { $k = Get-ItemProperty $DenyList -ErrorAction SilentlyContinue; if ($k) { @($k.PSObject.Properties | Where-Object { $_.Name -like 'UsbGuard*' } | ForEach-Object { $_.Value }) } else { @() } }
 Say ""
 
 # ---------- TC01: cài đặt ----------
@@ -99,6 +107,17 @@ if ($hasUsbStor) {
     Check 'TC07' 'Tự sửa khi registry bị đổi tay' ($t -ge 0) ("khôi phục Start = 4 sau $t ms")
     $script:repairMs = $t
 }
+
+# ---------- TC31-32: tầng 3 - cấm Windows cài thiết bị lưu trữ USB ----------
+Say ""; Say "--- TC31 Tầng 3: Device Installation Restrictions ---"
+$t = Wait-Until { (Get-OurDeny) -contains 'USB\Class_08' } 6000
+$fl = (Get-ItemProperty $DevRestr -ErrorAction SilentlyContinue).DenyDeviceIDs
+$foreign = (Get-ItemProperty $DenyList -ErrorAction SilentlyContinue).'1'
+Check 'TC31' 'Tầng 3: cấm cài thiết bị lớp USB Mass Storage, giữ nguyên mục của công ty' ($t -ge 0 -and $fl -eq 1 -and $foreign -eq 'USB\VID_DEAD&PID_BEEF') ("DenyDeviceIDs = $fl, mục UsbGuard: " + ((Get-OurDeny) -join ', ') + "; mục công ty còn: $foreign")
+Remove-ItemProperty $DenyList -Name 'UsbGuard3' -ErrorAction SilentlyContinue
+Say "  Đã xoá tay mục UsbGuard3 (USB\Class_08)"
+$t = Wait-Until { (Get-OurDeny) -contains 'USB\Class_08' } 8000
+Check 'TC32' 'Tầng 3 tự sửa khi bị xoá tay' ($t -ge 0) ("khôi phục sau $t ms")
 
 # ---------- TC08-10: "không tắt được" với Administrator ----------
 Say ""; Say "--- TC08 Administrator thử dừng dịch vụ ---"
@@ -186,6 +205,7 @@ $r = Run-Exe @('devices')
 Check 'TC25' 'Không nhận nhầm ổ cứng trong máy là USB' ($r.rc -eq 0 -and $r.out -match ': 0') 'máy không cắm USB, kết quả 0 ổ USB'
 $r = Run-Exe @('status')
 Check 'TC26' 'Xem trạng thái' ($r.rc -eq 0 -and $r.out -match 'RUNNING') 'RUNNING, chế độ CHẶN TẤT CẢ'
+Check 'TC33' 'Trạng thái hiện đủ 3 tầng chặn' ($r.out -match 'Tầng 1 driver USBSTOR: TẮT' -and $r.out -match 'Tầng 2 Deny_All: BẬT' -and $r.out -match 'Tầng 3 cấm cài USB lưu trữ: BẬT') ((($r.out -split "`n") | Where-Object { $_ -match 'Tầng 1' }) -join '')
 
 $logFile = Join-Path $env:ProgramData 'UsbGuard\usbguard.log'
 $logTxt = if (Test-Path $logFile) { Get-Content $logFile -Raw -Encoding UTF8 } else { '' }
@@ -217,7 +237,11 @@ $ms = $sw.ElapsedMilliseconds
 $q = Run-Cmd 'sc.exe' "query $Svc"
 Check 'TC29' 'Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá' ($r.rc -eq 0 -and $q.rc -eq 1060) ("mất $ms ms, sc query trả 1060 (không còn dịch vụ)")
 $clean = ((-not $hasUsbStor) -or (Get-Start) -eq 3) -and (Get-DenyAll) -eq $null -and -not (Test-Path 'HKLM:\SOFTWARE\UsbGuard') -and -not (Test-Path "$env:ProgramFiles\UsbGuard")
-Check 'TC30' 'Trả lại mặc định Windows sau khi gỡ' $clean ("USBSTOR Start = " + (Get-Start) + ", Deny_All = " + (Get-DenyAll) + ", không còn khoá cấu hình và thư mục cài")
+Check 'TC30' 'Trả lại mặc định Windows sau khi gỡ' $clean
+$fl = (Get-ItemProperty $DevRestr -ErrorAction SilentlyContinue).DenyDeviceIDs
+$foreign = (Get-ItemProperty $DenyList -ErrorAction SilentlyContinue).'1'
+Check 'TC34' 'Gỡ cài đặt chỉ xoá mục của UsbGuard, giữ chính sách có sẵn của công ty' ((Get-OurDeny).Count -eq 0 -and $fl -eq 1 -and $foreign -eq 'USB\VID_DEAD&PID_BEEF') ("còn mục UsbGuard: " + (Get-OurDeny).Count + ", DenyDeviceIDs = $fl, mục công ty: $foreign")
+Remove-Item $DevRestr -Recurse -Force -ErrorAction SilentlyContinue ("USBSTOR Start = " + (Get-Start) + ", Deny_All = " + (Get-DenyAll) + ", không còn khoá cấu hình và thư mục cài")
 
 net user $uName /delete | Out-Null
 Remove-Item $work -Recurse -Force -ErrorAction SilentlyContinue
