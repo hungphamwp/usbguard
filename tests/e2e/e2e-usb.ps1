@@ -109,6 +109,21 @@ Unplug A
 
 # E02: cài bằng bộ cài setup.exe (chế độ im lặng)
 $setup = Get-ChildItem 'C:\OEM' -Filter 'UsbGuard-Setup-*.exe' | Select-Object -First 1
+# Chụp giao diện bộ cài khi người dùng chạy bình thường (trang điều khoản, trang đặt mật khẩu), rồi huỷ.
+Clean-Desktop
+$ui = Start-Process $setup.FullName -PassThru
+Start-Sleep 8
+Shot 'setup-1-dieu-khoan'
+try {
+    $sh = New-Object -ComObject WScript.Shell
+    [void]$sh.AppActivate($ui.Id); Start-Sleep 1
+    $sh.SendKeys('{TAB}'); Start-Sleep -Milliseconds 300; $sh.SendKeys(' ')     # chọn "Tôi đồng ý"
+    Start-Sleep 1; $sh.SendKeys('{ENTER}'); Start-Sleep 3                        # Tiếp theo
+    Shot 'setup-2-mat-khau'
+} catch { L "  không điều khiển được bộ cài: $_" }
+try { Stop-Process -Id $ui.Id -Force; Get-Process | Where-Object { $_.Path -like "$env:TEMP*is-*" } | Stop-Process -Force } catch { }
+Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -like 'UsbGuard-Setup*' -or $_.MainWindowTitle -like '*UsbGuard*' } | Stop-Process -Force -ErrorAction SilentlyContinue
+Start-Sleep 3
 $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/ADMINPW=$Pw" -Wait -PassThru
 Start-Sleep 5
 $svc = Get-Service UsbGuard -ErrorAction SilentlyContinue

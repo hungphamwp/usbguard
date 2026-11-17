@@ -10,3 +10,4 @@ BAN-GIAO-PHIEN-*.md
 release/*.zip
 release/UsbGuard-khong-cai-dat/UsbGuard.exe
 dist/
+release/phat-hanh-*/
