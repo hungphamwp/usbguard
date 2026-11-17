@@ -19,6 +19,12 @@ namespace UsbGuard
         [DllImport("kernel32.dll")]
         public static extern uint WTSGetActiveConsoleSessionId();
 
+        [DllImport("kernel32.dll")]
+        public static extern uint GetConsoleProcessList(uint[] list, uint count);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool FreeConsole();
+
         // wtsapi32
         [DllImport("wtsapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern bool WTSSendMessage(IntPtr server, uint session, string title, int titleLen,
@@ -57,12 +63,26 @@ namespace UsbGuard
         [DllImport("setupapi.dll", SetLastError = true)]
         public static extern bool SetupDiDestroyDeviceInfoList(IntPtr set);
 
+        /// <summary>Liệt kê thiết bị theo bộ đếm (vd. "USB"), không lọc theo lớp.</summary>
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "SetupDiGetClassDevsW")]
+        public static extern IntPtr SetupDiGetClassDevsByEnumerator(IntPtr classGuid, string enumerator, IntPtr hwnd, uint flags);
+
+        [DllImport("setupapi.dll", SetLastError = true)]
+        public static extern bool SetupDiEnumDeviceInfo(IntPtr set, uint index, ref SP_DEVINFO_DATA data);
+
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "SetupDiGetDeviceRegistryPropertyW")]
+        public static extern bool SetupDiGetDeviceRegistryProperty(IntPtr set, ref SP_DEVINFO_DATA data, uint property,
+            out uint regType, byte[] buffer, uint size, out uint required);
+
         // cfgmgr32
         [DllImport("cfgmgr32.dll")]
         public static extern uint CM_Get_Parent(out uint parent, uint devInst, uint flags);
 
         [DllImport("cfgmgr32.dll", EntryPoint = "CM_Get_Device_IDW", CharSet = CharSet.Unicode)]
         public static extern uint CM_Get_Device_ID(uint devInst, StringBuilder buffer, int len, uint flags);
+
+        [DllImport("cfgmgr32.dll")]
+        public static extern uint CM_Get_DevNode_Status(out uint status, out uint problem, uint devInst, uint flags);
 
         [DllImport("cfgmgr32.dll", EntryPoint = "CM_Request_Device_EjectW", CharSet = CharSet.Unicode)]
         public static extern uint CM_Request_Device_Eject(uint devInst, out int vetoType, StringBuilder vetoName,

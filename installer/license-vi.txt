@@ -1,0 +1,18 @@
+﻿UsbGuard - Phần mềm chặn USB flash disk trên Windows
+Phiên bản 1.1.0 - Bản quyền (c) 2026 Phạm Văn Hưng
+
+ĐIỀU KHOẢN SỬ DỤNG
+
+1. UsbGuard chặn thiết bị lưu trữ USB (flash disk, ổ cứng di động, đầu đọc thẻ) trên máy được cài đặt. Chuột, bàn phím, máy in và các thiết bị USB khác không bị ảnh hưởng.
+
+2. Người cài đặt phải là quản trị viên của máy tính và có quyền quyết định chính sách sử dụng USB trên máy đó.
+
+3. Mật khẩu quản trị chỉ được lưu dưới dạng mã băm (PBKDF2, 100000 vòng lặp). Không có cách lấy lại mật khẩu khi quên. Hãy ghi lại mật khẩu ở nơi an toàn.
+
+4. UsbGuard không thu thập, không gửi bất kỳ dữ liệu nào ra khỏi máy. Nhật ký chỉ lưu tại C:\ProgramData\UsbGuard.
+
+5. UsbGuard ngăn người dùng thông thường sử dụng USB. Người có quyền Administrator và hiểu sâu hệ thống vẫn có thể can thiệp (ví dụ khởi động vào Safe Mode). Phần mềm không thay thế được chính sách bảo mật tổng thể của tổ chức.
+
+6. Phần mềm được cung cấp "nguyên trạng". Tác giả không chịu trách nhiệm cho thiệt hại phát sinh do sử dụng sai mục đích.
+
+Bấm "Tôi đồng ý" để tiếp tục cài đặt.

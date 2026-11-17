@@ -5,7 +5,7 @@ namespace UsbGuard
 {
     public static class Program
     {
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         public static int Main(string[] args)
         {
@@ -24,8 +24,8 @@ namespace UsbGuard
                 // Không có đối số: SCM (Service Control Manager) gọi theo cách này khi khởi động dịch vụ.
                 if (Environment.UserInteractive)
                 {
-                    PrintUsage();
-                    return 1;
+                    // Mở bằng chuột (Start Menu, nhấp đúp): hiện giao diện quản lý.
+                    return Gui.Launch();
                 }
                 ServiceBase.Run(new Worker());
                 return 0;
@@ -42,7 +42,8 @@ namespace UsbGuard
                 case "install":
                 {
                     string pw = Password.FromArgs(args, 1, "Đặt mật khẩu quản trị (ít nhất 8 ký tự): ");
-                    if (args.Length <= 1 && pw != Password.Ask("Nhập lại mật khẩu: "))
+                    if (args.Length <= 1 && string.IsNullOrEmpty(Environment.GetEnvironmentVariable(Password.EnvName))
+                        && pw != Password.Ask("Nhập lại mật khẩu: "))
                     {
                         Console.WriteLine("Mật khẩu nhập lại không khớp.");
                         return 1;
@@ -51,7 +52,14 @@ namespace UsbGuard
                 }
 
                 case "uninstall":
-                    return Installer.Uninstall(Password.FromArgs(args, 1, "Mật khẩu quản trị: "));
+                {
+                    bool keep = Array.Exists(args, a => a.Equals("--keep-files", StringComparison.OrdinalIgnoreCase));
+                    var rest = Array.FindAll(args, a => !a.StartsWith("--"));
+                    return Installer.Uninstall(Password.FromArgs(rest, 1, "Mật khẩu quản trị: "), keep);
+                }
+
+                case "gui":
+                    return Gui.Launch();
 
                 case "devices":
                     return Cli.Devices(args);
@@ -97,6 +105,7 @@ namespace UsbGuard
             Console.WriteLine("  UsbGuard.exe whitelist add <id_thiet_bi> <mat_khau>");
             Console.WriteLine("  UsbGuard.exe whitelist remove <id_thiet_bi> <mat_khau>");
             Console.WriteLine("  UsbGuard.exe passwd <mat_khau_cu> <mat_khau_moi>");
+            Console.WriteLine("  UsbGuard.exe gui                          Mo giao dien quan ly (hoac nhap dup vao UsbGuard.exe)");
             Console.WriteLine("  UsbGuard.exe --console                    Chay thu truc tiep (khong cai dich vu)");
             Console.WriteLine();
             Console.WriteLine("Bo trong <mat_khau> thi chuong trinh hoi mat khau va khong hien ky tu khi go.");

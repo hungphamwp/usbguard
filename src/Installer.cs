@@ -84,7 +84,7 @@ namespace UsbGuard
             return 0;
         }
 
-        public static int Uninstall(string password)
+        public static int Uninstall(string password, bool keepFiles = false)
         {
             if (!IsAdmin()) { Console.WriteLine("Cần chạy với quyền Administrator."); return 5; }
             if (!ServiceExists()) { Console.WriteLine("UsbGuard chưa được cài đặt."); return 0; }
@@ -104,17 +104,47 @@ namespace UsbGuard
                 Sys.Run("taskkill.exe", "/F /IM UsbGuard.exe /FI \"PID ne " + System.Diagnostics.Process.GetCurrentProcess().Id + "\"");
                 WaitStopped(TimeSpan.FromSeconds(10));
             }
+            WaitServiceProcessGone(TimeSpan.FromSeconds(10));
             string output;
             int rc = Sys.Run("sc.exe", "delete " + Hardening.ServiceName, out output);
             if (rc != 0) { Console.WriteLine("Xoá dịch vụ thất bại (mã " + rc + "): " + output); return 2; }
 
             Enforcer.Unblock();
             UsbDisks.ReenableDisabled();
+            try { UsbDisks.RetryBlockedDevices(); } catch { }
             Settings.Delete();
-            try { Directory.Delete(InstallDir, true); } catch (Exception ex) { Console.WriteLine("Không xoá được " + InstallDir + ": " + ex.Message); }
+            // Cài bằng bộ cài (setup.exe) thì để trình gỡ của bộ cài tự xoá file và mục trong "Apps & features".
+            if (!keepFiles)
+            {
+                string self = Path.GetFullPath(Assembly.GetExecutingAssembly().Location);
+                foreach (var f in Directory.Exists(InstallDir) ? Directory.GetFiles(InstallDir) : new string[0])
+                {
+                    if (string.Equals(Path.GetFullPath(f), self, StringComparison.OrdinalIgnoreCase)) continue;
+                    try { File.Delete(f); } catch { }
+                }
+                try { Directory.Delete(InstallDir, true); } catch { /* đang chạy chính file trong thư mục này: Windows tự dọn khi khởi động lại không cần thiết */ }
+            }
 
             Console.WriteLine("Đã gỡ cài đặt UsbGuard và khôi phục cấu hình USB mặc định của Windows.");
             return 0;
+        }
+
+        /// <summary>Chờ tiến trình dịch vụ thoát hẳn (để bộ cài xoá được file UsbGuard.exe ngay, không phải chờ khởi động lại).</summary>
+        private static void WaitServiceProcessGone(TimeSpan timeout)
+        {
+            int me = Process.GetCurrentProcess().Id;
+            var until = DateTime.UtcNow + timeout;
+            while (DateTime.UtcNow < until)
+            {
+                bool other = false;
+                foreach (var p in Process.GetProcessesByName("UsbGuard"))
+                {
+                    try { if (p.Id != me && p.SessionId == 0) other = true; } catch { }
+                    p.Dispose();
+                }
+                if (!other) return;
+                System.Threading.Thread.Sleep(300);
+            }
         }
 
         /// <summary>Đọc trạng thái dịch vụ qua "sc query", chờ tới khi STOPPED hoặc hết thời gian.</summary>
@@ -149,6 +179,7 @@ namespace UsbGuard
                                     : "Trạng thái chặn: ĐANG BẬT, chế độ DANH SÁCH CHO PHÉP");
                 Console.WriteLine("Whitelist (" + wl.Count + " mục):");
                 foreach (var w in wl) Console.WriteLine("  - " + w);
+                Console.WriteLine(Enforcer.Describe());
             }
             return 0;
         }

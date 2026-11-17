@@ -1,0 +1,81 @@
+name: Kiem thu cam USB that (Windows 10/11 trong QEMU)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['src/**', 'installer/**', 'tests/e2e/**', '.github/workflows/e2e-usb.yml']
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build UsbGuard.exe
+        shell: pwsh
+        run: dotnet build UsbGuard.csproj -c Release -nologo
+      - name: Dong goi bo cai setup.exe (Inno Setup)
+        shell: pwsh
+        run: |
+          $iscc = 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe'
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress | Out-Null }
+          & $iscc /Qp installer\UsbGuard.iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC loi $LASTEXITCODE" }
+          Get-ChildItem dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: usbguard-bin
+          path: |
+            bin/Release/net48/UsbGuard.exe
+            dist/*.exe
+
+  e2e:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    strategy:
+      fail-fast: false
+      matrix:
+        windows: ['11', '10']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bat KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm; df -h / /mnt; free -g
+      - uses: actions/download-artifact@v4
+        with:
+          name: usbguard-bin
+          path: bin-dl
+      - name: Chuan bi thu muc OEM va 2 USB gia lap (FAT, co nhan)
+        run: |
+          sudo mkdir -p /mnt/st && sudo chown $USER /mnt/st
+          mkdir -p oem shared
+          cp $(find bin-dl -name 'UsbGuard-Setup-*.exe') oem/
+          cp tests/e2e/install.bat tests/e2e/e2e-usb.ps1 tests/e2e/hmp.py oem/
+          sudo apt-get install -y -qq dosfstools mtools > /dev/null
+          for x in A:UGBLOCK B:UGALLOW; do f=/mnt/st/usb${x%%:*}.img; truncate -s 64M $f; mkfs.vfat -n ${x##*:} $f; echo "USB ${x##*:}" > /tmp/r.txt; mcopy -i $f /tmp/r.txt ::README.TXT; done
+          ls -la oem /mnt/st
+      - name: Khoi dong Windows ${{ matrix.windows }} (tu cai, tu chay kiem thu)
+        run: |
+          docker run -d --name win -e VERSION=${{ matrix.windows }} -e RAM_SIZE=8G -e CPU_CORES=4 -e DISK_SIZE=48G \
+            -e ARGUMENTS="-monitor tcp:127.0.0.1:4444,server=on,wait=off -device qemu-xhci,id=ugx" \
+            --device=/dev/kvm --device=/dev/net/tun --cap-add NET_ADMIN \
+            -v /mnt/st:/storage -v $PWD/oem:/oem -v $PWD/shared:/shared --stop-timeout 60 docker.io/dockurr/windows:latest
+          sleep 20; docker logs win | tail -20
+      - name: Dieu khien cam/rut USB va cho ket qua
+        run: sudo python3 tests/e2e/host.py $PWD/shared /mnt/st 9000
+      - name: Nhat ky may ao
+        if: always()
+        run: docker logs win 2>&1 | tail -60; ls -la shared shared/ket-qua shared/anh || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-windows-${{ matrix.windows }}
+          path: |
+            shared/ket-qua/
+            shared/anh/

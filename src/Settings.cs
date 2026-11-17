@@ -59,6 +59,7 @@ namespace UsbGuard
         }
 
         public static bool IsPaused { get { return PauseUntilUtc > DateTime.UtcNow; } }
+        public static bool IsPausedSafe() { try { return IsPaused; } catch { return false; } }
         public static void PauseFor(TimeSpan span) { SetLong("PauseUntil", DateTime.UtcNow.Add(span).Ticks); }
         public static void Resume() { SetLong("PauseUntil", 0); }
 

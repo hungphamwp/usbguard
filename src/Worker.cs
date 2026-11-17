@@ -24,7 +24,9 @@ namespace UsbGuard
     {
         private readonly Timer _timer = new Timer(2000);
         private readonly object _gate = new object();
-        private readonly Dictionary<string, DateTime> _lastNotice = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
+        /// <summary>Thiết bị đã được báo trong lần cắm hiện tại; rút ra thì xoá khỏi đây để lần cắm sau báo lại.</summary>
+        private readonly HashSet<string> _notified = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private bool _wasBlocking = true;   // lần đầu không chặn thì thử nạp lại thiết bị đã lỗi từ trước
         private ManagementEventWatcher _watcher;
         private bool _busy;
         private bool _interactive;
@@ -97,6 +99,8 @@ namespace UsbGuard
                     SetMode("TẠM DỪNG");
                     Enforcer.Unblock();
                     UsbDisks.ReenableDisabled();
+                    AfterUnblock();
+                    _notified.Clear();
                     return;
                 }
 
@@ -105,21 +109,43 @@ namespace UsbGuard
                 {
                     SetMode("CHẶN TẤT CẢ");
                     Enforcer.Block();
+                    _wasBlocking = true;
                 }
                 else
                 {
                     SetMode("DANH SÁCH CHO PHÉP (" + whitelist.Count + " mục)");
                     Enforcer.Unblock();
+                    AfterUnblock();
                 }
 
+                // Lớp gỡ: ổ USB nào đã lên được (driver chạy) mà không có trong whitelist thì gỡ ngay.
                 foreach (var disk in UsbDisks.Scan())
                 {
                     if (Whitelist.Matches(disk.Ids, whitelist)) continue;
                     bool ok = UsbDisks.Eject(disk);
-                    Log.Warn((ok ? "Đã gỡ thiết bị USB không được phép: " : "Phát hiện USB không được phép nhưng gỡ thất bại: ")
-                             + disk.Name + " | ID: " + string.Join(" ; ", disk.Ids));
-                    Notify(disk);
+                    string key = disk.UsbDeviceId ?? disk.Key;
+                    if (_notified.Add(key))
+                    {
+                        Log.Warn((ok ? "Đã gỡ thiết bị USB không được phép: " : "Phát hiện USB không được phép nhưng gỡ thất bại: ")
+                                 + disk.Name + " | ID: " + string.Join(" ; ", disk.Ids));
+                        Notify(disk.Name);
+                    }
                 }
+
+                // Thiết bị bị chặn ngay từ driver (không bao giờ thành ổ đĩa): vẫn báo người dùng 1 lần mỗi lần cắm.
+                var present = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var dev in UsbDisks.PresentUsbStorage())
+                {
+                    present.Add(dev.InstanceId);
+                    if (Whitelist.Matches(dev.Ids, whitelist)) continue;
+                    if (dev.Problem != 0 && _notified.Add(dev.InstanceId))
+                    {
+                        Log.Warn("Đã chặn thiết bị USB lưu trữ (Windows không nạp driver, mã lỗi thiết bị " + dev.Problem + "): "
+                                 + dev.Name + " | ID: " + dev.InstanceId);
+                        Notify(dev.Name);
+                    }
+                }
+                _notified.RemoveWhere(k => !present.Contains(k));
             }
             catch (Exception ex)
             {
@@ -131,6 +157,14 @@ namespace UsbGuard
             }
         }
 
+        /// <summary>Vừa chuyển từ chặn sang không chặn: cho Windows nạp lại driver các ổ USB đang cắm.</summary>
+        private void AfterUnblock()
+        {
+            if (!_wasBlocking) return;
+            _wasBlocking = false;
+            try { UsbDisks.RetryBlockedDevices(); } catch (Exception ex) { Log.Warn("Không nạp lại được thiết bị USB: " + ex.Message); }
+        }
+
         private void SetMode(string mode)
         {
             if (mode == _mode) return;
@@ -138,23 +172,20 @@ namespace UsbGuard
             Log.Info("Chế độ: " + mode);
         }
 
-        /// <summary>Báo cho người đang ngồi máy biết USB bị chặn (hộp thoại không chờ trả lời, tối đa 1 lần/30 giây mỗi thiết bị).</summary>
-        private void Notify(UsbDisk disk)
+        /// <summary>Báo cho người đang ngồi máy biết USB bị chặn (hộp thoại tự đóng sau 15 giây, không chờ trả lời).</summary>
+        private void Notify(string deviceName)
         {
-            DateTime last;
-            if (_lastNotice.TryGetValue(disk.Key, out last) && (DateTime.UtcNow - last).TotalSeconds < 30) return;
-            _lastNotice[disk.Key] = DateTime.UtcNow;
-            if (_interactive) { Console.WriteLine("[UsbGuard] Chặn: " + disk.Name); return; }
+            if (_interactive) { Console.WriteLine("[UsbGuard] Chặn: " + deviceName); return; }
             try
             {
                 const string title = "UsbGuard";
-                string msg = "Thiết bị lưu trữ USB \"" + disk.Name + "\" không được phép sử dụng trên máy này và đã bị gỡ.\n" +
+                string msg = "Thiết bị lưu trữ USB \"" + deviceName + "\" không được phép sử dụng trên máy này nên đã bị chặn.\n" +
                              "Liên hệ quản trị viên nếu bạn cần dùng thiết bị này.";
                 uint resp;
                 uint session = Native.WTSGetActiveConsoleSessionId();
                 if (session != 0xFFFFFFFF)
                     Native.WTSSendMessage(IntPtr.Zero, session, title, title.Length * 2, msg, msg.Length * 2,
-                        0x30 /* MB_ICONWARNING */, 10, out resp, false);
+                        0x30 /* MB_ICONWARNING */, 15, out resp, false);
             }
             catch { }
         }

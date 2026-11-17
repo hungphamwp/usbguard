@@ -9,9 +9,15 @@ namespace UsbGuard
     /// </summary>
     internal static class Password
     {
+        /// <summary>Bộ cài (setup.exe) truyền mật khẩu qua biến môi trường này để mật khẩu không hiện trong danh sách tiến trình.</summary>
+        public const string EnvName = "USBGUARD_ADMIN_PW";
+
         public static string FromArgs(string[] args, int index, string prompt)
         {
-            return args.Length > index ? args[index] : Ask(prompt);
+            if (args.Length > index) return args[index];
+            string env = Environment.GetEnvironmentVariable(EnvName);
+            if (!string.IsNullOrEmpty(env)) return env;
+            return Ask(prompt);
         }
 
         public static string Ask(string prompt)

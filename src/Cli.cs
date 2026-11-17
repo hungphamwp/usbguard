@@ -109,6 +109,22 @@ namespace UsbGuard
                 Console.WriteLine("- " + (d.Name.Length > 0 ? d.Name : "(không tên)") + "  [bus " + UsbDisks.BusName(d.BusType) + "]");
                 foreach (var id in d.Ids) Console.WriteLine("    " + id);
             }
+            if (!all)
+            {
+                // Thiết bị đang bị chặn từ driver thì không thành ổ đĩa: liệt kê thêm từ phía USB để lấy ID mà không cần tạm dừng.
+                var devs = UsbDisks.PresentUsbStorage();
+                Console.WriteLine("Thiết bị USB lưu trữ đang cắm (kể cả đang bị chặn): " + devs.Count);
+                List<string> wl = null;
+                try { if (Settings.Exists()) wl = Settings.GetWhitelist(); } catch { }
+                foreach (var d in devs)
+                {
+                    string st = wl != null && UsbGuard.Whitelist.Matches(d.Ids, wl) ? "được phép"
+                              : d.Problem == 0 ? "đang hoạt động" : "bị chặn (mã " + d.Problem + ")";
+                    Console.WriteLine("- " + d.Name + "  [" + st + "]");
+                    Console.WriteLine("    ID: " + d.InstanceId);
+                    Console.WriteLine("    Gợi ý thêm whitelist: " + d.SuggestedEntry);
+                }
+            }
             return 0;
         }
 

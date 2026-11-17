@@ -18,6 +18,41 @@ namespace UsbGuard
         public bool IsUsb { get { return BusType == UsbDisks.BusTypeUsb; } }
     }
 
+    /// <summary>
+    /// Thiết bị USB lớp Mass Storage đang cắm, nhìn từ phía USB (có cả khi Windows không nạp được driver vì đang bị chặn).
+    /// </summary>
+    internal sealed class UsbStorageDevice
+    {
+        public uint DevInst;
+        public string InstanceId = "";
+        public string Name = "";
+        public uint Problem;
+        public List<string> Ids = new List<string>();
+
+        /// <summary>Số serial lấy từ cuối Instance ID. Windows tự sinh ID có dấu "&amp;" khi thiết bị không có serial.</summary>
+        public string Serial
+        {
+            get
+            {
+                int i = InstanceId.LastIndexOf('\\');
+                string s = i >= 0 ? InstanceId.Substring(i + 1) : "";
+                return s.IndexOf('&') >= 0 ? "" : s;
+            }
+        }
+
+        /// <summary>Mục nên thêm vào whitelist: serial nếu có, không thì VID/PID.</summary>
+        public string SuggestedEntry
+        {
+            get
+            {
+                if (Whitelist.IsValidEntry(Serial)) return Serial;
+                int a = InstanceId.IndexOf("VID_", StringComparison.OrdinalIgnoreCase);
+                int b = InstanceId.IndexOf('\\', Math.Max(a, 0));
+                return a >= 0 && b > a ? InstanceId.Substring(a, b - a) : InstanceId;
+            }
+        }
+    }
+
     /// <summary>Lớp chặn thứ hai: tìm mọi ổ đĩa có bus USB và gỡ an toàn (eject) bằng Configuration Manager.</summary>
     internal static class UsbDisks
     {
@@ -145,6 +180,72 @@ namespace UsbGuard
                 }
             }
             return false;
+        }
+
+        private const uint DIGCF_ALLCLASSES = 0x4;
+        private const uint SPDRP_DEVICEDESC = 0x0, SPDRP_HARDWAREID = 0x1, SPDRP_COMPATIBLEIDS = 0x2, SPDRP_FRIENDLYNAME = 0xC;
+
+        /// <summary>
+        /// Mọi thiết bị USB lớp Mass Storage (Compatible ID bắt đầu bằng USB\Class_08) đang cắm, kể cả thiết bị
+        /// đang lỗi vì bị chặn driver/cài đặt. Dùng để báo người dùng và để quản trị viên lấy ID mà không cần tạm dừng.
+        /// </summary>
+        public static List<UsbStorageDevice> PresentUsbStorage()
+        {
+            var result = new List<UsbStorageDevice>();
+            IntPtr set = Native.SetupDiGetClassDevsByEnumerator(IntPtr.Zero, "USB", IntPtr.Zero, DIGCF_ALLCLASSES | DIGCF_PRESENT);
+            if (set == new IntPtr(-1)) return result;
+            try
+            {
+                for (uint i = 0; ; i++)
+                {
+                    var did = new Native.SP_DEVINFO_DATA { cbSize = Marshal.SizeOf(typeof(Native.SP_DEVINFO_DATA)) };
+                    if (!Native.SetupDiEnumDeviceInfo(set, i, ref did)) break;
+                    var compat = MultiSz(set, ref did, SPDRP_COMPATIBLEIDS);
+                    if (!compat.Exists(c => c.StartsWith(@"USB\Class_08", StringComparison.OrdinalIgnoreCase))) continue;
+
+                    var dev = new UsbStorageDevice { DevInst = did.DevInst };
+                    var sb = new StringBuilder(260);
+                    if (Native.CM_Get_Device_ID(did.DevInst, sb, sb.Capacity, 0) == 0) dev.InstanceId = sb.ToString();
+                    var names = MultiSz(set, ref did, SPDRP_FRIENDLYNAME);
+                    if (names.Count == 0) names = MultiSz(set, ref did, SPDRP_DEVICEDESC);
+                    dev.Name = names.Count > 0 ? names[0] : "Thiết bị lưu trữ USB";
+                    uint st, prob;
+                    if (Native.CM_Get_DevNode_Status(out st, out prob, did.DevInst, 0) == 0) dev.Problem = prob;
+                    dev.Ids.Add(dev.InstanceId);
+                    dev.Ids.AddRange(MultiSz(set, ref did, SPDRP_HARDWAREID));
+                    result.Add(dev);
+                }
+            }
+            finally { Native.SetupDiDestroyDeviceInfoList(set); }
+            return result;
+        }
+
+        private static List<string> MultiSz(IntPtr set, ref Native.SP_DEVINFO_DATA did, uint prop)
+        {
+            var list = new List<string>();
+            uint type, need;
+            var buf = new byte[2048];
+            if (!Native.SetupDiGetDeviceRegistryProperty(set, ref did, prop, out type, buf, (uint)buf.Length, out need)) return list;
+            foreach (var part in Encoding.Unicode.GetString(buf, 0, (int)Math.Min(need, (uint)buf.Length)).Split('\0'))
+                if (part.Length > 0) list.Add(part);
+            return list;
+        }
+
+        /// <summary>
+        /// Sau khi bỏ chặn (tạm dừng, whitelist, gỡ cài đặt): cho Windows thử lại các ổ USB đang cắm mà trước đó
+        /// không nạp được driver, để người dùng không phải rút ra cắm lại.
+        /// </summary>
+        public static void RetryBlockedDevices()
+        {
+            bool any = false;
+            foreach (var d in PresentUsbStorage())
+            {
+                if (d.Problem == 0 || d.Problem == 22 /* đang bị vô hiệu hoá, ReenableDisabled lo */) continue;
+                any = true;
+                string o;
+                Sys.Run("pnputil.exe", "/restart-device \"" + d.InstanceId + "\"", out o);
+            }
+            if (any) Sys.Run("pnputil.exe", "/scan-devices");
         }
 
         /// <summary>Bật lại các thiết bị đã bị vô hiệu hoá bằng pnputil (khi tạm dừng, thêm whitelist, gỡ cài đặt).</summary>
