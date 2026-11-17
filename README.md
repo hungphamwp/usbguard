@@ -1,24 +1,24 @@
 # UsbGuard — Ứng dụng ngăn cắm USB Flash Disk trên Windows
 
-Đề bài: *"Xây dựng ứng dụng ngăn người dùng cắm USB flash disk vào máy hệ điều hành Windows,
-ứng dụng được chạy như dịch vụ không tắt được."*
+Đề tài: *"Xây dựng ứng dụng ngăn người dùng cắm USB flash disk vào máy hệ điều hành Windows, ứng dụng được chạy như dịch vụ không tắt được."*
 
 ## 1. Tóm tắt giải pháp
 
-UsbGuard là một **Windows Service** viết bằng C# (.NET Framework 4.8), khi bật sẽ:
+UsbGuard là 1 **Windows Service** viết bằng C# (.NET Framework 4.8), hoạt động với 2 lớp bảo vệ và 3 chế độ vận hành:
 
-1. **Chặn driver lưu trữ USB** (`USBSTOR`, `UASPStor`) bằng registry — cùng cơ chế mà
-   Group Policy "Removable Storage Access" dùng trên Windows thật.
-2. **Quét mọi ổ đĩa đang cắm qua cổng USB** (SetupAPI + IOCTL_STORAGE_QUERY_PROPERTY) và
-   **gỡ an toàn (eject)** ổ nào không nằm trong whitelist.
-3. Lặp lại kiểm tra mỗi 2 giây để tự sửa nếu registry bị chỉnh tay.
-
-**"Không tắt được" nghĩa là gì trong bản này:** dịch vụ Windows theo mặc định chỉ
-Administrator mới Start/Stop/Delete được qua `sc.exe` / `services.msc` — người dùng
-thường không có quyền đó. Đây là hành vi chuẩn của Windows Service, **không phải**
-cơ chế ẩn mình/chống gỡ bởi chính admin. UsbGuard có lệnh `uninstall` công khai,
-yêu cầu đúng mật khẩu quản trị do chính người cài đặt. Quyết định thiết kế này áp dụng
-đúng mô hình các phần mềm device-control/DLP thương mại thật (xem mục 5).
+1. **2 lớp chặn:**
+   - **Lớp 1 (Chính sách & Driver):** Tắt driver lưu trữ `USBSTOR`, `UASPStor` qua Registry (`Start = 4`) và kích hoạt chính sách `RemovableStorageDevices\Deny_All` tương đương Group Policy doanh nghiệp.
+   - **Lớp 2 (Quét & Eject chủ động):** Sử dụng SetupAPI và `IOCTL_STORAGE_QUERY_PROPERTY` để phát hiện các ổ đĩa có `BusType = 7` (USB) và gỡ an toàn bằng `CM_Request_Device_Eject`. Đi tối đa 2 cấp đến nút USB cha (không gỡ hub để tránh ảnh hưởng chuột, bàn phím). Dự phòng bằng `pnputil /disable-device` khi có tiến trình khóa file.
+2. **3 chế độ hoạt động:**
+   - **CHẶN TẤT CẢ (mặc định khi whitelist rỗng):** Khóa toàn bộ driver lưu trữ và chính sách, gỡ bỏ ngay lập tức mọi ổ đĩa USB được cắm vào.
+   - **DANH SÁCH CHO PHÉP (khi whitelist có mục):** Mở driver lưu trữ để USB hợp lệ hoạt động, quét và gỡ bỏ ngay các ổ đĩa USB không khớp ID trong danh sách cho phép.
+   - **TẠM DỪNG (có thời hạn, yêu cầu mật khẩu quản trị):** Mở lại toàn bộ quyền truy cập USB và khôi phục các thiết bị từng bị vô hiệu hóa trong khoảng thời gian chỉ định.
+3. **Phản ứng tức thì:** Lắng nghe sự kiện WMI `__InstanceCreationEvent` của `Win32_DiskDrive` để xử lý ngay khi thiết bị vừa gắn vào, kết hợp vòng lặp kiểm tra định kỳ 2 giây để tự động khôi phục Registry nếu bị can thiệp trái phép.
+4. **Cơ chế "Không tắt được":**
+   - Dịch vụ thiết lập thuộc tính `CanStop = false`, khiến Service Control Manager (SCM) của Windows từ chối mọi lệnh dừng (`sc stop`, `Stop-Service`, giao diện `services.msc`), trả về lỗi 1052 kể cả khi người thực hiện là Administrator.
+   - Người dùng thông thường không có quyền gửi lệnh điều khiển tới dịch vụ (trả về lỗi 5 Access Denied).
+   - Nếu tiến trình dịch vụ bị cưỡng chế kết thúc (`taskkill /F`), cơ chế phục hồi dịch vụ của Windows (`sc failure`) tự động khởi chạy lại dịch vụ sau 5 giây.
+   - Dịch vụ chỉ dừng an toàn khi người quản trị thực hiện lệnh `UsbGuard.exe uninstall` với đúng mật khẩu quản trị đã thiết lập (bật cờ `Uninstalling` trong Registry để dịch vụ chủ động dừng).
 
 ## 2. Kiến trúc & mã nguồn
 
@@ -26,91 +26,108 @@ yêu cầu đúng mật khẩu quản trị do chính người cài đặt. Quy�
 UsbGuard/
 ├── UsbGuard.csproj
 ├── src/
-│   ├── Program.cs      CLI entry point (install/uninstall/status/pause/whitelist/passwd)
-│   ├── Worker.cs        ServiceBase — vòng lặp chính (2s/lần)
-│   ├── Enforcer.cs      Chặn ở mức registry (driver + policy, kiểu Group Policy)
-│   ├── UsbDisks.cs      Liệt kê ổ USB (SetupAPI) + eject an toàn (CM_Request_Device_Eject)
-│   ├── Native.cs        P/Invoke: kernel32, setupapi, cfgmgr32, advapi32
-│   ├── Whitelist.cs     So khớp ID thiết bị với danh sách cho phép
-│   ├── Settings.cs      Lưu trạng thái tại HKLM\SOFTWARE\UsbGuard
-│   ├── Auth.cs          Băm/so mật khẩu quản trị (PBKDF2-SHA1, muối ngẫu nhiên)
-│   ├── Installer.cs     sc.exe create/delete, copy vào Program Files
-│   ├── Cli.cs           Lệnh pause/resume/whitelist/passwd (yêu cầu mật khẩu)
-│   ├── Log.cs           Ghi log file + Event Log
-│   ├── Reg.cs / Sys.cs  Tiện ích registry / chạy tiến trình con
-│   └── Constants.cs     Tên/mô tả dịch vụ
-├── tests/               (xem mục 4 — kế hoạch kiểm thử)
-└── reference/           Mã nguồn mở tham khảo khi thiết kế (xem mục 5)
+│   ├── Program.cs      Điểm khởi nhập CLI (install/uninstall/status/pause/resume/whitelist/devices/passwd)
+│   ├── Worker.cs        Lớp ServiceBase — vòng lặp định kỳ 2 giây kết hợp bộ theo dõi sự kiện WMI
+│   ├── Enforcer.cs      Quản lý khóa Registry cho driver (USBSTOR/UASPStor) và chính sách lưu trữ di động
+│   ├── UsbDisks.cs      Quét danh sách ổ đĩa (SetupAPI), kiểm tra BusType và gỡ thiết bị (CfgMgr32)
+│   ├── Native.cs        Khai báo P/Invoke Win32 API (kernel32, setupapi, cfgmgr32, advapi32, wtsapi32)
+│   ├── Whitelist.cs     Thuật toán so khớp ID thiết bị với danh sách cho phép
+│   ├── Settings.cs      Quản lý đọc/ghi cấu hình tại HKLM\SOFTWARE\UsbGuard với phân quyền ACL bảo mật
+│   ├── Auth.cs          Băm và xác thực mật khẩu quản trị qua chuẩn PBKDF2-SHA1 với muối 16 byte
+│   ├── Password.cs      Hỗ trợ nhập mật khẩu ẩn từ bàn phím hoặc đọc từ tham số dòng lệnh
+│   ├── Installer.cs     Cài đặt, cấu hình phục hồi, thiết lập phân quyền và gỡ bỏ dịch vụ bằng sc.exe
+│   ├── Cli.cs           Xử lý các lệnh quản trị dòng lệnh
+│   ├── Log.cs           Ghi nhật ký hệ thống ra tập tin và Windows Event Log
+│   ├── Reg.cs           Tiện ích thao tác Registry và thiết lập bảo mật DACL
+│   ├── Sys.cs           Tiện ích thực thi tiến trình hệ thống an toàn
+│   └── Constants.cs     Định nghĩa hằng số tên dịch vụ và thông tin hiển thị
+├── tests/               Kiểm thử tự động và kịch bản thực nghiệm
+└── reference/           Mã nguồn tham khảo trong quá trình nghiên cứu thiết kế
 ```
 
-### Hai lớp chặn (defense in depth)
+### 2 lớp bảo vệ (Defense in Depth)
 
-| Lớp | Cơ chế | Vì sao cần |
+| Lớp | Cơ chế kỹ thuật | Mục đích thiết kế |
 |---|---|---|
-| 1. Chính sách/driver | `USBSTOR`/`UASPStor` Start=4 + `RemovableStorageDevices\Deny_All` | Chặn tận gốc — Windows không gắn driver cho ổ đĩa nữa, giống Group Policy doanh nghiệp |
-| 2. Quét & eject chủ động | SetupAPI liệt kê ổ USB đang cắm, `CM_Request_Device_Eject` | Dự phòng cho thiết bị đã cắm trước khi service khởi động, hoặc driver đã nạp sẵn |
+| 1. Chính sách & Driver | `USBSTOR`/`UASPStor` `Start = 4` + `RemovableStorageDevices\Deny_All = 1` | Chặn tận gốc ở mức hệ điều hành, ngăn nạp driver lưu trữ USB, tương tự Group Policy doanh nghiệp. |
+| 2. Quét & Gỡ chủ động | SetupAPI liệt kê `GUID_DEVINTERFACE_DISK`, `IOCTL_STORAGE_QUERY_PROPERTY`, `CM_Request_Device_Eject` | Gỡ bỏ ngay các thiết bị đã cắm trước khi dịch vụ chạy hoặc khi driver đã nạp sẵn; cô lập nút thiết bị, bảo toàn hub. |
 
-### Whitelist
+## 3. Cài đặt & sử dụng trên Windows
 
-- Quản trị viên thêm ID thiết bị (VD `VID_0951&PID_1666` hoặc số serial) bằng:
-  `UsbGuard.exe whitelist add "VID_0951&PID_1666" <mật_khẩu>`
-- Thiết bị khớp whitelist sẽ không bị eject (nhưng registry vẫn chặn driver —
-  nếu cần dùng USB thường xuyên, nên `pause` tạm thời thay vì whitelist VID/PID
-  vì nhiều USB flash disk dùng chung VID/PID giá rẻ, không phân biệt được theo serial giả).
-
-## 3. Cài đặt & sử dụng (trên máy Windows thật)
+Mở Command Prompt hoặc PowerShell với quyền quản trị (**Run as administrator**):
 
 ```bat
-:: Build (trên Windows, Visual Studio hoặc dotnet build với Developer Command Prompt)
+:: Biên dịch bản Release (.NET Framework 4.8)
 dotnet build -c Release
 
-:: Cài đặt (PHẢI chạy Command Prompt "Run as administrator")
-UsbGuard.exe install MatKhauManhCuaBan123
+:: Cài đặt dịch vụ (có thể nhập trực tiếp mật khẩu hoặc bỏ trống để nhập ẩn)
+UsbGuard.exe install MatKhauQuanTri123
 
-:: Xem trạng thái
+:: Xem trạng thái hoạt động của dịch vụ và cấu hình whitelist
 UsbGuard.exe status
 
-:: Tạm dừng chặn 15 phút (vd. cần chép dữ liệu hợp lệ)
-UsbGuard.exe pause 15 MatKhauManhCuaBan123
+:: Liệt kê các ổ đĩa USB đang kết nối (kèm bus type) để lấy ID cấu hình
+UsbGuard.exe devices
 
-:: Thêm thiết bị vào whitelist
-UsbGuard.exe whitelist add "VID_0951&PID_1666" MatKhauManhCuaBan123
+:: Liệt kê toàn bộ các ổ đĩa trên máy (bao gồm ổ đĩa trong)
+UsbGuard.exe devices --all
 
-:: Gỡ cài đặt (khôi phục mặc định Windows)
-UsbGuard.exe uninstall MatKhauManhCuaBan123
+:: Tạm dừng chặn trong 15 phút (cần mật khẩu quản trị)
+UsbGuard.exe pause 15 MatKhauQuanTri123
+
+:: Kích hoạt lại trạng thái chặn ngay lập tức
+UsbGuard.exe resume MatKhauQuanTri123
+
+:: Thêm thiết bị vào danh sách cho phép (ID lấy từ lệnh devices hoặc nhật ký)
+UsbGuard.exe whitelist add "VID_0951&PID_1666" MatKhauQuanTri123
+
+:: Xem danh sách thiết bị được phép
+UsbGuard.exe whitelist list
+
+:: Gỡ thiết bị khỏi danh sách cho phép
+UsbGuard.exe whitelist remove "VID_0951&PID_1666" MatKhauQuanTri123
+
+:: Thay đổi mật khẩu quản trị
+UsbGuard.exe passwd MatKhauCu123 MatKhauMoi456
+
+:: Gỡ cài đặt dịch vụ và khôi phục cài đặt mặc định của Windows
+UsbGuard.exe uninstall MatKhauQuanTri123
 ```
 
-Chạy thử không cần cài dịch vụ (debug nhanh trong console):
+Khi không truyền tham số mật khẩu trên dòng lệnh, chương trình tự động hiển thị lời nhắc và ẩn ký tự khi nhập để chống lộ mật khẩu trong lịch sử dòng lệnh hoặc danh sách tiến trình.
+
+Chạy thử nghiệm trực tiếp trên màn hình console (không qua dịch vụ SCM):
 ```bat
 UsbGuard.exe --console
 ```
 
-## 4. Kế hoạch kiểm thử (đặt mã thật vào `tests/`)
+## 4. Kế hoạch & kết quả kiểm thử
 
-1. **Cắm USB flash disk thường** → phải bị eject trong ≤2s, log ghi lại tên + ID thiết bị.
-2. **Thêm whitelist rồi cắm lại cùng thiết bị** → không bị eject.
-3. **Người dùng thường (không phải admin) chạy `sc stop UsbGuard`** → bị từ chối quyền (Access denied) — xác nhận tính "không tắt được".
-4. **Admin chạy `UsbGuard.exe uninstall` sai mật khẩu** → từ chối, dịch vụ vẫn chạy.
-5. **Admin chạy đúng mật khẩu** → gỡ sạch, `USBSTOR` Start trở lại 3 (mặc định Windows), cắm USB lại hoạt động bình thường.
-6. **Khởi động lại máy** → dịch vụ tự chạy lại (Start Automatic), vẫn chặn.
-7. **Chuột/bàn phím/USB không phải ổ đĩa** (HID) → không bị ảnh hưởng (Enforcer chỉ nhắm driver lưu trữ, UsbDisks chỉ liệt kê `GUID_DEVINTERFACE_DISK`).
+Hệ thống được kiểm thử toàn diện qua 3 cấp độ:
 
-## 5. Mã nguồn tham khảo (không dùng trực tiếp, chỉ đối chiếu thiết kế)
+1. **Unit Test tự động (`tests/AuthTests.cs`):**
+   - 12/12 ca kiểm thử đạt trên nền tảng .NET đa nền tảng.
+   - Kiểm tra thuật toán băm PBKDF2 (muối ngẫu nhiên, độ dài, thời gian hằng, từ chối hash giả mạo) và thuật toán so khớp whitelist.
+2. **Kiểm thử tích hợp tự động (`tests/integration.ps1`):**
+   - 30 ca kiểm thử tích hợp tự động trên môi trường Windows Server 2022 và Windows Server 2025 qua GitHub Actions CI (`.github/workflows/windows.yml`).
+   - Kiểm tra cài đặt, tự khởi động lại sau sự cố, từ chối lệnh `sc stop` từ Administrator (lỗi 1052), chặn toàn diện người dùng thường (lỗi 5), tự sửa Registry khi bị can thiệp, chuyển đổi 3 chế độ hoạt động và gỡ sạch.
+3. **Kịch bản kiểm thử thủ công với USB vật lý (`tests/KICH-BAN-KIEM-THU.md`):**
+   - 7 kịch bản kiểm thử thực tế trên máy có cổng USB vật lý (cắm USB flash disk thật, kiểm tra gỡ bỏ, xác thực whitelist, kiểm tra tính độc lập của chuột/bàn phím HID).
 
-Đã khảo sát các dự án mã nguồn mở cùng chủ đề trước khi tự viết lại UsbGuard theo
-kiến trúc riêng (đăng ký WM_DEVICECHANGE / SetupAPI, chặn registry kiểu GPO):
+## 5. Tài liệu tham khảo
 
-- [JBalanza/USBBlocker](https://github.com/JBalanza/USBBlocker) — Windows Service C#, cơ chế whitelist qua "training mode", khoá màn hình khi phát hiện USB lạ.
-- [sidd607/usbAlert](https://github.com/sidd607/usbAlert) — Windows Service C#, dùng `RegisterDeviceNotification`/`WM_DEVICECHANGE` + SetupAPI để liệt kê thiết bị USB (tham khảo `UsbApi.cs`, `helper.cs`).
-- [amir13872/usb-control-application](https://github.com/amir13872/usb-control-application) — whitelist + xác thực mật khẩu cho thiết bị lạ (tham khảo mô hình Config/Whitelist/Log).
-- [Den-Sec/USBBlocker](https://gitblind.noratr.app/Den-Sec/USBBlocker) — script PowerShell bật/tắt driver USBSTOR qua registry (xác nhận đây là cơ chế chặn gốc rễ đúng chuẩn Windows).
+- Chuẩn lưu trữ USB Mass Storage Class (BOT và UAS Specification).
+- Tài liệu Microsoft Learn về Windows Services Architecture, Service Control Manager, và Service Recovery Options (`sc.exe failure`).
+- Tài liệu Microsoft Win32 API: SetupAPI (`SetupDiGetClassDevs`), CfgMgr32 (`CM_Request_Device_Eject`), Storage IOCTL (`IOCTL_STORAGE_QUERY_PROPERTY`), Removable Storage Policies.
+- RFC 8018: Password-Based Cryptography Specification (PBKDF2).
+- Các dự án mã nguồn mở tham khảo cấu trúc và giải pháp:
+  - [JBalanza/USBBlocker](https://github.com/JBalanza/USBBlocker)
+  - [sidd607/usbAlert](https://github.com/sidd607/usbAlert)
+  - [amir13872/usb-control-application](https://github.com/amir13872/usb-control-application)
+  - [Den-Sec/USBBlocker](https://gitblind.noratr.app/Den-Sec/USBBlocker)
 
-UsbGuard **không** sao chép nguyên văn code từ các repo trên; các file trong
-`reference/` được giữ lại chỉ để đối chiếu khi viết báo cáo và trích dẫn nguồn,
-không build vào sản phẩm (`UsbGuard.csproj` chỉ compile `src/**/*.cs`).
+## 6. Giới hạn đã biết
 
-## 6. Giới hạn đã biết (ghi trong báo cáo cho trung thực)
-
-- Chưa chặn USB qua Windows To Go / RAW disk truy cập bằng driver tự ký của kẻ tấn công có quyền SYSTEM — nằm ngoài phạm vi đồ án.
-- Whitelist theo VID/PID không phân biệt được 2 USB cùng model, cùng hãng không có serial — nên ưu tiên whitelist theo serial hoặc dùng `pause` thời hạn.
-- Build & test được thực hiện biên dịch trên macOS (dùng `Microsoft.NETFramework.ReferenceAssemblies`); **chạy thực tế bắt buộc trên Windows** vì dùng P/Invoke `setupapi.dll`/`cfgmgr32.dll`.
+- Nhận diện thiết bị theo cặp VID/PID: Nếu 2 thiết bị USB cùng hãng, cùng chủng loại và không có số serial phân biệt từ nhà sản xuất, chính sách whitelist theo VID/PID sẽ áp dụng cho cả 2. Giải pháp khuyến nghị là ưu tiên cấu hình theo số serial phần cứng hoặc sử dụng chế độ `pause` có thời hạn.
+- Giới hạn quyền Administrator cấp cao nhất: Administrator có quyền khởi động máy vào chế độ Safe Mode hoặc can thiệp trực tiếp vào ổ cứng ngoại tuyến (offline registry editing) vẫn có thể vô hiệu hóa dịch vụ. Đây là giới hạn tự nhiên của mô hình phân quyền hệ điều hành Windows khi không sử dụng giải pháp bảo mật phần cứng chuyên dụng.
+- Phạm vi thiết bị: Phiên bản hiện tại tập trung kiểm soát các thiết bị lưu trữ dạng khối (USB Mass Storage và UAS). Thiết bị truyền thông đa phương tiện MTP/PTP (như điện thoại thông minh) hoặc thiết bị quang (CD/DVD) nằm ngoài phạm vi xử lý của phiên bản này.
