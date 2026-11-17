@@ -39,3 +39,17 @@ jobs:
           path: |
             tests/ket-qua/
             bin/Release/net48/UsbGuard.exe
+
+      - name: Chay thu bo cai cho nguoi dung (CAI-DAT.bat / GO-CAI-DAT.bat)
+        shell: cmd
+        run: |
+          copy /y bin\Release\net48\UsbGuard.exe release\UsbGuard-1.0\UsbGuard.exe
+          cd release\UsbGuard-1.0
+          (echo MatKhauGoi@2026& echo MatKhauGoi@2026& echo.) | CAI-DAT.bat
+          sc query UsbGuard | find "RUNNING" || exit /b 1
+          reg query HKLM\SYSTEM\CurrentControlSet\Services\USBSTOR /v Start | find "0x4" || exit /b 1
+          (echo 1& echo.& echo 0) | QUAN-LY.bat
+          (echo MatKhauGoi@2026& echo.) | GO-CAI-DAT.bat
+          sc query UsbGuard && exit /b 1
+          reg query HKLM\SYSTEM\CurrentControlSet\Services\USBSTOR /v Start | find "0x3" || exit /b 1
+          echo BO CAI CHAY DUNG
