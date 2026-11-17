@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Hướng dẫn sử dụng UsbGuard 1.0</title>
+<style>
+  @page { size: A4; margin: 18mm 18mm 18mm 20mm; }
+  body { font-family: "Times New Roman", serif; font-size: 12.5pt; line-height: 1.45; color: #111; }
+  h1 { font-size: 20pt; color: #1F4E79; margin: 0 0 4pt; }
+  h2 { font-size: 14pt; color: #1F4E79; margin: 16pt 0 6pt; border-bottom: 1px solid #1F4E79; padding-bottom: 2pt; }
+  .sub { color: #444; margin-bottom: 12pt; }
+  code, pre { font-family: Consolas, "Courier New", monospace; font-size: 10.5pt; }
+  pre { background: #f2f4f7; border: 1px solid #d0d5dd; padding: 6pt 8pt; white-space: pre-wrap; }
+  table { border-collapse: collapse; width: 100%; margin: 6pt 0; }
+  th, td { border: 1px solid #9aa4b2; padding: 4pt 6pt; vertical-align: top; text-align: left; }
+  th { background: #e6edf5; }
+  .canh-bao { border-left: 4px solid #c0392b; background: #fdf1f0; padding: 6pt 10pt; margin: 8pt 0; }
+  .ghi-chu { border-left: 4px solid #1F4E79; background: #eef3f9; padding: 6pt 10pt; margin: 8pt 0; }
+  ol li, ul li { margin-bottom: 3pt; }
+</style>
+</head>
+<body>
+
+<h1>Hướng dẫn sử dụng UsbGuard 1.0</h1>
+<div class="sub">Phần mềm chặn USB flash disk trên máy tính Windows, chạy như dịch vụ không tắt được. Tài liệu dành cho người quản trị máy.</div>
+
+<h2>1. UsbGuard làm gì</h2>
+<ul>
+  <li>Chặn mọi USB flash disk, ổ cứng di động cắm vào máy. USB bị gỡ ra ngay và người dùng thấy thông báo trên màn hình.</li>
+  <li>Chuột, bàn phím, máy in và các thiết bị USB không phải ổ đĩa vẫn dùng bình thường.</li>
+  <li>Chạy ngầm cùng Windows. Người dùng thường không tắt, không xoá, không sửa được. Quản trị viên cũng không dừng được bằng <code>services.msc</code> hay <code>sc stop</code>. Muốn gỡ phải dùng mật khẩu quản trị.</li>
+  <li>Bị tắt cưỡng bức (Task Manager, taskkill) thì Windows tự bật lại sau khoảng 5 giây.</li>
+</ul>
+
+<h2>2. Trong gói có gì</h2>
+<table>
+  <tr><th>File</th><th>Dùng để</th></tr>
+  <tr><td><code>UsbGuard.exe</code></td><td>Chương trình chính (1 file, khoảng 35 KB)</td></tr>
+  <tr><td><code>CAI-DAT.bat</code></td><td>Cài đặt và bật chặn USB</td></tr>
+  <tr><td><code>QUAN-LY.bat</code></td><td>Menu quản lý: xem trạng thái, tạm dừng, cho phép 1 USB, đổi mật khẩu</td></tr>
+  <tr><td><code>GO-CAI-DAT.bat</code></td><td>Gỡ hẳn UsbGuard, trả máy về như cũ</td></tr>
+  <tr><td><code>HUONG-DAN-SU-DUNG.pdf</code></td><td>Tài liệu này</td></tr>
+</table>
+<p><b>Yêu cầu máy:</b> Windows 10 (bản 1903 trở lên) hoặc Windows 11, 64-bit. Máy đã có sẵn .NET Framework 4.8 nên không cần cài thêm gì. Cần tài khoản có quyền Administrator.</p>
+
+<h2>3. Cài đặt</h2>
+<ol>
+  <li>Giải nén file <code>UsbGuard-1.0.zip</code> ra 1 thư mục, ví dụ <code>C:\UsbGuard-goc</code>. Giữ thư mục này để sau còn gỡ cài đặt.</li>
+  <li>Bấm chuột phải vào <b>CAI-DAT.bat</b>, chọn <b>Run as administrator</b>, rồi bấm <b>Yes</b> ở hộp thoại hỏi quyền.</li>
+  <li>Nếu Windows hiện màn hình xanh "Windows protected your PC": bấm <b>More info</b> rồi bấm <b>Run anyway</b>. Màn hình này hiện ra vì phần mềm chưa được ký số, không phải lỗi.</li>
+  <li>Nhập mật khẩu quản trị (ít nhất 8 ký tự). Khi gõ, màn hình không hiện ký tự nào. Nhập lại lần nữa để xác nhận.</li>
+  <li>Thấy dòng <code>STATE : 4 RUNNING</code> và "chế độ CHẶN TẤT CẢ" là xong. Từ lúc này mọi USB flash disk cắm vào đều bị chặn.</li>
+</ol>
+<div class="canh-bao"><b>Ghi lại mật khẩu quản trị ở nơi an toàn.</b> Không có mật khẩu thì không tạm dừng, không cho phép USB, không gỡ cài đặt được bằng cách thông thường.</div>
+
+<h2>4. Quản lý hằng ngày (QUAN-LY.bat)</h2>
+<p>Bấm chuột phải vào <b>QUAN-LY.bat</b>, chọn <b>Run as administrator</b>, rồi gõ số tương ứng:</p>
+<table>
+  <tr><th>Số</th><th>Việc</th><th>Khi nào dùng</th></tr>
+  <tr><td>1</td><td>Xem trạng thái</td><td>Kiểm tra dịch vụ có đang chạy, đang ở chế độ nào</td></tr>
+  <tr><td>2</td><td>Tạm dừng chặn N phút</td><td>Cần chép dữ liệu hợp lệ. Hết giờ, UsbGuard tự chặn lại</td></tr>
+  <tr><td>3</td><td>Bật lại chặn ngay</td><td>Chép xong sớm, không muốn chờ hết giờ</td></tr>
+  <tr><td>4</td><td>Xem USB đang cắm</td><td>Lấy ID của 1 USB để cho phép (xem mục 5)</td></tr>
+  <tr><td>5 / 6</td><td>Cho phép / bỏ cho phép 1 USB</td><td>USB riêng của công ty được dùng lâu dài</td></tr>
+  <tr><td>7</td><td>Xem danh sách USB được phép</td><td></td></tr>
+  <tr><td>8</td><td>Đổi mật khẩu quản trị</td><td>Định kỳ hoặc khi nghi bị lộ</td></tr>
+</table>
+<p>Các lệnh cần mật khẩu sẽ hỏi mật khẩu. Bấm Enter trống hoặc gõ 0 để thoát menu.</p>
+
+<h2>5. Cho phép 1 USB cụ thể</h2>
+<ol>
+  <li>Mở QUAN-LY.bat, chọn <b>2</b> và tạm dừng 5 phút.</li>
+  <li>Cắm USB cần cho phép vào máy.</li>
+  <li>Chọn <b>4</b> (Xem USB đang cắm). Chép dòng ID có dạng <code>USB\VID_0951&amp;PID_1666\...</code>, hoặc dòng số serial bên dưới.</li>
+  <li>Chọn <b>5</b>, dán ID vừa chép rồi nhập mật khẩu.</li>
+  <li>Chọn <b>3</b> để bật lại chặn. Từ giờ USB đó dùng được, các USB khác vẫn bị chặn.</li>
+</ol>
+<div class="ghi-chu">Nên cho phép theo <b>số serial</b> thay vì cả dòng VID/PID. Nhiều USB cùng hãng, cùng mẫu có chung VID/PID, cho phép theo VID/PID là cho phép luôn cả các USB đó.</div>
+
+<h2>6. Gỡ cài đặt</h2>
+<ol>
+  <li>Vào thư mục đã giải nén lúc cài, bấm chuột phải vào <b>GO-CAI-DAT.bat</b> và chọn <b>Run as administrator</b>.</li>
+  <li>Nhập mật khẩu quản trị. Dịch vụ tự dừng, bị xoá khỏi Windows, và cổng USB trở lại bình thường.</li>
+</ol>
+
+<h2>7. Xử lý sự cố</h2>
+<table>
+  <tr><th>Hiện tượng</th><th>Cách xử lý</th></tr>
+  <tr><td>"Cần chạy với quyền Administrator"</td><td>Bấm chuột phải vào file .bat, chọn Run as administrator.</td></tr>
+  <tr><td>"Sai mật khẩu quản trị"</td><td>Kiểm tra bộ gõ tiếng Việt (tắt Unikey/EVKey khi gõ mật khẩu) và phím Caps Lock.</td></tr>
+  <tr><td>Đã cho phép USB nhưng vẫn bị gỡ</td><td>ID dán chưa đúng. Làm lại mục 5, chép ID ở bước 3 đúng như màn hình hiện.</td></tr>
+  <tr><td>USB đang mở file nên không gỡ được</td><td>UsbGuard sẽ vô hiệu hoá thiết bị đó trong Windows. Khi tạm dừng hoặc gỡ cài đặt, thiết bị được bật lại.</td></tr>
+  <tr><td>Muốn xem lịch sử USB bị chặn</td><td>Mở file <code>C:\ProgramData\UsbGuard\usbguard.log</code> bằng Notepad.</td></tr>
+</table>
+
+<h2>8. Giới hạn cần biết</h2>
+<ul>
+  <li>UsbGuard chặn thiết bị lưu trữ USB (flash disk, ổ cứng di động, đầu đọc thẻ). Điện thoại kết nối kiểu MTP, ổ CD/DVD và Bluetooth chưa nằm trong phạm vi chặn.</li>
+  <li>Người có mật khẩu Windows Administrator và hiểu sâu hệ thống vẫn có thể can thiệp, ví dụ vào Safe Mode. UsbGuard ngăn người dùng thông thường, không thay được chính sách bảo mật của cả công ty.</li>
+</ul>
+
+</body>
+</html>

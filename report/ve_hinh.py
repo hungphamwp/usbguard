@@ -673,31 +673,22 @@ def ve_hinh10_terminal():
             ha='center', va='center', fontsize=9, fontweight='bold', color="#CCCCCC", fontfamily="Arial Unicode MS")
 
     # Nội dung nhật ký trích từ kết quả kiểm thử thật
-    log_lines = [
-        ("=== KIỂM THỬ TÍCH HỢP USBGUARD (CI GITHUB ACTIONS) ===", "#4EC9B0", True),
-        ("Máy: runnervm9zap3 | Windows Server 2022 Datacenter 10.0.20348", "#9CDCFE", False),
-        ("Chạy bằng: runnervm9zap3\\runneradmin  |  USBSTOR trước khi cài: Start = 3", "#808080", False),
-        ("", "#CCCCCC", False),
-        ("--- TC01 Cài đặt dịch vụ ---", "#DCDCAA", True),
-        ("> UsbGuard.exe install ********   (mã thoát 0)", "#CE9178", False),
-        ("  Đã cài đặt và khởi động dịch vụ UsbGuard.", "#CCCCCC", False),
-        ("[ĐẠT] TC01 Cài đặt, dịch vụ chạy — mã thoát 0, trạng thái Running", "#4EC9B0", True),
-        ("[ĐẠT] TC02 Khởi động tự động cùng Windows — StartType = Automatic", "#4EC9B0", True),
-        ("[ĐẠT] TC03 Cấu hình tự khởi động lại khi bị kill — sc qfailure có RESTART", "#4EC9B0", True),
-        ("[ĐẠT] TC04 Chạy dưới tài khoản LocalSystem — SERVICE_START_NAME = LocalSystem", "#4EC9B0", True),
-        ("[ĐẠT] TC05 USBSTOR bị tắt (Start = 4) — Start = 4, sau 2 ms", "#4EC9B0", True),
-        ("[ĐẠT] TC06 Chính sách Removable Storage Deny_All = 1", "#4EC9B0", True),
-        ("[ĐẠT] TC07 Tự sửa khi registry bị đổi tay — khôi phục Start = 4 sau 1316 ms", "#4EC9B0", True),
-        ("[ĐẠT] TC08 Admin 'sc stop' bị từ chối — mã 1052 (không nhận Stop), trạng thái Running", "#4EC9B0", True),
-        ("[ĐẠT] TC10 Bị kill tiến trình thì Windows tự chạy lại — PID 5544 -> 512, chạy lại sau 5412 ms", "#4EC9B0", True),
-        ("[ĐẠT] TC11 User thường 'sc stop' bị từ chối quyền — mã 5 (Access is denied)", "#4EC9B0", True),
-        ("[ĐẠT] TC14 User thường không đọc được hash — từ chối truy cập qua DACL", "#4EC9B0", True),
-        ("[ĐẠT] TC20 Chuyển sang chế độ Whitelist — driver mở cho USB hợp lệ sau 1198 ms", "#4EC9B0", True),
-        ("[ĐẠT] TC29 Gỡ đúng mật khẩu — dịch vụ tự dừng an toàn sau 1926 ms", "#4EC9B0", True),
-        ("[ĐẠT] TC30 Trả lại mặc định Windows sau khi gỡ — Start = 3, Deny_All xóa sạch", "#4EC9B0", True),
-        ("", "#CCCCCC", False),
-        ("=== KẾT QUẢ TỔNG HỢP: 30/30 CA KIỂM THỬ ĐẠT (100% PASS) ===", "#4EC9B0", True)
-    ]
+    # Trích NGUYÊN VĂN từ nhật ký thật tests/ket-qua/integration-*2022*.md (không gõ tay)
+    import glob as _glob
+    _md = sorted(_glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "ket-qua", "integration-*2022*.md")))[0]
+    _raw = open(_md, encoding="utf-8-sig").read().split("## Nhật ký chạy", 1)[1].strip("`\n ").splitlines()
+    _keep = ("TC01 ", "TC02 ", "TC05 ", "TC07 ", "TC08 ", "TC10 ", "TC11 ", "TC14 ", "TC20 ", "TC29 ", "TC30 ")
+    log_lines = []
+    for _l in _raw[:3]:
+        log_lines.append((_l.replace("=== KIỂM THỬ", "=== KIỂM THỬ"), "#9CDCFE" if not _l.startswith("===") else "#4EC9B0", _l.startswith("===")))
+    log_lines.append(("", "#CCCCCC", False))
+    for _l in _raw:
+        if _l.startswith("[ĐẠT] ") and _l[6:11] in _keep:
+            log_lines.append((_l if len(_l) <= 95 else _l[:94] + "…", "#4EC9B0", True))
+        elif _l.startswith("[LỖI] "):
+            log_lines.append((_l[:95], "#F48771", True))
+    log_lines.append(("", "#CCCCCC", False))
+    log_lines.append((([_l for _l in _raw if _l.startswith("=== KẾT QUẢ")] or ["=== KẾT QUẢ ==="])[0], "#4EC9B0", True))
 
     y_pos = 0.88
     line_h = 0.035

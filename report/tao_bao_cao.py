@@ -872,8 +872,8 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
         widths_it = [900, 2600, 4171, 1700, 1700]
         rows_it = []
         for tc_id, name, desc, target in self.danh_sach_30_ca_tich_hop():
-            res_22 = kq_2022.get(tc_id, "ĐẠT (PASS)")
-            res_25 = kq_2025.get(tc_id, "ĐẠT (PASS)")
+            res_22 = kq_2022[tc_id]
+            res_25 = kq_2025[tc_id]
             rows_it.append([tc_id, name, desc, res_22, res_25])
             
         self.tbl("TBL_IT", "Bảng 5.2: Kết quả kiểm thử tích hợp 30 ca trên Windows Server 2022 và 2025", headers_it, rows_it, widths_it, ["center", "left", "left", "center", "center"])
@@ -881,17 +881,17 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
         self.fig("hinh10_terminal_log.png", "Hình 5.1: Nhật ký chạy kiểm thử tích hợp 30 ca trên Windows Server", width_cm=15.0)
 
         self.p("Các thông số đo đạc thời gian phản ứng thực tế ghi nhận qua hệ thống kiểm thử tích hợp tự động trên 2 nền tảng Windows Server:")
-        tu_sua_22 = stats.get("tu_sua_22", 1316)
-        chay_lai_22 = stats.get("chay_lai_22", 5412)
-        ram_tb_22 = stats.get("ram_tb_22", 21.8)
-        ram_max_22 = stats.get("ram_max_22", 21.9)
-        cpu_22 = stats.get("cpu_22", 0.0)
+        tu_sua_22 = stats["tu_sua_22"]
+        chay_lai_22 = stats["chay_lai_22"]
+        ram_tb_22 = stats["ram_tb_22"]
+        ram_max_22 = stats["ram_max_22"]
+        cpu_22 = stats["cpu_22"]
 
-        tu_sua_25 = stats.get("tu_sua_25", 560)
-        chay_lai_25 = stats.get("chay_lai_25", 5508)
-        ram_tb_25 = stats.get("ram_tb_25", 24.9)
-        ram_max_25 = stats.get("ram_max_25", 25.1)
-        cpu_25 = stats.get("cpu_25", 0.02)
+        tu_sua_25 = stats["tu_sua_25"]
+        chay_lai_25 = stats["chay_lai_25"]
+        ram_tb_25 = stats["ram_tb_25"]
+        ram_max_25 = stats["ram_max_25"]
+        cpu_25 = stats["cpu_25"]
 
         self.b(f"**Thời gian tự sửa Registry (`tu_sua_ms`):** Khi cố tình chỉnh sửa giá trị `USBSTOR\\Start = 3` bằng tay, dịch vụ phát hiện và tự động khôi phục về `Start = 4` trong thời gian **{tu_sua_22} ms** (trên Windows Server 2022) và **{tu_sua_25} ms** (trên Windows Server 2025). Cả 2 kết quả đều nhanh hơn chu kỳ Timer 2 giây nhờ cơ chế vòng quét chủ động.")
         self.b(f"**Thời gian tự khởi động lại sau khi bị kill tiến trình (`chay_lai_ms`):** Khi tiến trình `UsbGuard.exe` bị Administrator cưỡng chế kết thúc bằng lệnh `taskkill /F`, cấu hình phục hồi SCM (`sc failure`) kích hoạt hệ điều hành tự động chạy lại tiến trình dịch vụ sau **{chay_lai_22} ms** (trên Windows Server 2022) và **{chay_lai_25} ms** (trên Windows Server 2025). Thông số này khớp với cấu hình độ trễ phục hồi 5000 ms của SCM.")
@@ -928,7 +928,7 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
             ["YC-CN07", "Gỡ cài đặt hoàn trả mặc định.", "Dừng dịch vụ qua cờ Uninstalling, hoàn trả Registry nguyên bản.", "Đáp ứng (đã kiểm thử CI)"],
             ["YC-PCN01", "Cơ chế 'không tắt được'.", "SCM từ chối sc stop (lỗi 1052); User thường bị từ chối (lỗi 5).", "Đáp ứng (đã kiểm thử CI)"],
             ["YC-PCN02", "Tự phục hồi khi bị kill.", "Windows tự khởi động lại dịch vụ sau khoảng 5 giây qua sc failure.", "Đáp ứng (đã kiểm thử CI)"],
-            ["YC-PCN03", "Tối ưu hóa tài nguyên.", "RAM trung bình 21.8 MB (cao nhất 21.9 MB), CPU 0.0% (Win 2022); RAM 24.9 MB (cao nhất 25.1 MB), CPU 0.02% (Win 2025).", "Đáp ứng (đo trên Windows Server 2022/2025)"],
+            ["YC-PCN03", "Tối ưu hóa tài nguyên.", f"RAM trung bình {stats['ram_tb_22']} MB (cao nhất {stats['ram_max_22']} MB), CPU {stats['cpu_22']}% (Win 2022); RAM {stats['ram_tb_25']} MB (cao nhất {stats['ram_max_25']} MB), CPU {stats['cpu_25']}% (Win 2025).", "Đáp ứng (đo trên Windows Server 2022/2025)"],
             ["YC-PCN04", "Bảo mật cấu hình Registry.", "DACL ngắt kế thừa, chỉ SYSTEM và Administrators truy cập.", "Đáp ứng (đã kiểm thử CI)"]
         ]
         self.tbl("TBL_DG", "Bảng 5.4: Đánh giá mức độ đáp ứng các yêu cầu hệ thống", headers_dg, rows_dg, widths_dg, ["center", "left", "left", "center"])
@@ -981,33 +981,33 @@ private static bool ConstantTimeEquals(byte[] a, byte[] b)
 
         if f22.exists():
             try:
-                with open(f22, "r", encoding="utf-8") as f:
+                with open(f22, "r", encoding="utf-8-sig") as f:
                     d22 = json.load(f)
-                    stats["tu_sua_22"] = d22.get("tu_sua_ms", 1316)
-                    stats["chay_lai_22"] = d22.get("chay_lai_ms", 5412)
-                    stats["ram_tb_22"] = d22.get("ram_tb_mb", 21.8)
-                    stats["ram_max_22"] = d22.get("ram_max_mb", 21.9)
-                    stats["cpu_22"] = d22.get("cpu_pct", 0.0)
+                    stats["tu_sua_22"] = d22["tu_sua_ms"]
+                    stats["chay_lai_22"] = d22["chay_lai_ms"]
+                    stats["ram_tb_22"] = d22["ram_tb_mb"]
+                    stats["ram_max_22"] = d22["ram_max_mb"]
+                    stats["cpu_22"] = d22["cpu_pct"]
                     for c in d22.get("ca", []):
                         kq_2022[c.get("id")] = "ĐẠT (PASS)" if c.get("dat") else "KHÔNG ĐẠT"
                 print(f"Đã đọc kết quả Windows Server 2022 từ {f22.name}")
             except Exception as ex:
-                print(f"[CẢNH BÁO] Lỗi đọc {f22.name}: {ex}")
+                raise SystemExit(f"[LỖI] Không đọc được {f22.name}: {ex}")
 
         if f25.exists():
             try:
-                with open(f25, "r", encoding="utf-8") as f:
+                with open(f25, "r", encoding="utf-8-sig") as f:
                     d25 = json.load(f)
-                    stats["tu_sua_25"] = d25.get("tu_sua_ms", 560)
-                    stats["chay_lai_25"] = d25.get("chay_lai_ms", 5508)
-                    stats["ram_tb_25"] = d25.get("ram_tb_mb", 24.9)
-                    stats["ram_max_25"] = d25.get("ram_max_mb", 25.1)
-                    stats["cpu_25"] = d25.get("cpu_pct", 0.02)
+                    stats["tu_sua_25"] = d25["tu_sua_ms"]
+                    stats["chay_lai_25"] = d25["chay_lai_ms"]
+                    stats["ram_tb_25"] = d25["ram_tb_mb"]
+                    stats["ram_max_25"] = d25["ram_max_mb"]
+                    stats["cpu_25"] = d25["cpu_pct"]
                     for c in d25.get("ca", []):
                         kq_2025[c.get("id")] = "ĐẠT (PASS)" if c.get("dat") else "KHÔNG ĐẠT"
                 print(f"Đã đọc kết quả Windows Server 2025 từ {f25.name}")
             except Exception as ex:
-                print(f"[CẢNH BÁO] Lỗi đọc {f25.name}: {ex}")
+                raise SystemExit(f"[LỖI] Không đọc được {f25.name}: {ex}")
 
         return kq_2022, kq_2025, stats
 

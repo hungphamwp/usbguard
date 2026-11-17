@@ -7,6 +7,17 @@ Quy tắc: Chữ >= 18pt, tối đa 5 ý mỗi slide, dùng lại hình vẽ tro
 """
 
 import os
+
+# ---- Số liệu kiểm thử đọc từ tests/ket-qua (không gõ tay) ----
+import json as _json, glob as _glob, re as _re
+def _kq(ver):
+    f = sorted(_glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tests", "ket-qua", f"integration-*{ver}*.json")))[0]
+    d = _json.load(open(f, encoding="utf-8-sig"))
+    md = open(f[:-5] + ".md", encoding="utf-8-sig").read()
+    m = _re.search(r"TC29 .*?mất (\d+) ms", md)
+    d["go_ms"] = int(m.group(1)) if m else None
+    return d
+K22, K25 = _kq("2022"), _kq("2025")
 import pathlib
 import shutil
 import subprocess
@@ -399,10 +410,10 @@ def tao_toan_bo_slide():
     sl14 = sb.add_slide("Kết quả kiểm thử tích hợp CI trên Windows Server", "4. Kiểm thử & Đánh giá")
     sb.bullets(sl14, 0.8, 1.8, 5.8, 4.8, [
         "100% ca kiểm thử đạt (30/30 ca): Chạy tự động qua GitHub Actions trên cả Windows Server 2022 và Windows Server 2025.",
-        "Cơ chế 'không tắt được': Admin sc stop bị chặn (lỗi 1052); User thường bị chặn (lỗi 5); Taskkill tự hồi sinh sau 5412 ms (2022) và 5508 ms (2025).",
-        "Thời gian tự sửa Registry (tu_sua_ms): Khôi phục Start = 4 sau 1316 ms (Win 2022) và 560 ms (Win 2025) khi bị đổi tay.",
-        "Tài nguyên thực tế (đo 60 giây không tải): Win 2022 tiêu thụ 21.8 MB RAM, CPU 0.0%; Win 2025 tiêu thụ 24.9 MB RAM, CPU 0.02%.",
-        "Gỡ cài đặt hoàn trả gốc: Dịch vụ tự dừng sau 1.9s, xóa sạch tệp và khôi phục hoàn toàn mặc định hệ thống."
+        f"Cơ chế 'không tắt được': Admin sc stop bị chặn (lỗi 1052); User thường bị chặn (lỗi 5); Taskkill tự hồi sinh sau {K22['chay_lai_ms']} ms (2022) và {K25['chay_lai_ms']} ms (2025).",
+        f"Thời gian tự sửa Registry: khôi phục Start = 4 sau {K22['tu_sua_ms']} ms (Win 2022) và {K25['tu_sua_ms']} ms (Win 2025) khi bị đổi tay.",
+        f"Tài nguyên thực tế (đo 60 giây không tải): Win 2022 dùng {K22['ram_tb_mb']} MB RAM, CPU {K22['cpu_pct']}%; Win 2025 dùng {K25['ram_tb_mb']} MB RAM, CPU {K25['cpu_pct']}%.",
+        f"Gỡ cài đặt trả về mặc định: dịch vụ tự dừng và bị xoá sau {K22['go_ms']} ms (2022) / {K25['go_ms']} ms (2025), xoá tệp, khôi phục cấu hình USB."
     ], size=16, gap=10)
     sb.pic(sl14, "hinh10_terminal_log.png", 6.8, 1.8, 5.8, 4.8)
 
@@ -418,7 +429,7 @@ def tao_toan_bo_slide():
         ["YC-CN06", "Xác thực mật khẩu quản trị.", "Băm PBKDF2 100000 vòng lặp, thời gian hằng.", "Đáp ứng (12/12 unit test đạt)"],
         ["YC-PCN01", "Cơ chế 'không tắt được'.", "SCM từ chối sc stop (lỗi 1052); User thường bị chặn (lỗi 5).", "Đáp ứng (đã kiểm thử CI)"],
         ["YC-PCN02", "Tự phục hồi sau khi bị kill.", "Windows tự khởi động lại sau khoảng 5 giây qua sc failure.", "Đáp ứng (đã kiểm thử CI)"],
-        ["YC-PCN03", "Tiêu chuẩn: CPU < 1%, RAM < 50 MB.", "Thực tế: RAM 21.8 - 25.1 MB, CPU 0.0% - 0.02%.", "Đáp ứng (đo trên Win Server 2022/2025)"]
+        ["YC-PCN03", "Tiêu chuẩn: CPU < 1%, RAM < 50 MB.", f"Thực tế: RAM {min(K22['ram_tb_mb'],K25['ram_tb_mb'])} - {max(K22['ram_max_mb'],K25['ram_max_mb'])} MB, CPU {min(K22['cpu_pct'],K25['cpu_pct'])}% - {max(K22['cpu_pct'],K25['cpu_pct'])}%.", "Đáp ứng (đo trên Win Server 2022/2025)"]
     ]
     sb.table(sl15, 0.8, 1.8, 11.7, headers_dg, rows_dg, [1.3, 3.2, 4.6, 2.6], size=12, row_height=0.55)
 
