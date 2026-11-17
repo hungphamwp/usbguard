@@ -1,0 +1,190 @@
+{
+  "he_dieu_hanh": "Microsoft Windows Server 2022 Datacenter",
+  "phien_ban": "10.0.20348",
+  "dat": 30,
+  "tong": 30,
+  "tu_sua_ms": 1204,
+  "chay_lai_ms": 5393,
+  "ca": [
+    {
+      "id": "TC01",
+      "ten": "Cài đặt, dịch vụ chạy",
+      "dat": true,
+      "chi_tiet": "mã thoát 0, trạng thái Running"
+    },
+    {
+      "id": "TC02",
+      "ten": "Khởi động tự động cùng Windows",
+      "dat": true,
+      "chi_tiet": "StartType = Automatic"
+    },
+    {
+      "id": "TC03",
+      "ten": "Cấu hình tự khởi động lại khi bị kill",
+      "dat": true,
+      "chi_tiet": "sc qfailure có RESTART"
+    },
+    {
+      "id": "TC04",
+      "ten": "Chạy dưới tài khoản LocalSystem",
+      "dat": true,
+      "chi_tiet": "SERVICE_START_NAME = LocalSystem"
+    },
+    {
+      "id": "TC05",
+      "ten": "USBSTOR bị tắt (Start = 4)",
+      "dat": true,
+      "chi_tiet": "Start = 4, sau 2 ms"
+    },
+    {
+      "id": "TC06",
+      "ten": "Chính sách Removable Storage Deny_All = 1",
+      "dat": true,
+      "chi_tiet": "Deny_All = 1"
+    },
+    {
+      "id": "TC07",
+      "ten": "Tự sửa khi registry bị đổi tay",
+      "dat": true,
+      "chi_tiet": "khôi phục Start = 4 sau 1204 ms"
+    },
+    {
+      "id": "TC08",
+      "ten": "Admin \"sc stop\" bị từ chối",
+      "dat": true,
+      "chi_tiet": "mã 1052 (1052 = dịch vụ không nhận lệnh Stop), trạng thái Running"
+    },
+    {
+      "id": "TC09",
+      "ten": "Admin Stop-Service (PowerShell) bị từ chối",
+      "dat": true,
+      "chi_tiet": "trạng thái Running"
+    },
+    {
+      "id": "TC10",
+      "ten": "Bị kill tiến trình thì Windows tự chạy lại",
+      "dat": true,
+      "chi_tiet": "PID 4732 -> 1224, chạy lại sau 5393 ms"
+    },
+    {
+      "id": "TC11",
+      "ten": "User thường \"sc stop\" bị từ chối quyền",
+      "dat": true,
+      "chi_tiet": "mã 5 (5 = Access is denied)"
+    },
+    {
+      "id": "TC12",
+      "ten": "User thường không đổi được kiểu khởi động",
+      "dat": true,
+      "chi_tiet": "mã 5"
+    },
+    {
+      "id": "TC13",
+      "ten": "User thường không xoá được dịch vụ",
+      "dat": true,
+      "chi_tiet": "mã 5"
+    },
+    {
+      "id": "TC14",
+      "ten": "User thường không đọc được cấu hình/mã băm mật khẩu",
+      "dat": true,
+      "chi_tiet": "mã 1"
+    },
+    {
+      "id": "TC15",
+      "ten": "User thường gỡ cài đặt bị từ chối (kể cả biết mật khẩu)",
+      "dat": true,
+      "chi_tiet": "mã 5"
+    },
+    {
+      "id": "TC16",
+      "ten": "User thường không mở lại được driver USB",
+      "dat": true,
+      "chi_tiet": "mã 1"
+    },
+    {
+      "id": "TC17",
+      "ten": "Tạm dừng với sai mật khẩu bị từ chối",
+      "dat": true,
+      "chi_tiet": "mã 3"
+    },
+    {
+      "id": "TC18",
+      "ten": "Tạm dừng đúng mật khẩu: mở lại USB",
+      "dat": true,
+      "chi_tiet": "USBSTOR Start = 3, sau 1201 ms"
+    },
+    {
+      "id": "TC19",
+      "ten": "Bật lại chặn",
+      "dat": true,
+      "chi_tiet": "USBSTOR Start = 4, sau 1198 ms"
+    },
+    {
+      "id": "TC20",
+      "ten": "Có whitelist: chuyển sang chế độ danh sách cho phép",
+      "dat": true,
+      "chi_tiet": "driver mở để USB được phép chạy, sau 1317 ms"
+    },
+    {
+      "id": "TC21",
+      "ten": "Xem whitelist",
+      "dat": true,
+      "chi_tiet": "có VID_0951&PID_1666"
+    },
+    {
+      "id": "TC22",
+      "ten": "Xoá whitelist: quay lại chặn tất cả",
+      "dat": true,
+      "chi_tiet": "sau 1207 ms"
+    },
+    {
+      "id": "TC23",
+      "ten": "Đổi mật khẩu quản trị",
+      "dat": true,
+      "chi_tiet": "đổi sang mật khẩu mới rồi đổi lại"
+    },
+    {
+      "id": "TC24",
+      "ten": "Liệt kê ổ đĩa qua SetupAPI + IOCTL (gọi API Windows thật)",
+      "dat": true,
+      "chi_tiet": "đọc được loại bus của từng ổ"
+    },
+    {
+      "id": "TC25",
+      "ten": "Không nhận nhầm ổ cứng trong máy là USB",
+      "dat": true,
+      "chi_tiet": "máy không cắm USB, kết quả 0 ổ USB"
+    },
+    {
+      "id": "TC26",
+      "ten": "Xem trạng thái",
+      "dat": true,
+      "chi_tiet": "RUNNING, chế độ CHẶN TẤT CẢ"
+    },
+    {
+      "id": "TC27",
+      "ten": "Ghi nhật ký hoạt động",
+      "dat": true,
+      "chi_tiet": "C:\\ProgramData\\UsbGuard\\usbguard.log"
+    },
+    {
+      "id": "TC28",
+      "ten": "Gỡ với sai mật khẩu bị từ chối",
+      "dat": true,
+      "chi_tiet": "mã 3, trạng thái Running"
+    },
+    {
+      "id": "TC29",
+      "ten": "Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá",
+      "dat": true,
+      "chi_tiet": "mất 2419 ms, sc query trả 1060 (không còn dịch vụ)"
+    },
+    {
+      "id": "TC30",
+      "ten": "Trả lại mặc định Windows sau khi gỡ",
+      "dat": true,
+      "chi_tiet": "USBSTOR Start = 3, Deny_All = , không còn khoá cấu hình và thư mục cài"
+    }
+  ]
+}
