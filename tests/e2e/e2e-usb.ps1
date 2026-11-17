@@ -109,21 +109,6 @@ Unplug A
 
 # E02: cài bằng bộ cài setup.exe (chế độ im lặng)
 $setup = Get-ChildItem 'C:\OEM' -Filter 'UsbGuard-Setup-*.exe' | Select-Object -First 1
-# Chụp giao diện bộ cài khi người dùng chạy bình thường (trang điều khoản, trang đặt mật khẩu), rồi huỷ.
-Clean-Desktop
-$ui = Start-Process $setup.FullName -PassThru
-Start-Sleep 8
-Shot 'setup-1-dieu-khoan'
-try {
-    $sh = New-Object -ComObject WScript.Shell
-    [void]$sh.AppActivate($ui.Id); Start-Sleep 1
-    $sh.SendKeys('{TAB}'); Start-Sleep -Milliseconds 300; $sh.SendKeys(' ')     # chọn "Tôi đồng ý"
-    Start-Sleep 1; $sh.SendKeys('{ENTER}'); Start-Sleep 3                        # Tiếp theo
-    Shot 'setup-2-mat-khau'
-} catch { L "  không điều khiển được bộ cài: $_" }
-try { Stop-Process -Id $ui.Id -Force; Get-Process | Where-Object { $_.Path -like "$env:TEMP*is-*" } | Stop-Process -Force } catch { }
-Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -like 'UsbGuard-Setup*' -or $_.MainWindowTitle -like '*UsbGuard*' } | Stop-Process -Force -ErrorAction SilentlyContinue
-Start-Sleep 3
 $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/ADMINPW=$Pw" -Wait -PassThru
 Start-Sleep 5
 $svc = Get-Service UsbGuard -ErrorAction SilentlyContinue
@@ -241,6 +226,28 @@ Plug A
 $w = Watch A 40 -TryWrite -UntilWritable
 Check 'E17' 'Sau khi gỡ: cắm USB dùng lại bình thường' ($w.ghi_duoc) ("ghi được sau $($w.ghi_ms) ms")
 Unplug A
+
+# Chụp giao diện bộ cài khi người dùng chạy bình thường (desktop đã sẵn sàng), điều khiển bằng UI Automation rồi huỷ.
+try {
+    Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes
+    Clean-Desktop
+    $ui = Start-Process $setup.FullName -PassThru
+    $AE = [System.Windows.Automation.AutomationElement]; $TS = [System.Windows.Automation.TreeScope]
+    $win = $null
+    for ($i = 0; $i -lt 30 -and -not $win; $i++) {
+        Start-Sleep 1
+        $win = $AE::RootElement.FindFirst($TS::Children, (New-Object System.Windows.Automation.PropertyCondition($AE::NameProperty, 'Cài đặt - UsbGuard')))
+        if (-not $win) { $win = @($AE::RootElement.FindAll($TS::Children, [System.Windows.Automation.Condition]::TrueCondition) | Where-Object { $_.Current.Name -like '*UsbGuard*' -and $_.Current.ClassName -eq 'TWizardForm' })[0] }
+    }
+    if (-not $win) { throw 'không thấy cửa sổ bộ cài' }
+    Start-Sleep 2; Shot 'setup-1-dieu-khoan'
+    $radio = $win.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, [System.Windows.Automation.ControlType]::RadioButton)))
+    if ($radio) { $radio.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select() }
+    $next = @($win.FindAll($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, [System.Windows.Automation.ControlType]::Button))) | Where-Object { $_.Current.Name -match 'Tiếp|Next' })[0]
+    if ($next) { Start-Sleep 1; $next.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke(); Start-Sleep 2; Shot 'setup-2-mat-khau' }
+    L "  đã chụp giao diện bộ cài"
+} catch { L "  không chụp được bộ cài: $_" }
+Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -like 'UsbGuard-Setup*' -or $_.ProcessName -like '*.tmp' -or $_.Path -like "$env:TEMP\is-*" } | Stop-Process -Force -ErrorAction SilentlyContinue
 
 # ---------------- Ghi kết quả ----------------
 $pass = @($results | Where-Object { $_.dat }).Count
