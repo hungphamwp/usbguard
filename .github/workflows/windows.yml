@@ -1,0 +1,41 @@
+name: Kiem thu tren Windows
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-2025]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build UsbGuard.exe (.NET Framework 4.8, Release)
+        shell: pwsh
+        run: dotnet build UsbGuard.csproj -c Release -nologo
+
+      - name: Unit test (xUnit)
+        shell: pwsh
+        run: dotnet test tests/UsbGuard.Tests.csproj -nologo --logger "trx;LogFileName=unit.trx" --logger "console;verbosity=normal" --results-directory tests/ket-qua
+
+      - name: Kiem thu tich hop (cai dich vu that, chan, chong tat, go)
+        shell: pwsh
+        run: ./tests/integration.ps1 -Exe bin/Release/net48/UsbGuard.exe
+
+      - name: Tai ket qua
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ket-qua-${{ matrix.os }}
+          path: |
+            tests/ket-qua/
+            bin/Release/net48/UsbGuard.exe
