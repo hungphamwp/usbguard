@@ -170,7 +170,8 @@ Check 'E09' 'Thêm serial vào whitelist: USB đó dùng được (không cần 
 $logLen = (UgLog).Length
 Clean-Desktop
 Plug A
-$w = Watch A 15 -TryWrite
+# Windows 10 có lúc mất hơn 15 giây để cài lại driver cho USB đã bị gỡ trước đó: theo dõi đủ lâu để USB kịp lên và bị gỡ.
+$w = Watch A 40 -TryWrite
 $newLog = (UgLog).Substring($logLen)
 L ("  nhật ký UsbGuard: " + (($newLog -split "`n") | Where-Object { $_ -match 'gỡ|chặn|Buộc' } | Select-Object -First 3) -join ' / ')
 $expose = if ($null -ne $w.vol_dau) { $w.vol_cuoi - $w.vol_dau } else { 0 }
