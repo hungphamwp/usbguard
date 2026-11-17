@@ -20,10 +20,11 @@ echo  5. Cho phep 1 USB (them vao danh sach)
 echo  6. Bo cho phep 1 USB
 echo  7. Xem danh sach USB duoc phep
 echo  8. Doi mat khau quan tri
-echo  0. Thoat
+echo  0. Thoat (hoac bam Enter)
 echo.
 set "c="
 set /p c=Chon so: 
+if "%c%"=="" exit /b 0
 if "%c%"=="1" UsbGuard.exe status
 if "%c%"=="2" (set /p m=So phut tam dung [1-1440]: & call UsbGuard.exe pause %%m%%)
 if "%c%"=="3" UsbGuard.exe resume
