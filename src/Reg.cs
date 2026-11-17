@@ -25,7 +25,8 @@ namespace UsbGuard
             }
         }
 
-        public static RegistrySecurity SystemOnlyFullAdminsRead()
+        /// <summary>SYSTEM và Administrators toàn quyền; không kế thừa từ khoá cha nên nhóm Users không có quyền nào.</summary>
+        public static RegistrySecurity SystemAndAdminsOnly()
         {
             var rs = new RegistrySecurity();
             rs.SetAccessRuleProtection(true, false);
@@ -33,7 +34,7 @@ namespace UsbGuard
             var adm = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
             rs.AddAccessRule(new RegistryAccessRule(sys, RegistryRights.FullControl,
                 InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
-            rs.AddAccessRule(new RegistryAccessRule(adm, RegistryRights.ReadKey,
+            rs.AddAccessRule(new RegistryAccessRule(adm, RegistryRights.FullControl,
                 InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow));
             return rs;
         }

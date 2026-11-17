@@ -21,6 +21,7 @@ namespace UsbGuard
                 return 0;
             }
 
+            try { Console.OutputEncoding = System.Text.Encoding.UTF8; } catch { }
             string cmd = args[0].ToLowerInvariant();
             switch (cmd)
             {
@@ -29,10 +30,21 @@ namespace UsbGuard
                     return 0;
 
                 case "install":
-                    return Installer.Install(RequireArg(args, 1, "mật khẩu quản trị"));
+                {
+                    string pw = Password.FromArgs(args, 1, "Đặt mật khẩu quản trị (ít nhất 8 ký tự): ");
+                    if (args.Length <= 1 && pw != Password.Ask("Nhập lại mật khẩu: "))
+                    {
+                        Console.WriteLine("Mật khẩu nhập lại không khớp.");
+                        return 1;
+                    }
+                    return Installer.Install(pw);
+                }
 
                 case "uninstall":
-                    return Installer.Uninstall(RequireArg(args, 1, "mật khẩu quản trị"));
+                    return Installer.Uninstall(Password.FromArgs(args, 1, "Mật khẩu quản trị: "));
+
+                case "devices":
+                    return Cli.Devices(args);
 
                 case "status":
                     return Installer.Status();
@@ -59,18 +71,9 @@ namespace UsbGuard
             }
         }
 
-        private static string RequireArg(string[] args, int index, string label)
-        {
-            if (args.Length <= index)
-            {
-                Console.WriteLine("Thiếu " + label + ".");
-                Environment.Exit(1);
-            }
-            return args[index];
-        }
-
         private static void PrintUsage()
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.WriteLine("UsbGuard " + Version + " - Chan thiet bi luu tru USB tren Windows (chay nhu dich vu)");
             Console.WriteLine();
             Console.WriteLine("Cach dung (chay voi quyen Administrator):");
@@ -79,11 +82,14 @@ namespace UsbGuard
             Console.WriteLine("  UsbGuard.exe status                       Xem trang thai dich vu + whitelist");
             Console.WriteLine("  UsbGuard.exe pause <phut> <mat_khau>       Tam dung chan trong N phut");
             Console.WriteLine("  UsbGuard.exe resume <mat_khau>             Bat lai chan ngay");
+            Console.WriteLine("  UsbGuard.exe devices [--all]                Liet ke o USB dang cam (lay ID de them whitelist)");
             Console.WriteLine("  UsbGuard.exe whitelist list");
             Console.WriteLine("  UsbGuard.exe whitelist add <id_thiet_bi> <mat_khau>");
             Console.WriteLine("  UsbGuard.exe whitelist remove <id_thiet_bi> <mat_khau>");
             Console.WriteLine("  UsbGuard.exe passwd <mat_khau_cu> <mat_khau_moi>");
             Console.WriteLine("  UsbGuard.exe --console                    Chay thu truc tiep (khong cai dich vu)");
+            Console.WriteLine();
+            Console.WriteLine("Bo trong <mat_khau> thi chuong trinh hoi mat khau va khong hien ky tu khi go.");
         }
     }
 }

@@ -5,7 +5,10 @@ using Microsoft.Win32;
 
 namespace UsbGuard
 {
-    /// <summary>Trạng thái lưu ở HKLM\SOFTWARE\UsbGuard (chỉ SYSTEM ghi được sau khi dịch vụ chạy).</summary>
+    /// <summary>
+    /// Trạng thái lưu ở HKLM\SOFTWARE\UsbGuard. Khoá được đặt ACL riêng: chỉ SYSTEM và Administrators truy cập,
+    /// người dùng thường không đọc được (không lấy được mã băm mật khẩu để dò offline).
+    /// </summary>
     internal static class Settings
     {
         public const string KeyPath = @"SOFTWARE\UsbGuard";
@@ -30,7 +33,7 @@ namespace UsbGuard
             }
         }
 
-        /// <summary>Khoá ACL: chỉ SYSTEM ghi, Administrators chỉ đọc. Dịch vụ gọi lúc khởi động.</summary>
+        /// <summary>Đặt ACL: SYSTEM + Administrators toàn quyền, bỏ kế thừa (Users mất quyền đọc). Gọi khi cài và khi dịch vụ khởi động.</summary>
         public static void LockAcl()
         {
             using (var hk = Reg.Hklm())
@@ -38,7 +41,7 @@ namespace UsbGuard
                 System.Security.AccessControl.RegistryRights.ChangePermissions |
                 System.Security.AccessControl.RegistryRights.ReadKey))
             {
-                if (k != null) k.SetAccessControl(Reg.SystemOnlyFullAdminsRead());
+                if (k != null) k.SetAccessControl(Reg.SystemAndAdminsOnly());
             }
         }
 
@@ -59,21 +62,32 @@ namespace UsbGuard
         public static void PauseFor(TimeSpan span) { SetLong("PauseUntil", DateTime.UtcNow.Add(span).Ticks); }
         public static void Resume() { SetLong("PauseUntil", 0); }
 
-        public static List<string> GetWhitelist()
+        public static List<string> GetWhitelist() { return GetMulti("Whitelist"); }
+        public static void SetWhitelist(List<string> list) { SetMulti("Whitelist", list); }
+
+        private static List<string> GetMulti(string name)
         {
             using (var hk = Reg.Hklm())
             using (var k = hk.OpenSubKey(KeyPath))
             {
-                var v = k == null ? null : k.GetValue("Whitelist") as string[];
+                var v = k == null ? null : k.GetValue(name) as string[];
                 return v == null ? new List<string>() : v.Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
             }
         }
 
-        public static void SetWhitelist(List<string> list)
+        private static void SetMulti(string name, List<string> list)
         {
             using (var hk = Reg.Hklm())
             using (var k = hk.CreateSubKey(KeyPath))
-                k.SetValue("Whitelist", list.ToArray(), RegistryValueKind.MultiString);
+                k.SetValue(name, list.ToArray(), RegistryValueKind.MultiString);
+        }
+
+        public static List<string> GetDisabledDevices() { return GetMulti("DisabledDevices"); }
+        public static void SetDisabledDevices(List<string> list) { SetMulti("DisabledDevices", list); }
+        public static void AddDisabledDevice(string id)
+        {
+            var l = GetDisabledDevices();
+            if (!l.Exists(x => x.Equals(id, StringComparison.OrdinalIgnoreCase))) { l.Add(id); SetDisabledDevices(l); }
         }
 
         public static void Delete()

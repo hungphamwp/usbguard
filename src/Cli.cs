@@ -9,6 +9,7 @@ namespace UsbGuard
     {
         private static bool CheckAuth(string password)
         {
+            if (!Installer.IsAdmin()) { Console.WriteLine("Cần chạy với quyền Administrator (Run as administrator)."); return false; }
             if (!Settings.Exists()) { Console.WriteLine("UsbGuard chưa được cài đặt."); return false; }
             if (!Auth.Verify(password, Settings.AuthHash)) { Console.WriteLine("Sai mật khẩu quản trị."); return false; }
             return true;
@@ -16,14 +17,14 @@ namespace UsbGuard
 
         public static int Pause(string[] args)
         {
-            if (args.Length < 3) { Console.WriteLine("Dùng: UsbGuard.exe pause <phut> <mat_khau>"); return 1; }
+            if (args.Length < 2) { Console.WriteLine("Dùng: UsbGuard.exe pause <phut> [mat_khau]"); return 1; }
             int minutes;
             if (!int.TryParse(args[1], out minutes) || minutes <= 0 || minutes > 24 * 60)
             {
                 Console.WriteLine("Số phút không hợp lệ (1 - 1440).");
                 return 1;
             }
-            if (!CheckAuth(args[2])) return 3;
+            if (!CheckAuth(Password.FromArgs(args, 2, "Mật khẩu quản trị: "))) return 3;
             Settings.PauseFor(TimeSpan.FromMinutes(minutes));
             Log.Info("Tạm dừng chặn USB trong " + minutes + " phút (qua CLI).");
             Console.WriteLine("Đã tạm dừng chặn USB trong " + minutes + " phút.");
@@ -32,8 +33,7 @@ namespace UsbGuard
 
         public static int Resume(string[] args)
         {
-            if (args.Length < 2) { Console.WriteLine("Dùng: UsbGuard.exe resume <mat_khau>"); return 1; }
-            if (!CheckAuth(args[1])) return 3;
+            if (!CheckAuth(Password.FromArgs(args, 1, "Mật khẩu quản trị: "))) return 3;
             Settings.Resume();
             Log.Info("Bật lại chặn USB (qua CLI).");
             Console.WriteLine("Đã bật lại chặn USB.");
@@ -47,6 +47,7 @@ namespace UsbGuard
 
             if (sub == "list")
             {
+                if (!Installer.IsAdmin()) { Console.WriteLine("Cần chạy với quyền Administrator."); return 5; }
                 if (!Settings.Exists()) { Console.WriteLine("UsbGuard chưa được cài đặt."); return 1; }
                 var list = Settings.GetWhitelist();
                 Console.WriteLine(list.Count + " thiết bị trong whitelist:");
@@ -56,9 +57,9 @@ namespace UsbGuard
 
             if (sub == "add" || sub == "remove")
             {
-                if (args.Length < 4) { PrintWhitelistUsage(); return 1; }
+                if (args.Length < 3) { PrintWhitelistUsage(); return 1; }
                 string entry = args[2].Trim();
-                string password = args[3];
+                string password = Password.FromArgs(args, 3, "Mật khẩu quản trị: ");
                 if (!CheckAuth(password)) return 3;
                 if (sub == "add" && !UsbGuard.Whitelist.IsValidEntry(entry))
                 {
@@ -88,9 +89,8 @@ namespace UsbGuard
 
         public static int ChangePassword(string[] args)
         {
-            if (args.Length < 3) { Console.WriteLine("Dùng: UsbGuard.exe passwd <mat_khau_cu> <mat_khau_moi>"); return 1; }
-            if (!CheckAuth(args[1])) return 3;
-            string newPw = args[2];
+            if (!CheckAuth(Password.FromArgs(args, 1, "Mật khẩu hiện tại: "))) return 3;
+            string newPw = Password.FromArgs(args, 2, "Mật khẩu mới (ít nhất 8 ký tự): ");
             if (newPw.Length < 8) { Console.WriteLine("Mật khẩu mới phải có ít nhất 8 ký tự."); return 1; }
             Settings.SetAuthHash(Auth.Hash(newPw));
             Log.Info("Đổi mật khẩu quản trị (qua CLI).");
@@ -98,12 +98,27 @@ namespace UsbGuard
             return 0;
         }
 
+        /// <summary>Liệt kê ổ USB đang cắm (hoặc mọi ổ đĩa với --all) để quản trị viên lấy ID thêm vào whitelist.</summary>
+        public static int Devices(string[] args)
+        {
+            bool all = args.Length > 1 && args[1].Equals("--all", StringComparison.OrdinalIgnoreCase);
+            var disks = all ? UsbDisks.ScanAll() : UsbDisks.Scan();
+            Console.WriteLine((all ? "Ổ đĩa đang có mặt: " : "Ổ USB đang cắm: ") + disks.Count);
+            foreach (var d in disks)
+            {
+                Console.WriteLine("- " + (d.Name.Length > 0 ? d.Name : "(không tên)") + "  [bus " + UsbDisks.BusName(d.BusType) + "]");
+                foreach (var id in d.Ids) Console.WriteLine("    " + id);
+            }
+            return 0;
+        }
+
         private static void PrintWhitelistUsage()
         {
             Console.WriteLine("Dùng:");
             Console.WriteLine("  UsbGuard.exe whitelist list");
-            Console.WriteLine("  UsbGuard.exe whitelist add <id_thiet_bi> <mat_khau>");
-            Console.WriteLine("  UsbGuard.exe whitelist remove <id_thiet_bi> <mat_khau>");
+            Console.WriteLine("  UsbGuard.exe whitelist add <id_thiet_bi> [mat_khau]");
+            Console.WriteLine("  UsbGuard.exe whitelist remove <id_thiet_bi> [mat_khau]");
+            Console.WriteLine("Lấy ID bằng: UsbGuard.exe devices (khi đang tạm dừng chặn, cắm USB cần cho phép).");
         }
     }
 }

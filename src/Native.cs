@@ -17,14 +17,7 @@ namespace UsbGuard
             IntPtr outBuf, uint outSize, out uint returned, IntPtr overlapped);
 
         [DllImport("kernel32.dll")]
-        public static extern IntPtr GetCurrentProcess();
-
-        [DllImport("kernel32.dll")]
         public static extern uint WTSGetActiveConsoleSessionId();
-
-        // advapi32
-        [DllImport("advapi32.dll", SetLastError = true)]
-        public static extern bool SetKernelObjectSecurity(IntPtr handle, uint securityInformation, byte[] descriptor);
 
         // wtsapi32
         [DllImport("wtsapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
