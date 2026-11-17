@@ -97,6 +97,7 @@ namespace UsbGuard
 
                 if (Settings.IsPaused)
                 {
+                    UsbDisks.ReleaseLocksExcept(null);
                     bool changed = SetMode("TẠM DỪNG");
                     Enforcer.Unblock();
                     if (changed) UsbDisks.ReenableDisabled();
@@ -123,7 +124,12 @@ namespace UsbGuard
                 }
 
                 // Lớp gỡ: ổ USB nào đã lên được (driver chạy) mà không có trong whitelist thì gỡ ngay.
-                foreach (var disk in UsbDisks.Scan())
+                var mustBlock = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var disks = UsbDisks.Scan();
+                foreach (var disk in disks)
+                    if (!Whitelist.Matches(disk.Ids, whitelist)) mustBlock.Add(disk.Key);
+                UsbDisks.ReleaseLocksExcept(mustBlock);
+                foreach (var disk in disks)
                 {
                     if (Whitelist.Matches(disk.Ids, whitelist)) continue;
                     bool ok = UsbDisks.Eject(disk);

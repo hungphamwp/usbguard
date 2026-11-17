@@ -168,11 +168,13 @@ namespace UsbGuard
         /// </summary>
         public static bool Eject(UsbDisk d)
         {
-            if (TryEject(d)) return true;
+            string veto;
+            if (TryEject(d, out veto)) return true;
             int n = ForceDismount(d);
-            if (n > 0) Log.Info("Buộc tháo " + n + " phân vùng của " + d.Name + " (đang có file mở) để gỡ USB.");
+            if (n > 0) Log.Info("Windows từ chối gỡ " + d.Name + " (" + veto + "): đã tháo và khoá " + n + " phân vùng, không ai truy cập được.");
             System.Threading.Thread.Sleep(300);
-            if (TryEject(d)) return true;
+            if (TryEject(d, out veto)) { ReleaseLocks(d.Key); return true; }
+            if (n > 0 || IsLocked(d.Key)) return true;   // ổ đã bị khoá, chu kỳ sau thử gỡ tiếp
 
             string usbId = d.UsbDeviceId;
             if (usbId != null)
@@ -186,14 +188,17 @@ namespace UsbGuard
             return false;
         }
 
-        private static bool TryEject(UsbDisk d)
+        private static bool TryEject(UsbDisk d, out string vetoInfo)
         {
+            vetoInfo = "";
             uint node = d.DevInst;
             for (int depth = 0; depth < MaxDepth && node != 0; depth++)
             {
                 int veto;
                 var name = new StringBuilder(260);
-                if (Native.CM_Request_Device_Eject(node, out veto, name, name.Capacity, 0) == 0) return true;
+                uint cr = Native.CM_Request_Device_Eject(node, out veto, name, name.Capacity, 0);
+                if (cr == 0 && veto == 0) return true;
+                if (vetoInfo.Length == 0) vetoInfo = "mã " + cr + ", lý do " + veto + (name.Length > 0 ? " " + name : "");
                 uint parent;
                 if (Native.CM_Get_Parent(out parent, node, 0) != 0) break;
                 node = parent;
@@ -201,9 +206,38 @@ namespace UsbGuard
             return false;
         }
 
-        /// <summary>Tháo (dismount) mọi phân vùng nằm trên ổ đĩa này. Trả về số phân vùng đã tháo.</summary>
+        /// <summary>Khoá đang giữ trên phân vùng của USB chưa gỡ được: (khoá thiết bị, handle phân vùng).</summary>
+        private static readonly Dictionary<string, List<Microsoft.Win32.SafeHandles.SafeFileHandle>> Held =
+            new Dictionary<string, List<Microsoft.Win32.SafeHandles.SafeFileHandle>>(StringComparer.OrdinalIgnoreCase);
+
+        public static bool IsLocked(string key) { lock (Held) return Held.ContainsKey(key); }
+
+        public static void ReleaseLocks(string key)
+        {
+            lock (Held)
+            {
+                List<Microsoft.Win32.SafeHandles.SafeFileHandle> l;
+                if (!Held.TryGetValue(key, out l)) return;
+                foreach (var h in l) try { h.Dispose(); } catch { }
+                Held.Remove(key);
+            }
+        }
+
+        /// <summary>Thả khoá của những USB không còn cần khoá (đã rút ra, đã được phép, đang tạm dừng).</summary>
+        public static void ReleaseLocksExcept(ICollection<string> keepKeys)
+        {
+            List<string> drop;
+            lock (Held) drop = new List<string>(Held.Keys);
+            foreach (var k in drop) if (keepKeys == null || !keepKeys.Contains(k)) ReleaseLocks(k);
+        }
+
+        /// <summary>
+        /// Tháo (dismount) mọi phân vùng trên ổ này: file đang mở trên USB mất hiệu lực. Sau đó khoá phân vùng và GIỮ khoá
+        /// (Windows không tự gắn lại được, không ai đọc/ghi được) cho tới khi gỡ được USB hoặc USB bị rút. Trả về số phân vùng đã khoá.
+        /// </summary>
         private static int ForceDismount(UsbDisk d)
         {
+            if (IsLocked(d.Key)) return 0;
             int diskNo = DiskNumber(d.Path);
             if (diskNo < 0) return 0;
             int count = 0;
@@ -215,13 +249,24 @@ namespace UsbGuard
                 do
                 {
                     string vol = vn.ToString().TrimEnd('\\');
-                    using (var h = Native.CreateFile(vol, 0xC0000000 /* đọc + ghi */, 3, IntPtr.Zero, 3, 0, IntPtr.Zero))
+                    var h = Native.CreateFile(vol, 0xC0000000 /* đọc + ghi */, 3, IntPtr.Zero, 3, 0, IntPtr.Zero);
+                    if (h.IsInvalid || !OnDisk(h, diskNo)) { h.Dispose(); continue; }
+                    uint ret;
+                    bool locked = Native.DeviceIoControl(h, FSCTL_LOCK_VOLUME, IntPtr.Zero, 0, IntPtr.Zero, 0, out ret, IntPtr.Zero);
+                    Native.DeviceIoControl(h, FSCTL_DISMOUNT_VOLUME, IntPtr.Zero, 0, IntPtr.Zero, 0, out ret, IntPtr.Zero);
+                    // Dismount làm mọi handle khác mất hiệu lực, nên giờ khoá chắc chắn được.
+                    if (!locked) locked = Native.DeviceIoControl(h, FSCTL_LOCK_VOLUME, IntPtr.Zero, 0, IntPtr.Zero, 0, out ret, IntPtr.Zero);
+                    if (locked)
                     {
-                        if (h.IsInvalid || !OnDisk(h, diskNo)) continue;
-                        uint ret;
-                        Native.DeviceIoControl(h, FSCTL_LOCK_VOLUME, IntPtr.Zero, 0, IntPtr.Zero, 0, out ret, IntPtr.Zero);
-                        if (Native.DeviceIoControl(h, FSCTL_DISMOUNT_VOLUME, IntPtr.Zero, 0, IntPtr.Zero, 0, out ret, IntPtr.Zero)) count++;
+                        count++;
+                        lock (Held)
+                        {
+                            List<Microsoft.Win32.SafeHandles.SafeFileHandle> l;
+                            if (!Held.TryGetValue(d.Key, out l)) Held[d.Key] = l = new List<Microsoft.Win32.SafeHandles.SafeFileHandle>();
+                            l.Add(h);
+                        }
                     }
+                    else h.Dispose();
                 } while (Native.FindNextVolume(fh, vn, vn.Capacity));
             }
             finally { Native.FindVolumeClose(fh); }
