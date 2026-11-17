@@ -1,6 +1,6 @@
 # Kết quả kiểm thử tích hợp UsbGuard — Microsoft Windows Server 2025 Datacenter (10.0.26100)
 
-Thời điểm: 2026-11-17 10:05:55 · Kết quả: **30/30 ca đạt**
+Thời điểm: 2026-11-17 16:44:20 · Kết quả: **34/34 ca đạt**
 
 | Mã | Ca kiểm thử | Kết quả | Chi tiết |
 |---|---|---|---|
@@ -10,10 +10,12 @@ Thời điểm: 2026-11-17 10:05:55 · Kết quả: **30/30 ca đạt**
 | TC04 | Chạy dưới tài khoản LocalSystem | Đạt | SERVICE_START_NAME = LocalSystem |
 | TC05 | USBSTOR bị tắt (Start = 4) | Đạt | Start = 4, sau 2 ms |
 | TC06 | Chính sách Removable Storage Deny_All = 1 | Đạt | Deny_All = 1 |
-| TC07 | Tự sửa khi registry bị đổi tay | Đạt | khôi phục Start = 4 sau 667 ms |
+| TC07 | Tự sửa khi registry bị đổi tay | Đạt | khôi phục Start = 4 sau 144 ms |
+| TC31 | Tầng 3: cấm cài thiết bị lớp USB Mass Storage, giữ nguyên mục của công ty | Đạt | DenyDeviceIDs = 1, mục UsbGuard: USB\Class_08&SubClass_06&Prot_50, USB\Class_08&SubClass_06&Prot_62, USB\Class_08; mục công ty còn: USB\VID_DEAD&PID_BEEF |
+| TC32 | Tầng 3 tự sửa khi bị xoá tay | Đạt | khôi phục sau 1982 ms |
 | TC08 | Admin "sc stop" bị từ chối | Đạt | mã 1052 (1052 = dịch vụ không nhận lệnh Stop), trạng thái Running |
 | TC09 | Admin Stop-Service (PowerShell) bị từ chối | Đạt | trạng thái Running |
-| TC10 | Bị kill tiến trình thì Windows tự chạy lại | Đạt | PID 6192 -> 2480, chạy lại sau 5462 ms |
+| TC10 | Bị kill tiến trình thì Windows tự chạy lại | Đạt | PID 4340 -> 7464, chạy lại sau 5451 ms |
 | TC11 | User thường "sc stop" bị từ chối quyền | Đạt | mã 5 (5 = Access is denied) |
 | TC12 | User thường không đổi được kiểu khởi động | Đạt | mã 5 |
 | TC13 | User thường không xoá được dịch vụ | Đạt | mã 5 |
@@ -21,26 +23,29 @@ Thời điểm: 2026-11-17 10:05:55 · Kết quả: **30/30 ca đạt**
 | TC15 | User thường gỡ cài đặt bị từ chối (kể cả biết mật khẩu) | Đạt | mã 5 |
 | TC16 | User thường không mở lại được driver USB | Đạt | mã 1 |
 | TC17 | Tạm dừng với sai mật khẩu bị từ chối | Đạt | mã 3 |
-| TC18 | Tạm dừng đúng mật khẩu: mở lại USB | Đạt | USBSTOR Start = 3, sau 984 ms |
-| TC19 | Bật lại chặn | Đạt | USBSTOR Start = 4, sau 1210 ms |
-| TC20 | Có whitelist: chuyển sang chế độ danh sách cho phép | Đạt | driver mở để USB được phép chạy, sau 1225 ms |
+| TC18 | Tạm dừng đúng mật khẩu: mở lại USB | Đạt | USBSTOR Start = 3, sau 1451 ms |
+| TC19 | Bật lại chặn | Đạt | USBSTOR Start = 4, sau 1132 ms |
+| TC20 | Có whitelist: chuyển sang chế độ danh sách cho phép | Đạt | driver mở để USB được phép chạy, sau 1221 ms |
 | TC21 | Xem whitelist | Đạt | có VID_0951&PID_1666 |
-| TC22 | Xoá whitelist: quay lại chặn tất cả | Đạt | sau 1121 ms |
+| TC22 | Xoá whitelist: quay lại chặn tất cả | Đạt | sau 1217 ms |
 | TC23 | Đổi mật khẩu quản trị | Đạt | đổi sang mật khẩu mới rồi đổi lại |
 | TC24 | Liệt kê ổ đĩa qua SetupAPI + IOCTL (gọi API Windows thật) | Đạt | đọc được loại bus của từng ổ |
 | TC25 | Không nhận nhầm ổ cứng trong máy là USB | Đạt | máy không cắm USB, kết quả 0 ổ USB |
 | TC26 | Xem trạng thái | Đạt | RUNNING, chế độ CHẶN TẤT CẢ |
+| TC33 | Trạng thái hiện đủ 3 tầng chặn | Đạt | Tầng 1 driver USBSTOR: TẮT (chặn) | Tầng 2 Deny_All: BẬT | Tầng 3 cấm cài USB lưu trữ: BẬT |
 | TC27 | Ghi nhật ký hoạt động | Đạt | C:\ProgramData\UsbGuard\usbguard.log |
 | TC28 | Gỡ với sai mật khẩu bị từ chối | Đạt | mã 3, trạng thái Running |
-| TC29 | Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá | Đạt | mất 1947 ms, sc query trả 1060 (không còn dịch vụ) |
-| TC30 | Trả lại mặc định Windows sau khi gỡ | Đạt | USBSTOR Start = 3, Deny_All = , không còn khoá cấu hình và thư mục cài |
+| TC29 | Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá | Đạt | mất 1879 ms, sc query trả 1060 (không còn dịch vụ) |
+| TC30 | Trả lại mặc định Windows sau khi gỡ | Đạt |  |
+| TC34 | Gỡ cài đặt chỉ xoá mục của UsbGuard, giữ chính sách có sẵn của công ty | Đạt | còn mục UsbGuard: 0, DenyDeviceIDs = 1, mục công ty: USB\VID_DEAD&PID_BEEF |
 
 ## Nhật ký chạy
 ```
 === KIỂM THỬ TÍCH HỢP USBGUARD ===
-Máy: runnervmm7ud1 | Microsoft Windows Server 2025 Datacenter 10.0.26100 | 2026-11-17 10:04:05
+Máy: runnervmm7ud1 | Microsoft Windows Server 2025 Datacenter 10.0.26100 | 2026-11-17 16:42:30
 Chạy bằng: runnervmm7ud1\runneradmin
 USBSTOR trước khi cài: Start = 3
+Chính sách có sẵn của 'công ty': DenyDeviceIDs\1 = USB\VID_DEAD&PID_BEEF
 
 --- TC01 Cài đặt dịch vụ ---
 > UsbGuard.exe install ********   (mã thoát 0)
@@ -76,7 +81,12 @@ USBSTOR trước khi cài: Start = 3
 [ĐẠT] TC06 Chính sách Removable Storage Deny_All = 1 — Deny_All = 1
 --- TC07 Sửa tay registry, dịch vụ phải tự khoá lại ---
   Đã đặt tay USBSTOR Start = 3
-[ĐẠT] TC07 Tự sửa khi registry bị đổi tay — khôi phục Start = 4 sau 667 ms
+[ĐẠT] TC07 Tự sửa khi registry bị đổi tay — khôi phục Start = 4 sau 144 ms
+
+--- TC31 Tầng 3: Device Installation Restrictions ---
+[ĐẠT] TC31 Tầng 3: cấm cài thiết bị lớp USB Mass Storage, giữ nguyên mục của công ty — DenyDeviceIDs = 1, mục UsbGuard: USB\Class_08&SubClass_06&Prot_50, USB\Class_08&SubClass_06&Prot_62, USB\Class_08; mục công ty còn: USB\VID_DEAD&PID_BEEF
+  Đã xoá tay mục UsbGuard3 (USB\Class_08)
+[ĐẠT] TC32 Tầng 3 tự sửa khi bị xoá tay — khôi phục sau 1982 ms
 
 --- TC08 Administrator thử dừng dịch vụ ---
 > sc.exe stop UsbGuard   (mã thoát 1052)
@@ -85,9 +95,9 @@ USBSTOR trước khi cài: Start = 3
 [ĐẠT] TC08 Admin "sc stop" bị từ chối — mã 1052 (1052 = dịch vụ không nhận lệnh Stop), trạng thái Running
 > Stop-Service UsbGuard  =>  Service 'UsbGuard - Chan USB Flash Disk (UsbGuard)' cannot be stopped due to the following error: Cannot stop 'UsbGuard' service on computer '.'.
 [ĐẠT] TC09 Admin Stop-Service (PowerShell) bị từ chối — trạng thái Running
-> taskkill.exe /F /PID 6192   (mã thoát 0)
-  SUCCESS: The process with PID 6192 has been terminated.
-[ĐẠT] TC10 Bị kill tiến trình thì Windows tự chạy lại — PID 6192 -> 2480, chạy lại sau 5462 ms
+> taskkill.exe /F /PID 4340   (mã thoát 0)
+  SUCCESS: The process with PID 4340 has been terminated.
+[ĐẠT] TC10 Bị kill tiến trình thì Windows tự chạy lại — PID 4340 -> 7464, chạy lại sau 5451 ms
 
 --- TC11 Người dùng thường (không phải Administrator) ---
   Đã tạo tài khoản thường 'ugthuong' (nhóm Users).
@@ -131,20 +141,20 @@ USBSTOR trước khi cài: Start = 3
 [ĐẠT] TC17 Tạm dừng với sai mật khẩu bị từ chối — mã 3
 > UsbGuard.exe pause 1 ********   (mã thoát 0)
   Đã tạm dừng chặn USB trong 1 phút.
-[ĐẠT] TC18 Tạm dừng đúng mật khẩu: mở lại USB — USBSTOR Start = 3, sau 984 ms
+[ĐẠT] TC18 Tạm dừng đúng mật khẩu: mở lại USB — USBSTOR Start = 3, sau 1451 ms
 > UsbGuard.exe resume ********   (mã thoát 0)
   Đã bật lại chặn USB.
-[ĐẠT] TC19 Bật lại chặn — USBSTOR Start = 4, sau 1210 ms
+[ĐẠT] TC19 Bật lại chặn — USBSTOR Start = 4, sau 1132 ms
 > UsbGuard.exe whitelist add VID_0951&PID_1666 ********   (mã thoát 0)
   OK.
-[ĐẠT] TC20 Có whitelist: chuyển sang chế độ danh sách cho phép — driver mở để USB được phép chạy, sau 1225 ms
+[ĐẠT] TC20 Có whitelist: chuyển sang chế độ danh sách cho phép — driver mở để USB được phép chạy, sau 1221 ms
 > UsbGuard.exe whitelist list   (mã thoát 0)
   1 thiết bị trong whitelist:
     - VID_0951&PID_1666
 [ĐẠT] TC21 Xem whitelist — có VID_0951&PID_1666
 > UsbGuard.exe whitelist remove VID_0951&PID_1666 ********   (mã thoát 0)
   OK.
-[ĐẠT] TC22 Xoá whitelist: quay lại chặn tất cả — sau 1121 ms
+[ĐẠT] TC22 Xoá whitelist: quay lại chặn tất cả — sau 1217 ms
 > UsbGuard.exe passwd ******** MatKhauMoi@2026   (mã thoát 0)
   Đã đổi mật khẩu.
 > UsbGuard.exe passwd MatKhauMoi@2026 ********   (mã thoát 0)
@@ -161,6 +171,7 @@ USBSTOR trước khi cài: Start = 3
 [ĐẠT] TC24 Liệt kê ổ đĩa qua SetupAPI + IOCTL (gọi API Windows thật) — đọc được loại bus của từng ổ
 > UsbGuard.exe devices   (mã thoát 0)
   Ổ USB đang cắm: 0
+  Thiết bị USB lưu trữ đang cắm (kể cả đang bị chặn): 0
 [ĐẠT] TC25 Không nhận nhầm ổ cứng trong máy là USB — máy không cắm USB, kết quả 0 ổ USB
 > UsbGuard.exe status   (mã thoát 0)
   SERVICE_NAME: UsbGuard 
@@ -173,11 +184,13 @@ USBSTOR trước khi cài: Start = 3
           WAIT_HINT          : 0x0
   Trạng thái chặn: ĐANG BẬT, chế độ CHẶN TẤT CẢ
   Whitelist (0 mục):
+  Tầng 1 driver USBSTOR: TẮT (chặn) | Tầng 2 Deny_All: BẬT | Tầng 3 cấm cài USB lưu trữ: BẬT
 [ĐẠT] TC26 Xem trạng thái — RUNNING, chế độ CHẶN TẤT CẢ
+[ĐẠT] TC33 Trạng thái hiện đủ 3 tầng chặn — Tầng 1 driver USBSTOR: TẮT (chặn) | Tầng 2 Deny_All: BẬT | Tầng 3 cấm cài USB lưu trữ: BẬT
 [ĐẠT] TC27 Ghi nhật ký hoạt động — C:\ProgramData\UsbGuard\usbguard.log
 
 --- Đo tài nguyên dịch vụ trong 60 giây ---
-  RAM (working set): trung bình 24.9 MB, cao nhất 25.1 MB; CPU trung bình 0.01 % (trên 4 lõi)
+  RAM (working set): trung bình 25.5 MB, cao nhất 25.7 MB; CPU trung bình 0 % (trên 4 lõi)
 
 --- TC28 Gỡ cài đặt ---
 > UsbGuard.exe uninstall sai-mat-khau-123   (mã thoát 3)
@@ -188,8 +201,9 @@ USBSTOR trước khi cài: Start = 3
 > sc.exe query UsbGuard   (mã thoát 1060)
   [SC] EnumQueryServicesStatus:OpenService FAILED 1060:
   The specified service does not exist as an installed service.
-[ĐẠT] TC29 Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá — mất 1947 ms, sc query trả 1060 (không còn dịch vụ)
-[ĐẠT] TC30 Trả lại mặc định Windows sau khi gỡ — USBSTOR Start = 3, Deny_All = , không còn khoá cấu hình và thư mục cài
+[ĐẠT] TC29 Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá — mất 1879 ms, sc query trả 1060 (không còn dịch vụ)
+[ĐẠT] TC30 Trả lại mặc định Windows sau khi gỡ — 
+[ĐẠT] TC34 Gỡ cài đặt chỉ xoá mục của UsbGuard, giữ chính sách có sẵn của công ty — còn mục UsbGuard: 0, DenyDeviceIDs = 1, mục công ty: USB\VID_DEAD&PID_BEEF
 
-=== KẾT QUẢ: 30/30 ca ĐẠT ===
+=== KẾT QUẢ: 34/34 ca ĐẠT ===
 ```

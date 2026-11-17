@@ -1,12 +1,12 @@
 {
   "he_dieu_hanh": "Microsoft Windows Server 2022 Datacenter",
   "phien_ban": "10.0.20348",
-  "dat": 30,
-  "tong": 30,
-  "tu_sua_ms": 1089,
-  "chay_lai_ms": 5320,
-  "ram_tb_mb": 21.9,
-  "ram_max_mb": 22.1,
+  "dat": 34,
+  "tong": 34,
+  "tu_sua_ms": 1087,
+  "chay_lai_ms": 5288,
+  "ram_tb_mb": 22.3,
+  "ram_max_mb": 22.5,
   "cpu_pct": 0.0,
   "ca": [
     {
@@ -37,7 +37,7 @@
       "id": "TC05",
       "ten": "USBSTOR bị tắt (Start = 4)",
       "dat": true,
-      "chi_tiet": "Start = 4, sau 1 ms"
+      "chi_tiet": "Start = 4, sau 2 ms"
     },
     {
       "id": "TC06",
@@ -49,7 +49,19 @@
       "id": "TC07",
       "ten": "Tự sửa khi registry bị đổi tay",
       "dat": true,
-      "chi_tiet": "khôi phục Start = 4 sau 1089 ms"
+      "chi_tiet": "khôi phục Start = 4 sau 1087 ms"
+    },
+    {
+      "id": "TC31",
+      "ten": "Tầng 3: cấm cài thiết bị lớp USB Mass Storage, giữ nguyên mục của công ty",
+      "dat": true,
+      "chi_tiet": "DenyDeviceIDs = 1, mục UsbGuard: USB\\Class_08&SubClass_06&Prot_50, USB\\Class_08&SubClass_06&Prot_62, USB\\Class_08; mục công ty còn: USB\\VID_DEAD&PID_BEEF"
+    },
+    {
+      "id": "TC32",
+      "ten": "Tầng 3 tự sửa khi bị xoá tay",
+      "dat": true,
+      "chi_tiet": "khôi phục sau 1998 ms"
     },
     {
       "id": "TC08",
@@ -67,7 +79,7 @@
       "id": "TC10",
       "ten": "Bị kill tiến trình thì Windows tự chạy lại",
       "dat": true,
-      "chi_tiet": "PID 5320 -> 744, chạy lại sau 5320 ms"
+      "chi_tiet": "PID 5060 -> 2280, chạy lại sau 5288 ms"
     },
     {
       "id": "TC11",
@@ -115,19 +127,19 @@
       "id": "TC18",
       "ten": "Tạm dừng đúng mật khẩu: mở lại USB",
       "dat": true,
-      "chi_tiet": "USBSTOR Start = 3, sau 879 ms"
+      "chi_tiet": "USBSTOR Start = 3, sau 209 ms"
     },
     {
       "id": "TC19",
       "ten": "Bật lại chặn",
       "dat": true,
-      "chi_tiet": "USBSTOR Start = 4, sau 1417 ms"
+      "chi_tiet": "USBSTOR Start = 4, sau 1525 ms"
     },
     {
       "id": "TC20",
       "ten": "Có whitelist: chuyển sang chế độ danh sách cho phép",
       "dat": true,
-      "chi_tiet": "driver mở để USB được phép chạy, sau 1414 ms"
+      "chi_tiet": "driver mở để USB được phép chạy, sau 1528 ms"
     },
     {
       "id": "TC21",
@@ -139,7 +151,7 @@
       "id": "TC22",
       "ten": "Xoá whitelist: quay lại chặn tất cả",
       "dat": true,
-      "chi_tiet": "sau 1306 ms"
+      "chi_tiet": "sau 1418 ms"
     },
     {
       "id": "TC23",
@@ -166,6 +178,12 @@
       "chi_tiet": "RUNNING, chế độ CHẶN TẤT CẢ"
     },
     {
+      "id": "TC33",
+      "ten": "Trạng thái hiện đủ 3 tầng chặn",
+      "dat": true,
+      "chi_tiet": "Tầng 1 driver USBSTOR: TẮT (chặn) | Tầng 2 Deny_All: BẬT | Tầng 3 cấm cài USB lưu trữ: BẬT\r"
+    },
+    {
       "id": "TC27",
       "ten": "Ghi nhật ký hoạt động",
       "dat": true,
@@ -181,13 +199,19 @@
       "id": "TC29",
       "ten": "Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá",
       "dat": true,
-      "chi_tiet": "mất 2801 ms, sc query trả 1060 (không còn dịch vụ)"
+      "chi_tiet": "mất 1092 ms, sc query trả 1060 (không còn dịch vụ)"
     },
     {
       "id": "TC30",
       "ten": "Trả lại mặc định Windows sau khi gỡ",
       "dat": true,
-      "chi_tiet": "USBSTOR Start = 3, Deny_All = , không còn khoá cấu hình và thư mục cài"
+      "chi_tiet": ""
+    },
+    {
+      "id": "TC34",
+      "ten": "Gỡ cài đặt chỉ xoá mục của UsbGuard, giữ chính sách có sẵn của công ty",
+      "dat": true,
+      "chi_tiet": "còn mục UsbGuard: 0, DenyDeviceIDs = 1, mục công ty: USB\\VID_DEAD&PID_BEEF"
     }
   ]
 }

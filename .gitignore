@@ -8,3 +8,5 @@ tests/obj/
 ho-so-du-an
 BAN-GIAO-PHIEN-*.md
 release/*.zip
+release/UsbGuard-khong-cai-dat/UsbGuard.exe
+dist/

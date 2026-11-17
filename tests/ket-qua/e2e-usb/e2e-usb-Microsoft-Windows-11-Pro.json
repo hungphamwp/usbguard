@@ -1,0 +1,110 @@
+﻿{
+    "phien_ban":  "10.0.26200",
+    "dat":  17,
+    "tong":  17,
+    "he_dieu_hanh":  "Microsoft Windows 11 Pro",
+    "ca":  [
+               {
+                   "id":  "E01",
+                   "ten":  "Trước khi cài: cắm USB thì Windows nhận ổ và ghi được file",
+                   "dat":  true,
+                   "chi_tiet":  "bus=USB, có ký tự ổ sau 3 ms, ghi file sau 3 ms"
+               },
+               {
+                   "id":  "E02",
+                   "ten":  "Cài bằng setup.exe: dịch vụ chạy, bật đủ 3 tầng chặn, có lối tắt Start Menu",
+                   "dat":  true,
+                   "chi_tiet":  "mã thoát 0, dịch vụ Running, USBSTOR Start=4, DenyDeviceIDs=1, lối tắt=True"
+               },
+               {
+                   "id":  "E03",
+                   "ten":  "Chặn tất cả: cắm USB không dùng được (không có ổ, không ghi được)",
+                   "dat":  true,
+                   "chi_tiet":  "thấy ký tự ổ: không lần nào, ghi được: False, thiết bị USB: Error / CM_PROB_DISABLED_SERVICE"
+               },
+               {
+                   "id":  "E04",
+                   "ten":  "Chặn tất cả: dịch vụ ghi nhật ký và báo người dùng",
+                   "dat":  true,
+                   "chi_tiet":  "2026-11-17 08:54:58 [WARN] Đã chặn thiết bị USB lưu trữ (Windows không nạp driver, mã lỗi thiết bị 32): USB Mass Storage Device | ID: USB\\VID_46F4\u0026PID_0001\\UGBLOCK0001\r"
+               },
+               {
+                   "id":  "E05",
+                   "ten":  "Chuột, bàn phím vẫn hoạt động; cắm bàn phím USB mới vẫn nhận",
+                   "dat":  true,
+                   "chi_tiet":  "trước 3 thiết bị (lỗi 0), sau khi cắm bàn phím USB 4 (lỗi 0): Standard PS/2 Keyboard=OK; HID-compliant mouse=OK; HID Keyboard Device=OK; PS/2 Compatible Mouse=OK"
+               },
+               {
+                   "id":  "E06",
+                   "ten":  "Tạm dừng: USB đang cắm (đang bị chặn) tự dùng được, không cần rút ra",
+                   "dat":  true,
+                   "chi_tiet":  "ghi được sau 143 ms kể từ lệnh tạm dừng"
+               },
+               {
+                   "id":  "E07",
+                   "ten":  "Bật lại chặn khi USB đang mở file: USB vẫn bị chặn",
+                   "dat":  true,
+                   "chi_tiet":  "còn ổ sau 25 giây: False; thiết bị bị vô hiệu hoá: "
+               },
+               {
+                   "id":  "E08",
+                   "ten":  "Lệnh devices thấy USB đang bị chặn và gợi ý đúng số serial",
+                   "dat":  true,
+                   "chi_tiet":  ""
+               },
+               {
+                   "id":  "E09",
+                   "ten":  "Thêm serial vào whitelist: USB đó dùng được (không cần rút ra)",
+                   "dat":  true,
+                   "chi_tiet":  "ghi được sau 1835 ms"
+               },
+               {
+                   "id":  "E10",
+                   "ten":  "Danh sách cho phép: USB lạ bị gỡ, ổ tồn tại tối đa 2 giây",
+                   "dat":  true,
+                   "chi_tiet":  "ổ xuất hiện không lần nào, ghi được: False"
+               },
+               {
+                   "id":  "E11",
+                   "ten":  "Danh sách cho phép: USB được phép vẫn dùng bình thường",
+                   "dat":  true,
+                   "chi_tiet":  ""
+               },
+               {
+                   "id":  "E12",
+                   "ten":  "Rút USB được phép ra cắm lại vẫn dùng được",
+                   "dat":  true,
+                   "chi_tiet":  "ghi được sau 0 ms"
+               },
+               {
+                   "id":  "E13",
+                   "ten":  "Xoá khỏi whitelist: USB đang cắm bị chặn lại ngay",
+                   "dat":  true,
+                   "chi_tiet":  "còn ổ: False"
+               },
+               {
+                   "id":  "E14",
+                   "ten":  "Kill dịch vụ khi USB đang cắm: Windows tự chạy lại, USB vẫn không dùng được",
+                   "dat":  true,
+                   "chi_tiet":  "dịch vụ: Running"
+               },
+               {
+                   "id":  "E15",
+                   "ten":  "Trình gỡ của bộ cài, sai mật khẩu: không gỡ được",
+                   "dat":  true,
+                   "chi_tiet":  ""
+               },
+               {
+                   "id":  "E16",
+                   "ten":  "Gỡ đúng mật khẩu: xoá dịch vụ, file, mục Apps \u0026 features, trả lại cấu hình USB",
+                   "dat":  true,
+                   "chi_tiet":  "USBSTOR Start=3, còn DenyDeviceIDs: False, còn mục gỡ cài đặt: 0, còn file: False"
+               },
+               {
+                   "id":  "E17",
+                   "ten":  "Sau khi gỡ: cắm USB dùng lại bình thường",
+                   "dat":  true,
+                   "chi_tiet":  "ghi được sau 0 ms"
+               }
+           ]
+}

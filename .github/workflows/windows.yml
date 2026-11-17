@@ -31,6 +31,15 @@ jobs:
         shell: pwsh
         run: ./tests/integration.ps1 -Exe bin/Release/net48/UsbGuard.exe
 
+      - name: Dong goi bo cai setup.exe (Inno Setup)
+        if: matrix.os == 'windows-2022'
+        shell: pwsh
+        run: |
+          $iscc = 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe'
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress | Out-Null }
+          & $iscc /Qp installer\UsbGuard.iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC loi $LASTEXITCODE" }
+
       - name: Tai ket qua
         if: always()
         uses: actions/upload-artifact@v4
@@ -39,13 +48,14 @@ jobs:
           path: |
             tests/ket-qua/
             bin/Release/net48/UsbGuard.exe
+            dist/*.exe
 
       - name: Chay thu bo cai cho nguoi dung (CAI-DAT.bat / QUAN-LY.bat / GO-CAI-DAT.bat)
         shell: pwsh
         timeout-minutes: 5
         run: |
-          Copy-Item bin/Release/net48/UsbGuard.exe release/UsbGuard-1.0/UsbGuard.exe -Force
-          Set-Location release/UsbGuard-1.0
+          Copy-Item bin/Release/net48/UsbGuard.exe release/UsbGuard-khong-cai-dat/UsbGuard.exe -Force
+          Set-Location release/UsbGuard-khong-cai-dat
           function Run-Bat($bat, [string[]]$lines) {
             $in = Join-Path $env:RUNNER_TEMP "$bat.in.txt"; $out = Join-Path $env:RUNNER_TEMP "$bat.out.txt"
             [IO.File]::WriteAllText($in, (($lines -join "`r`n") + "`r`n"))
