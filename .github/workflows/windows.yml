@@ -40,28 +40,30 @@ jobs:
             tests/ket-qua/
             bin/Release/net48/UsbGuard.exe
 
-      - name: Chay thu bo cai cho nguoi dung (CAI-DAT.bat / GO-CAI-DAT.bat)
-        shell: cmd
+      - name: Chay thu bo cai cho nguoi dung (CAI-DAT.bat / QUAN-LY.bat / GO-CAI-DAT.bat)
+        shell: pwsh
         timeout-minutes: 5
         run: |
-          copy /y bin\Release\net48\UsbGuard.exe release\UsbGuard-1.0\UsbGuard.exe
-          cd release\UsbGuard-1.0
-          (echo MatKhauGoi@2026& echo MatKhauGoi@2026& echo.) | CAI-DAT.bat
-          sc query UsbGuard | find "RUNNING" || exit /b 1
-          reg query HKLM\SYSTEM\CurrentControlSet\Services\USBSTOR /v Start | find "0x4" || exit /b 1
-          > menu.txt echo 1
-          >> menu.txt echo.
-          >> menu.txt echo 4
-          >> menu.txt echo.
-          >> menu.txt echo 7
-          >> menu.txt echo.
-          >> menu.txt echo 0
-          call QUAN-LY.bat < menu.txt > menu-out.txt 2>&1
-          type menu-out.txt
-          find "RUNNING" menu-out.txt || exit /b 1
-          find "USB" menu-out.txt | find ": 0" || exit /b 1
-          find "whitelist" menu-out.txt || exit /b 1
-          (echo MatKhauGoi@2026& echo.) | GO-CAI-DAT.bat
-          sc query UsbGuard && exit /b 1
-          reg query HKLM\SYSTEM\CurrentControlSet\Services\USBSTOR /v Start | find "0x3" || exit /b 1
-          echo BO CAI CHAY DUNG
+          Copy-Item bin/Release/net48/UsbGuard.exe release/UsbGuard-1.0/UsbGuard.exe -Force
+          Set-Location release/UsbGuard-1.0
+          function Run-Bat($bat, [string[]]$lines) {
+            $in = Join-Path $env:RUNNER_TEMP "$bat.in.txt"; $out = Join-Path $env:RUNNER_TEMP "$bat.out.txt"
+            [IO.File]::WriteAllText($in, (($lines -join "`r`n") + "`r`n"))
+            cmd.exe /d /c "$bat < `"$in`" > `"$out`" 2>&1"
+            $t = Get-Content $out -Raw -Encoding UTF8
+            Write-Host "===== $bat (ma thoat $LASTEXITCODE) ====="; Write-Host $t
+            return $t
+          }
+          $pw = 'MatKhauGoi@2026'
+          $o = Run-Bat 'CAI-DAT.bat' @($pw, $pw, '')
+          if ($o -notmatch 'RUNNING') { throw 'CAI-DAT.bat: dich vu khong chay' }
+          if ((Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\USBSTOR).Start -ne 4) { throw 'USBSTOR chua bi chan' }
+          $o = Run-Bat 'QUAN-LY.bat' @('1', '', '4', '', '7', '', '0')
+          if ($o -notmatch 'RUNNING') { throw 'QUAN-LY lua chon 1 khong in trang thai' }
+          if ($o -notmatch ': 0') { throw 'QUAN-LY lua chon 4 khong liet ke USB' }
+          if ($o -notmatch 'whitelist') { throw 'QUAN-LY lua chon 7 khong hien danh sach' }
+          $o = Run-Bat 'GO-CAI-DAT.bat' @($pw, '')
+          sc.exe query UsbGuard | Out-Null
+          if ($LASTEXITCODE -ne 1060) { throw 'GO-CAI-DAT.bat: dich vu van con' }
+          if ((Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\USBSTOR).Start -ne 3) { throw 'USBSTOR chua tra ve mac dinh' }
+          Write-Host 'BO CAI CHAY DUNG'
