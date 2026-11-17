@@ -42,13 +42,25 @@ jobs:
 
       - name: Chay thu bo cai cho nguoi dung (CAI-DAT.bat / GO-CAI-DAT.bat)
         shell: cmd
+        timeout-minutes: 5
         run: |
           copy /y bin\Release\net48\UsbGuard.exe release\UsbGuard-1.0\UsbGuard.exe
           cd release\UsbGuard-1.0
           (echo MatKhauGoi@2026& echo MatKhauGoi@2026& echo.) | CAI-DAT.bat
           sc query UsbGuard | find "RUNNING" || exit /b 1
           reg query HKLM\SYSTEM\CurrentControlSet\Services\USBSTOR /v Start | find "0x4" || exit /b 1
-          (echo 1& echo.& echo 0& echo.) | QUAN-LY.bat
+          > menu.txt echo 1
+          >> menu.txt echo.
+          >> menu.txt echo 4
+          >> menu.txt echo.
+          >> menu.txt echo 7
+          >> menu.txt echo.
+          >> menu.txt echo 0
+          call QUAN-LY.bat < menu.txt > menu-out.txt 2>&1
+          type menu-out.txt
+          find "RUNNING" menu-out.txt || exit /b 1
+          find "USB" menu-out.txt | find ": 0" || exit /b 1
+          find "whitelist" menu-out.txt || exit /b 1
           (echo MatKhauGoi@2026& echo.) | GO-CAI-DAT.bat
           sc query UsbGuard && exit /b 1
           reg query HKLM\SYSTEM\CurrentControlSet\Services\USBSTOR /v Start | find "0x3" || exit /b 1
