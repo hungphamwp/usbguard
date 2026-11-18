@@ -3,11 +3,11 @@
   "phien_ban": "10.0.26100",
   "dat": 34,
   "tong": 34,
-  "tu_sua_ms": 144,
-  "chay_lai_ms": 5451,
-  "ram_tb_mb": 25.5,
-  "ram_max_mb": 25.7,
-  "cpu_pct": 0.0,
+  "tu_sua_ms": 451,
+  "chay_lai_ms": 5520,
+  "ram_tb_mb": 25.4,
+  "ram_max_mb": 25.6,
+  "cpu_pct": 0.03,
   "ca": [
     {
       "id": "TC01",
@@ -49,7 +49,7 @@
       "id": "TC07",
       "ten": "Tự sửa khi registry bị đổi tay",
       "dat": true,
-      "chi_tiet": "khôi phục Start = 4 sau 144 ms"
+      "chi_tiet": "khôi phục Start = 4 sau 451 ms"
     },
     {
       "id": "TC31",
@@ -61,7 +61,7 @@
       "id": "TC32",
       "ten": "Tầng 3 tự sửa khi bị xoá tay",
       "dat": true,
-      "chi_tiet": "khôi phục sau 1982 ms"
+      "chi_tiet": "khôi phục sau 1995 ms"
     },
     {
       "id": "TC08",
@@ -79,7 +79,7 @@
       "id": "TC10",
       "ten": "Bị kill tiến trình thì Windows tự chạy lại",
       "dat": true,
-      "chi_tiet": "PID 4340 -> 7464, chạy lại sau 5451 ms"
+      "chi_tiet": "PID 7348 -> 2124, chạy lại sau 5520 ms"
     },
     {
       "id": "TC11",
@@ -127,19 +127,19 @@
       "id": "TC18",
       "ten": "Tạm dừng đúng mật khẩu: mở lại USB",
       "dat": true,
-      "chi_tiet": "USBSTOR Start = 3, sau 1451 ms"
+      "chi_tiet": "USBSTOR Start = 3, sau 1429 ms"
     },
     {
       "id": "TC19",
       "ten": "Bật lại chặn",
       "dat": true,
-      "chi_tiet": "USBSTOR Start = 4, sau 1132 ms"
+      "chi_tiet": "USBSTOR Start = 4, sau 1250 ms"
     },
     {
       "id": "TC20",
       "ten": "Có whitelist: chuyển sang chế độ danh sách cho phép",
       "dat": true,
-      "chi_tiet": "driver mở để USB được phép chạy, sau 1221 ms"
+      "chi_tiet": "driver mở để USB được phép chạy, sau 1209 ms"
     },
     {
       "id": "TC21",
@@ -151,7 +151,7 @@
       "id": "TC22",
       "ten": "Xoá whitelist: quay lại chặn tất cả",
       "dat": true,
-      "chi_tiet": "sau 1217 ms"
+      "chi_tiet": "sau 1112 ms"
     },
     {
       "id": "TC23",
@@ -199,7 +199,7 @@
       "id": "TC29",
       "ten": "Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá",
       "dat": true,
-      "chi_tiet": "mất 1879 ms, sc query trả 1060 (không còn dịch vụ)"
+      "chi_tiet": "mất 1897 ms, sc query trả 1060 (không còn dịch vụ)"
     },
     {
       "id": "TC30",

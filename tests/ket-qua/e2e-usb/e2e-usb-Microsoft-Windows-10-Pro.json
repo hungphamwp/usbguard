@@ -8,7 +8,7 @@
                    "id":  "E01",
                    "ten":  "Trước khi cài: cắm USB thì Windows nhận ổ và ghi được file",
                    "dat":  true,
-                   "chi_tiet":  "bus=USB, có ký tự ổ sau 2 ms, ghi file sau 2 ms"
+                   "chi_tiet":  "bus=USB, có ký tự ổ sau 3 ms, ghi file sau 3 ms"
                },
                {
                    "id":  "E02",
@@ -26,7 +26,7 @@
                    "id":  "E04",
                    "ten":  "Chặn tất cả: dịch vụ ghi nhật ký và báo người dùng",
                    "dat":  true,
-                   "chi_tiet":  "2026-11-17 08:49:30 [WARN] Đã chặn thiết bị USB lưu trữ (Windows không nạp driver, mã lỗi thiết bị 32): USB Mass Storage Device | ID: USB\\VID_46F4\u0026PID_0001\\UGBLOCK0001\r"
+                   "chi_tiet":  "2026-11-17 18:57:50 [WARN] Đã chặn thiết bị USB lưu trữ (Windows không nạp driver, mã lỗi thiết bị 32): USB Mass Storage Device | ID: USB\\VID_46F4\u0026PID_0001\\UGBLOCK0001\r"
                },
                {
                    "id":  "E05",
@@ -38,7 +38,7 @@
                    "id":  "E06",
                    "ten":  "Tạm dừng: USB đang cắm (đang bị chặn) tự dùng được, không cần rút ra",
                    "dat":  true,
-                   "chi_tiet":  "ghi được sau 1872 ms kể từ lệnh tạm dừng"
+                   "chi_tiet":  "ghi được sau 504 ms kể từ lệnh tạm dừng"
                },
                {
                    "id":  "E07",
@@ -56,7 +56,7 @@
                    "id":  "E09",
                    "ten":  "Thêm serial vào whitelist: USB đó dùng được (không cần rút ra)",
                    "dat":  true,
-                   "chi_tiet":  "ghi được sau 614 ms"
+                   "chi_tiet":  "ghi được sau 485 ms"
                },
                {
                    "id":  "E10",
@@ -74,7 +74,7 @@
                    "id":  "E12",
                    "ten":  "Rút USB được phép ra cắm lại vẫn dùng được",
                    "dat":  true,
-                   "chi_tiet":  "ghi được sau 16376 ms"
+                   "chi_tiet":  "ghi được sau 0 ms"
                },
                {
                    "id":  "E13",
