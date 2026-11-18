@@ -170,13 +170,14 @@ Check 'E09' 'Thêm serial vào whitelist: USB đó dùng được (không cần 
 $logLen = (UgLog).Length
 Clean-Desktop
 Plug A
+# USB lạ có thể bị gỡ (ổ hiện rồi mất) hoặc vẫn đang bị vô hiệu hoá từ ca E07 (không bao giờ lên ổ): cả 2 đều là chặn đúng và có nhật ký.
 # Windows 10 có lúc mất hơn 15 giây để cài lại driver cho USB đã bị gỡ trước đó: theo dõi đủ lâu để USB kịp lên và bị gỡ.
 $w = Watch A 40 -TryWrite
 $newLog = (UgLog).Substring($logLen)
 L ("  nhật ký UsbGuard: " + (($newLog -split "`n") | Where-Object { $_ -match 'gỡ|chặn|Buộc' } | Select-Object -First 3) -join ' / ')
 $expose = if ($null -ne $w.vol_dau) { $w.vol_cuoi - $w.vol_dau } else { 0 }
 Shot 'e10-whitelist-chan-usb-la'
-Check 'E10' 'Danh sách cho phép: USB lạ bị gỡ, ổ tồn tại tối đa 2 giây' (-not $w.con_vol -and -not $w.con_disk -and $expose -le 2000 -and $newLog -match 'không được phép') ("ổ xuất hiện " + $(if ($null -ne $w.vol_dau) { "lúc $($w.vol_dau) ms, mất lúc $($w.vol_cuoi) ms, tồn tại khoảng $expose ms" } else { 'không lần nào' }) + ", ghi được: $($w.ghi_duoc)")
+Check 'E10' 'Danh sách cho phép: USB lạ bị gỡ, ổ tồn tại tối đa 2 giây' (-not $w.con_vol -and -not $w.con_disk -and $expose -le 2000 -and $newLog -match 'không được phép|Đã chặn thiết bị USB') ("ổ xuất hiện " + $(if ($null -ne $w.vol_dau) { "lúc $($w.vol_dau) ms, mất lúc $($w.vol_cuoi) ms, tồn tại khoảng $expose ms" } else { 'không lần nào' }) + ", ghi được: $($w.ghi_duoc)")
 Check 'E11' 'Danh sách cho phép: USB được phép vẫn dùng bình thường' (Accessible B) ''
 
 # GUI: chụp màn hình giao diện quản lý khi đang có 1 USB được phép + 1 USB bị chặn
