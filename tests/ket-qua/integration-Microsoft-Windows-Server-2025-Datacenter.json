@@ -1,13 +1,13 @@
 {
   "he_dieu_hanh": "Microsoft Windows Server 2025 Datacenter",
   "phien_ban": "10.0.26100",
-  "dat": 34,
-  "tong": 34,
-  "tu_sua_ms": 451,
-  "chay_lai_ms": 5520,
-  "ram_tb_mb": 25.4,
-  "ram_max_mb": 25.6,
-  "cpu_pct": 0.03,
+  "dat": 37,
+  "tong": 37,
+  "tu_sua_ms": 677,
+  "chay_lai_ms": 5437,
+  "ram_tb_mb": 26.4,
+  "ram_max_mb": 26.7,
+  "cpu_pct": 0.04,
   "ca": [
     {
       "id": "TC01",
@@ -49,7 +49,7 @@
       "id": "TC07",
       "ten": "Tự sửa khi registry bị đổi tay",
       "dat": true,
-      "chi_tiet": "khôi phục Start = 4 sau 451 ms"
+      "chi_tiet": "khôi phục Start = 4 sau 677 ms"
     },
     {
       "id": "TC31",
@@ -61,7 +61,7 @@
       "id": "TC32",
       "ten": "Tầng 3 tự sửa khi bị xoá tay",
       "dat": true,
-      "chi_tiet": "khôi phục sau 1995 ms"
+      "chi_tiet": "khôi phục sau 1890 ms"
     },
     {
       "id": "TC08",
@@ -79,7 +79,7 @@
       "id": "TC10",
       "ten": "Bị kill tiến trình thì Windows tự chạy lại",
       "dat": true,
-      "chi_tiet": "PID 7348 -> 2124, chạy lại sau 5520 ms"
+      "chi_tiet": "PID 4108 -> 2336, chạy lại sau 5437 ms"
     },
     {
       "id": "TC11",
@@ -127,19 +127,19 @@
       "id": "TC18",
       "ten": "Tạm dừng đúng mật khẩu: mở lại USB",
       "dat": true,
-      "chi_tiet": "USBSTOR Start = 3, sau 1429 ms"
+      "chi_tiet": "USBSTOR Start = 3, sau 438 ms"
     },
     {
       "id": "TC19",
       "ten": "Bật lại chặn",
       "dat": true,
-      "chi_tiet": "USBSTOR Start = 4, sau 1250 ms"
+      "chi_tiet": "USBSTOR Start = 4, sau 1913 ms"
     },
     {
       "id": "TC20",
       "ten": "Có whitelist: chuyển sang chế độ danh sách cho phép",
       "dat": true,
-      "chi_tiet": "driver mở để USB được phép chạy, sau 1209 ms"
+      "chi_tiet": "driver mở để USB được phép chạy, sau 1972 ms"
     },
     {
       "id": "TC21",
@@ -151,7 +151,7 @@
       "id": "TC22",
       "ten": "Xoá whitelist: quay lại chặn tất cả",
       "dat": true,
-      "chi_tiet": "sau 1112 ms"
+      "chi_tiet": "sau 1771 ms"
     },
     {
       "id": "TC23",
@@ -190,6 +190,24 @@
       "chi_tiet": "C:\\ProgramData\\UsbGuard\\usbguard.log"
     },
     {
+      "id": "TC35",
+      "ten": "Mật khẩu lưu bằng PBKDF2-SHA256 600.000 vòng, có muối",
+      "dat": true,
+      "chi_tiet": "pbkdf2-sha256 600000"
+    },
+    {
+      "id": "TC36",
+      "ten": "Sai 5 lần liên tiếp: bị khoá, nhập đúng mật khẩu cũng bị từ chối tới khi hết khoá",
+      "dat": true,
+      "chi_tiet": "lần sai thứ 5: Sai mật khẩu quản trị. Đã sai 5 lần liên tiếp, thử lại sau 30 giây. | nhập đúng khi đang khoá: mã 3"
+    },
+    {
+      "id": "TC37",
+      "ten": "Hết 30 giây khoá: đúng mật khẩu dùng lại được, bộ đếm sai về 0",
+      "dat": true,
+      "chi_tiet": "mã 0, số lần sai còn lại 0"
+    },
+    {
       "id": "TC28",
       "ten": "Gỡ với sai mật khẩu bị từ chối",
       "dat": true,
@@ -199,7 +217,7 @@
       "id": "TC29",
       "ten": "Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá",
       "dat": true,
-      "chi_tiet": "mất 1897 ms, sc query trả 1060 (không còn dịch vụ)"
+      "chi_tiet": "mất 3159 ms, sc query trả 1060 (không còn dịch vụ)"
     },
     {
       "id": "TC30",

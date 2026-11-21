@@ -1,14 +1,14 @@
 ﻿{
     "phien_ban":  "10.0.26200",
-    "dat":  17,
-    "tong":  17,
+    "dat":  20,
+    "tong":  20,
     "he_dieu_hanh":  "Microsoft Windows 11 Pro",
     "ca":  [
                {
                    "id":  "E01",
                    "ten":  "Trước khi cài: cắm USB thì Windows nhận ổ và ghi được file",
                    "dat":  true,
-                   "chi_tiet":  "bus=USB, có ký tự ổ sau 8 ms, ghi file sau 8 ms"
+                   "chi_tiet":  "bus=USB, có ký tự ổ sau 3 ms, ghi file sau 3 ms"
                },
                {
                    "id":  "E02",
@@ -26,7 +26,7 @@
                    "id":  "E04",
                    "ten":  "Chặn tất cả: dịch vụ ghi nhật ký và báo người dùng",
                    "dat":  true,
-                   "chi_tiet":  "2026-11-17 19:04:07 [WARN] Đã chặn thiết bị USB lưu trữ (Windows không nạp driver, mã lỗi thiết bị 32): USB Mass Storage Device | ID: USB\\VID_46F4\u0026PID_0001\\UGBLOCK0001\r"
+                   "chi_tiet":  "2026-11-21 00:43:29 [WARN] Đã chặn thiết bị USB lưu trữ (Windows không nạp driver, mã lỗi thiết bị 32): USB Mass Storage Device | ID: USB\\VID_46F4\u0026PID_0001\\UGBLOCK0001\r"
                },
                {
                    "id":  "E05",
@@ -38,7 +38,7 @@
                    "id":  "E06",
                    "ten":  "Tạm dừng: USB đang cắm (đang bị chặn) tự dùng được, không cần rút ra",
                    "dat":  true,
-                   "chi_tiet":  "ghi được sau 1341 ms kể từ lệnh tạm dừng"
+                   "chi_tiet":  "ghi được sau 146 ms kể từ lệnh tạm dừng"
                },
                {
                    "id":  "E07",
@@ -56,7 +56,7 @@
                    "id":  "E09",
                    "ten":  "Thêm serial vào whitelist: USB đó dùng được (không cần rút ra)",
                    "dat":  true,
-                   "chi_tiet":  "ghi được sau 665 ms"
+                   "chi_tiet":  "ghi được sau 297 ms"
                },
                {
                    "id":  "E10",
@@ -81,6 +81,24 @@
                    "ten":  "Xoá khỏi whitelist: USB đang cắm bị chặn lại ngay",
                    "dat":  true,
                    "chi_tiet":  "còn ổ: False"
+               },
+               {
+                   "id":  "E18",
+                   "ten":  "USB bị chặn khi đang cắm (Windows đã tháo) vẫn hiện trong danh sách thiết bị",
+                   "dat":  true,
+                   "chi_tiet":  ""
+               },
+               {
+                   "id":  "E19",
+                   "ten":  "Cho phép lại USB đang bị tháo: tự hiện lại trong This PC, không cần rút ra cắm lại",
+                   "dat":  true,
+                   "chi_tiet":  "ghi được sau 1591 ms; nhật ký: 2026-11-21 00:46:42 [INFO] USB được phép nhưng đã bị tháo khỏi Windows, tự nạp lại (thay cho rút ra cắm lại): USB Mass Storage Device | USB\\VID_46F4\u0026PID_0001\\UGALLOW0002 | cổng 3\r"
+               },
+               {
+                   "id":  "E20",
+                   "ten":  "Tạm dừng khi USB đang bị tháo: tự dùng được, không cần rút ra cắm lại",
+                   "dat":  true,
+                   "chi_tiet":  "ghi được sau 1834 ms"
                },
                {
                    "id":  "E14",
