@@ -126,6 +126,7 @@ namespace UsbGuard
                     Console.WriteLine("- " + d.Name + "  [" + st + "]");
                     Console.WriteLine("    ID: " + d.InstanceId);
                     Console.WriteLine("    Gợi ý thêm whitelist: " + d.SuggestedEntry);
+                    if (d.Port != null) Console.WriteLine("    Cổng: " + d.Port.Port + " trên hub " + d.Port.HubId);
                 }
             }
             return 0;

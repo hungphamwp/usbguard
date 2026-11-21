@@ -207,11 +207,14 @@ L ($devOut.Trim())
 Check 'E18' 'USB bị chặn khi đang cắm (Windows đã tháo) vẫn hiện trong danh sách thiết bị' ($devOut -match $Serial.B) ((($devOut -split "`n") | Where-Object { $_ -match 'bị chặn|đã tháo' }) -join ' / ')
 App @('whitelist', 'add', $Serial.B, $Pw) | Out-Null
 $w = Watch B 45 -TryWrite -UntilWritable
+L ("  nhật ký dịch vụ: " + ((((UgLog) -split "`n") | Select-Object -Last 12) -join ' || '))
+L ((App @('devices')).Trim())
 Check 'E19' 'Cho phép lại USB đang bị tháo: tự hiện lại trong This PC, không cần rút ra cắm lại' ($w.ghi_duoc) ("ghi được sau $($w.ghi_ms) ms; nhật ký: " + ((((UgLog) -split "`n") | Where-Object { $_ -match 'tự nạp lại' } | Select-Object -Last 1)))
 App @('whitelist', 'remove', $Serial.B, $Pw) | Out-Null
 $w = Watch B 20 -UntilGone
 App @('pause', '5', $Pw) | Out-Null
 $w = Watch B 45 -TryWrite -UntilWritable
+L ("  nhật ký dịch vụ: " + ((((UgLog) -split "`n") | Select-Object -Last 8) -join ' || '))
 Check 'E20' 'Tạm dừng khi USB đang bị tháo: tự dùng được, không cần rút ra cắm lại' ($w.ghi_duoc) ("ghi được sau $($w.ghi_ms) ms")
 App @('resume', $Pw) | Out-Null
 $w = Watch B 20 -UntilGone

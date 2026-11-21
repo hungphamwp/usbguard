@@ -43,7 +43,7 @@ namespace UsbGuard
         private static Guid HubGuid = new Guid("f18a0e88-c30c-11d0-8815-00a0c906bed8");
         private const uint IOCTL_USB_GET_NODE_CONNECTION_INFORMATION = 0x22040C;
         private const uint IOCTL_USB_HUB_CYCLE_PORT = 0x220444;
-        private const uint CM_DRP_ADDRESS = 0x1D;
+        private const uint CM_DRP_ADDRESS = 0x1D, CM_DRP_LOCATION_INFORMATION = 0xE;
 
         /// <summary>Lấy vị trí cổng của nút thiết bị USB (nếu là 1 giao diện của thiết bị tổng hợp thì lấy nút cha).</summary>
         public static UsbPortRef Locate(uint devInst)
@@ -59,10 +59,23 @@ namespace UsbGuard
                 }
                 uint hub;
                 if (Native.CM_Get_Parent(out hub, devInst, 0) != 0) return null;
+                int port = 0;
                 var buf = new byte[4];
                 uint len = 4, type;
-                if (Native.CM_Get_DevNode_Registry_Property(devInst, CM_DRP_ADDRESS, out type, buf, ref len, 0) != 0) return null;
-                int port = BitConverter.ToInt32(buf, 0);
+                if (Native.CM_Get_DevNode_Registry_Property(devInst, CM_DRP_ADDRESS, out type, buf, ref len, 0) == 0)
+                    port = BitConverter.ToInt32(buf, 0);
+                if (port <= 0 || port > 255)
+                {
+                    // Nút đã bị tháo an toàn có thể không trả Address: đọc "Port_#0002.Hub_#0001" Windows lưu sẵn.
+                    var lb = new byte[512];
+                    uint ll = (uint)lb.Length;
+                    if (Native.CM_Get_DevNode_Registry_Property(devInst, CM_DRP_LOCATION_INFORMATION, out type, lb, ref ll, 0) == 0)
+                    {
+                        string loc = Encoding.Unicode.GetString(lb, 0, (int)Math.Min(ll, (uint)lb.Length)).TrimEnd('\0');
+                        var m = System.Text.RegularExpressions.Regex.Match(loc, @"Port_#(\d+)");
+                        if (m.Success) int.TryParse(m.Groups[1].Value, out port);
+                    }
+                }
                 if (port <= 0 || port > 255) return null;
                 return new UsbPortRef { InstanceId = id, HubId = DeviceId(hub), Port = port };
             }
