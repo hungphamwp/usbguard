@@ -92,6 +92,24 @@ namespace UsbGuard
             if (!l.Exists(x => x.Equals(id, StringComparison.OrdinalIgnoreCase))) { l.Add(id); SetDisabledDevices(l); }
         }
 
+        /// <summary>Vị trí cổng của các USB lưu trữ đang/vừa cắm (dịch vụ ghi, giao diện đọc), để nhận ra USB đã bị tháo nhưng vẫn cắm.</summary>
+        public static List<UsbPortRef> GetSeenUsb()
+        {
+            var l = new List<UsbPortRef>();
+            foreach (var s in GetMulti("SeenUsb")) { var r = UsbPortRef.Parse(s); if (r != null) l.Add(r); }
+            return l;
+        }
+        public static List<UsbPortRef> GetSeenUsbSafe() { try { return GetSeenUsb(); } catch { return new List<UsbPortRef>(); } }
+        public static void SetSeenUsb(List<UsbPortRef> list) { SetMulti("SeenUsb", list.ConvertAll(r => r.Serialize())); }
+
+        /// <summary>Số lần nhập sai mật khẩu liên tiếp và thời điểm hết khoá (lưu ở HKLM nên đóng/mở lại phần mềm không xoá được).</summary>
+        public static int FailCount { get { return (int)GetLong("AuthFails"); } set { SetLong("AuthFails", value); } }
+        public static DateTime LockUntilUtc
+        {
+            get { long t = GetLong("AuthLockUntil"); try { return t > 0 ? new DateTime(t, DateTimeKind.Utc) : DateTime.MinValue; } catch { return DateTime.MinValue; } }
+            set { SetLong("AuthLockUntil", value.Ticks); }
+        }
+
         public static void Delete()
         {
             using (var hk = Reg.Hklm()) hk.DeleteSubKeyTree(KeyPath, false);

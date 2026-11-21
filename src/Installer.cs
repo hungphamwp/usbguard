@@ -88,9 +88,10 @@ namespace UsbGuard
         {
             if (!IsAdmin()) { Console.WriteLine("Cần chạy với quyền Administrator."); return 5; }
             if (!ServiceExists()) { Console.WriteLine("UsbGuard chưa được cài đặt."); return 0; }
-            if (Settings.Exists() && !Auth.Verify(password, Settings.AuthHash))
+            string err;
+            if (Settings.Exists() && !AdminAuth.Check(password, "gỡ cài đặt", out err))
             {
-                Console.WriteLine("Sai mật khẩu quản trị.");
+                Console.WriteLine(err);
                 return 3;
             }
 

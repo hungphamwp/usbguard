@@ -211,6 +211,21 @@ $logFile = Join-Path $env:ProgramData 'UsbGuard\usbguard.log'
 $logTxt = if (Test-Path $logFile) { Get-Content $logFile -Raw -Encoding UTF8 } else { '' }
 Check 'TC27' 'Ghi nhật ký hoạt động' ($logTxt -match 'Chế độ' -and $logTxt -match 'khởi động') $logFile
 
+# ---------- TC35-37: chống dò mật khẩu ----------
+Say ""; Say "--- TC35 Chống dò mật khẩu ---"
+$cfg = Get-ItemProperty 'HKLM:\SOFTWARE\UsbGuard' -ErrorAction SilentlyContinue
+Check 'TC35' 'Mật khẩu lưu bằng PBKDF2-SHA256 600.000 vòng, có muối' ([string]$cfg.AuthHash -like 'pbkdf2-sha256$600000$*') (([string]$cfg.AuthHash -split '\$')[0..1] -join ' ')
+$r5 = $null
+for ($i = 1; $i -le 5; $i++) { $r5 = Run-Exe @('pause', '1', "sai-mat-khau-$i") }
+$sw = [Diagnostics.Stopwatch]::StartNew()
+$r = Run-Exe @('pause', '1', $Pw)
+$fails = (Get-ItemProperty 'HKLM:\SOFTWARE\UsbGuard').AuthFails
+Check 'TC36' 'Sai 5 lần liên tiếp: bị khoá, nhập đúng mật khẩu cũng bị từ chối tới khi hết khoá' ($r5.out -match 'thử lại sau' -and $r.rc -eq 3 -and $r.out -match 'thử lại sau' -and (Get-DenyAll) -eq 1 -and $fails -eq 5) ("lần sai thứ 5: " + (($r5.out -split "`n") | Where-Object { $_ -match 'thử lại' } | Select-Object -First 1).Trim() + " | nhập đúng khi đang khoá: mã $($r.rc)")
+Start-Sleep -Milliseconds ([math]::Max(0, 31500 - $sw.ElapsedMilliseconds))
+$r = Run-Exe @('resume', $Pw)
+$fails = (Get-ItemProperty 'HKLM:\SOFTWARE\UsbGuard').AuthFails
+Check 'TC37' 'Hết 30 giây khoá: đúng mật khẩu dùng lại được, bộ đếm sai về 0' ($r.rc -eq 0 -and $fails -eq 0) ("mã $($r.rc), số lần sai còn lại $fails")
+
 # ---------- Đo tài nguyên (không tính đạt/lỗi, chỉ ghi số đo) ----------
 Say ""; Say "--- Đo tài nguyên dịch vụ trong 60 giây ---"
 $procId = Svc-Pid

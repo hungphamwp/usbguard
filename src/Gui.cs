@@ -90,8 +90,6 @@ namespace UsbGuard
             _btnAdd = Btn("Thêm theo ID…"), _btnRemove = Btn("Xoá mục đã chọn"), _btnOpenLog = Btn("Mở thư mục nhật ký");
 
         private readonly System.Windows.Forms.Timer _timer = new System.Windows.Forms.Timer { Interval = 2000 };
-        private int _failCount;
-        private DateTime _lockedUntil = DateTime.MinValue;
         private string _lastLog = "";
 
         private static Button Btn(string text)
@@ -191,7 +189,7 @@ namespace UsbGuard
             else if (Settings.IsPaused)
             {
                 SetHeader(Amber, "ĐANG TẠM DỪNG CHẶN", "USB dùng bình thường đến " + Settings.PauseUntilUtc.ToLocalTime().ToString("HH:mm dd/MM/yyyy") +
-                          ", sau đó tự chặn lại. " + svc + ".");
+                          ", sau đó tự chặn lại. Muốn chặn ngay: bấm \"Bật lại chặn\". " + svc + ".");
             }
             else if (wl.Count == 0)
             {
@@ -209,7 +207,7 @@ namespace UsbGuard
             // Danh sách thiết bị: giữ nguyên dòng đang chọn.
             string sel = _devices.SelectedItems.Count > 0 ? (string)_devices.SelectedItems[0].Tag : null;
             List<UsbStorageDevice> devs;
-            try { devs = UsbDisks.PresentUsbStorage(); } catch { devs = new List<UsbStorageDevice>(); }
+            try { devs = UsbDisks.ListForDisplay(); } catch { devs = new List<UsbStorageDevice>(); }
             string sig = string.Join("|", devs.Select(d => d.InstanceId + d.Problem)) + "#" + string.Join("|", wl) + Settings.IsPausedSafe();
             if (!sig.Equals(_devices.Tag as string))
             {
@@ -219,7 +217,10 @@ namespace UsbGuard
                 foreach (var d in devs)
                 {
                     bool allowed = Whitelist.Matches(d.Ids, wl);
-                    string st = allowed ? "Được phép" : d.Problem == 0 ? "Đang dùng được" : "Bị chặn";
+                    bool paused = Settings.IsPausedSafe();
+                    string st = d.Problem == 0 ? (allowed ? "Được phép" : "Đang dùng được")
+                              : allowed || paused ? "Đang nạp lại…"
+                              : d.Ejected ? "Bị chặn (đã tháo)" : "Bị chặn";
                     var it = new ListViewItem(new[] { d.Name, st, d.Serial.Length > 0 ? d.Serial : d.InstanceId }) { Tag = d.InstanceId };
                     it.ForeColor = allowed ? Green : d.Problem == 0 ? Color.Black : Red;
                     if (d.InstanceId == sel) it.Selected = true;
@@ -251,20 +252,23 @@ namespace UsbGuard
             _header.BackColor = c; _title.Text = title; _sub.Text = sub;
         }
 
-        /// <summary>Hỏi mật khẩu quản trị. Sai 5 lần liên tiếp thì khoá 60 giây.</summary>
+        /// <summary>Hỏi mật khẩu quản trị. Sai nhiều lần thì bị khoá tăng dần (30 giây, 1 phút, 2 phút... tối đa 1 giờ), lưu trong HKLM.</summary>
         private bool Ask(string action)
         {
-            if (DateTime.UtcNow < _lockedUntil)
+            var until = Settings.LockUntilUtc;
+            if (until > DateTime.UtcNow)
             {
-                Msg("Nhập sai mật khẩu nhiều lần. Thử lại sau " + (int)(_lockedUntil - DateTime.UtcNow).TotalSeconds + " giây.", MessageBoxIcon.Warning);
+                Msg("Nhập sai mật khẩu quá nhiều lần. Thử lại sau " + Auth.Describe(until - DateTime.UtcNow) + ".", MessageBoxIcon.Warning);
                 return false;
             }
             string pw = PasswordDialog.Ask(this, action, "Nhập mật khẩu quản trị UsbGuard:");
             if (pw == null) return false;
-            if (Auth.Verify(pw, Settings.AuthHash)) { _failCount = 0; return true; }
-            if (++_failCount >= 5) { _lockedUntil = DateTime.UtcNow.AddSeconds(60); _failCount = 0; }
-            Log.Warn("Nhập sai mật khẩu quản trị trên giao diện (" + action + ").");
-            Msg("Sai mật khẩu quản trị.", MessageBoxIcon.Error);
+            string err;
+            bool ok;
+            Cursor = Cursors.WaitCursor;
+            try { ok = AdminAuth.Check(pw, "giao diện: " + action, out err); } finally { Cursor = Cursors.Default; }
+            if (ok) return true;
+            Msg(err, MessageBoxIcon.Error);
             return false;
         }
 
@@ -307,7 +311,7 @@ namespace UsbGuard
             if (_devices.SelectedItems.Count == 0 || _devices.SelectedItems[0].Tag == null)
             { Msg("Chọn 1 USB trong danh sách trước.", MessageBoxIcon.Information); return; }
             string id = (string)_devices.SelectedItems[0].Tag;
-            var dev = UsbDisks.PresentUsbStorage().FirstOrDefault(d => d.InstanceId == id);
+            var dev = UsbDisks.ListForDisplay().FirstOrDefault(d => d.InstanceId == id);
             if (dev == null) { Msg("USB đã bị rút ra.", MessageBoxIcon.Information); return; }
             string entry = dev.SuggestedEntry;
             if (!Whitelist.IsValidEntry(entry)) { Msg("Không lấy được ID hợp lệ của USB này.", MessageBoxIcon.Error); return; }
@@ -317,7 +321,7 @@ namespace UsbGuard
                 return;
             if (!Ask("Cho phép USB \"" + dev.Name + "\"")) return;
             AddEntry(entry);
-            Msg("Đã cho phép USB này. Nếu ổ chưa hiện trong This PC sau vài giây, rút ra cắm lại.", MessageBoxIcon.Information);
+            Msg("Đã cho phép USB này. Ổ sẽ hiện trong This PC sau vài giây, không cần rút ra cắm lại.", MessageBoxIcon.Information);
         }
 
         private void DoAddById()

@@ -28,6 +28,9 @@ namespace UsbGuard
         private readonly HashSet<string> _notified = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private bool _wasBlocking = true;
         private readonly HashSet<string> _kicked = new HashSet<string>(StringComparer.OrdinalIgnoreCase);   // lần đầu không chặn thì thử nạp lại thiết bị đã lỗi từ trước
+        /// <summary>USB được phép nhưng Windows đã tháo an toàn: số lần đã "rút ra cắm lại" bằng phần mềm và lần gần nhất.</summary>
+        private readonly Dictionary<string, KeyValuePair<DateTime, int>> _revive = new Dictionary<string, KeyValuePair<DateTime, int>>(StringComparer.OrdinalIgnoreCase);
+        private string _seenSig;
         private ManagementEventWatcher _watcher;
         private bool _busy;
         private bool _interactive;
@@ -103,6 +106,8 @@ namespace UsbGuard
                     if (changed) UsbDisks.ReenableDisabled();
                     AfterUnblock();
                     _notified.Clear();
+                    var presentP = UsbDisks.PresentUsbStorage();
+                    ReviveEjected(presentP, d => true);
                     return;
                 }
 
@@ -149,6 +154,8 @@ namespace UsbGuard
                     present.Add(dev.InstanceId);
                     if (Whitelist.Matches(dev.Ids, whitelist))
                     {
+                        // Đã bị tháo an toàn (mã 47): ReviveEjected lo, "rút ra cắm lại" cổng đó bằng phần mềm.
+                        if (dev.Problem == UsbDisks.ProblemHeldForEject) continue;
                         // USB được phép nhưng đang lỗi (bị gỡ/bị chặn trước khi được thêm vào danh sách): nạp lại 1 lần.
                         if (dev.Problem != 0 && dev.Problem != 22 && _kicked.Add(dev.InstanceId))
                         {
@@ -166,6 +173,7 @@ namespace UsbGuard
                 }
                 _notified.RemoveWhere(k => !present.Contains(k));
                 _kicked.RemoveWhere(k => !present.Contains(k));
+                ReviveEjected(UsbDisks.PresentUsbStorage(), d => Whitelist.Matches(d.Ids, whitelist));
             }
             catch (Exception ex)
             {
@@ -175,6 +183,52 @@ namespace UsbGuard
             {
                 lock (_gate) { _busy = false; }
             }
+        }
+
+        /// <summary>
+        /// Ghi nhớ USB đang cắm ở cổng nào, rồi với USB được phép dùng (đang tạm dừng hoặc có trong whitelist) mà Windows
+        /// đã tháo an toàn trước đó (mã 47, hoặc biến khỏi Device Manager dù vẫn cắm): "rút ra cắm lại" cổng đó bằng phần mềm
+        /// để USB hiện lại trong This PC, người dùng không phải rút tay. Thử tối đa 3 lần, cách nhau 10 giây.
+        /// </summary>
+        private void ReviveEjected(List<UsbStorageDevice> present, Func<UsbStorageDevice, bool> allowed)
+        {
+            try
+            {
+                var seen = Settings.GetSeenUsb();
+                var keep = new List<UsbPortRef>();
+                foreach (var d in present)
+                    if (d.Port != null && !keep.Exists(r => r.InstanceId.Equals(d.Port.InstanceId, StringComparison.OrdinalIgnoreCase))) keep.Add(d.Port);
+                var gone = new List<UsbStorageDevice>();
+                foreach (var r in seen)
+                {
+                    if (keep.Exists(k => k.InstanceId.Equals(r.InstanceId, StringComparison.OrdinalIgnoreCase))) continue;
+                    if (present.Exists(d => UsbPorts.SameDevice(d, r))) { keep.Add(r); continue; }
+                    bool connected = false;
+                    try { connected = UsbPorts.IsConnected(r); } catch { }
+                    if (connected) { keep.Add(r); gone.Add(UsbPorts.AsDevice(r)); }   // không còn cắm thì quên đi
+                }
+                if (keep.Count > 50) keep.RemoveRange(0, keep.Count - 50);
+                string sig = string.Join(";", keep.ConvertAll(r => r.Serialize()));
+                if (sig != _seenSig) { Settings.SetSeenUsb(keep); _seenSig = sig; }
+
+                var candidates = new List<UsbStorageDevice>(gone);
+                candidates.AddRange(present.FindAll(d => d.Problem == UsbDisks.ProblemHeldForEject && d.Port != null));
+                var active = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var d in candidates)
+                {
+                    if (!allowed(d)) continue;
+                    active.Add(d.InstanceId);
+                    KeyValuePair<DateTime, int> st;
+                    _revive.TryGetValue(d.InstanceId, out st);
+                    if (st.Value >= 3 || DateTime.UtcNow - st.Key < TimeSpan.FromSeconds(10)) continue;
+                    _revive[d.InstanceId] = new KeyValuePair<DateTime, int>(DateTime.UtcNow, st.Value + 1);
+                    Log.Info("USB được phép nhưng đã bị tháo khỏi Windows, tự nạp lại (thay cho rút ra cắm lại): " + d.Name +
+                             " | " + d.InstanceId + " | cổng " + d.Port.Port + (st.Value > 0 ? " (lần " + (st.Value + 1) + ")" : ""));
+                    UsbDisks.Kick(d);
+                }
+                foreach (var k in new List<string>(_revive.Keys)) if (!active.Contains(k)) _revive.Remove(k);
+            }
+            catch (Exception ex) { Log.Warn("Không nạp lại được USB đã bị tháo: " + ex.Message); }
         }
 
         /// <summary>Vừa chuyển từ chặn sang không chặn: cho Windows nạp lại driver các ổ USB đang cắm.</summary>

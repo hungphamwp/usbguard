@@ -96,5 +96,21 @@ namespace UsbGuard
         [DllImport("cfgmgr32.dll", EntryPoint = "CM_Request_Device_EjectW", CharSet = CharSet.Unicode)]
         public static extern uint CM_Request_Device_Eject(uint devInst, out int vetoType, StringBuilder vetoName,
             int len, uint flags);
+
+        [DllImport("cfgmgr32.dll", EntryPoint = "CM_Get_DevNode_Registry_PropertyW", CharSet = CharSet.Unicode)]
+        public static extern uint CM_Get_DevNode_Registry_Property(uint devInst, uint property, out uint regType,
+            byte[] buffer, ref uint length, uint flags);
+
+        [DllImport("cfgmgr32.dll", EntryPoint = "CM_Get_Device_Interface_List_SizeW", CharSet = CharSet.Unicode)]
+        public static extern uint CM_Get_Device_Interface_List_Size(out uint len, ref Guid guid, string deviceId, uint flags);
+
+        [DllImport("cfgmgr32.dll", EntryPoint = "CM_Get_Device_Interface_ListW", CharSet = CharSet.Unicode)]
+        public static extern uint CM_Get_Device_Interface_List(ref Guid guid, string deviceId, char[] buffer, uint len, uint flags);
+
+        [DllImport("cfgmgr32.dll", EntryPoint = "CM_Locate_DevNodeW", CharSet = CharSet.Unicode)]
+        public static extern uint CM_Locate_DevNode(out uint devInst, string deviceId, uint flags);
+
+        [DllImport("cfgmgr32.dll")]
+        public static extern uint CM_Reenumerate_DevNode(uint devInst, uint flags);
     }
 }

@@ -45,6 +45,42 @@ namespace UsbGuard.Tests
         }
 
         [Fact]
+        public void Hash_MoiDungSha256_600000Vong()
+        {
+            string h = Auth.Hash("MatKhauManhCuaBan123");
+            Assert.StartsWith("pbkdf2-sha256$600000$", h);
+            Assert.False(Auth.NeedsRehash(h));
+        }
+
+        [Fact]
+        public void Verify_MaBamCuaBan11_VanDung_VaCanBamLai()
+        {
+            // Mã băm kiểu bản 1.0/1.1: PBKDF2-SHA1 100.000 vòng.
+            var salt = new byte[16];
+            for (int i = 0; i < salt.Length; i++) salt[i] = (byte)i;
+            byte[] key;
+            using (var k = new System.Security.Cryptography.Rfc2898DeriveBytes("MatKhauCu@2026", salt, 100000)) key = k.GetBytes(32);
+            string old = "pbkdf2$100000$" + System.Convert.ToBase64String(salt) + "$" + System.Convert.ToBase64String(key);
+            Assert.True(Auth.Verify("MatKhauCu@2026", old));
+            Assert.False(Auth.Verify("sai-mat-khau", old));
+            Assert.True(Auth.NeedsRehash(old));
+        }
+
+        [Theory]
+        [InlineData(1, 0)]
+        [InlineData(4, 0)]
+        [InlineData(5, 30)]
+        [InlineData(6, 60)]
+        [InlineData(7, 120)]
+        [InlineData(11, 1920)]
+        [InlineData(12, 3600)]
+        [InlineData(100, 3600)]
+        public void LockSeconds_TangGapDoi_ToiDa1Gio(int fails, int seconds)
+        {
+            Assert.Equal(seconds, Auth.LockSeconds(fails));
+        }
+
+        [Fact]
         public void Verify_ThieuIteration_PhaiSai()
         {
             // iter < 1000 bị từ chối để chặn hash yếu/giả mạo

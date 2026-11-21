@@ -31,6 +31,10 @@ namespace UsbGuard
         public bool Present = true;
         public uint ConfigFlags;
         public bool HasDriver;
+        /// <summary>Đã bị tháo an toàn: Windows không còn nhận nhưng USB vẫn cắm trong cổng (đọc từ hub).</summary>
+        public bool Ejected;
+        /// <summary>Hub + số cổng đang cắm (để "rút ra cắm lại" bằng phần mềm).</summary>
+        public UsbPortRef Port;
         public List<string> Ids = new List<string>();
 
         /// <summary>Số serial lấy từ cuối Instance ID. Windows tự sinh ID có dấu "&amp;" khi thiết bị không có serial.</summary>
@@ -64,6 +68,8 @@ namespace UsbGuard
         private const uint DIGCF_PRESENT = 0x2, DIGCF_DEVICEINTERFACE = 0x10;
         private const uint IOCTL_STORAGE_QUERY_PROPERTY = 0x2D1400;
         public const int BusTypeUsb = 7;
+        /// <summary>CM_PROB_HELD_FOR_EJECT: Windows đã tháo an toàn thiết bị nhưng nó vẫn đang cắm (mã 47 trong Device Manager).</summary>
+        public const uint ProblemHeldForEject = 47;
 
         /// <summary>
         /// Chỉ đi lên tối đa 2 nút: nút đĩa (USBSTOR\Disk... hoặc SCSI\Disk... với UAS) và thiết bị USB cha (USB\VID_...).
@@ -346,6 +352,11 @@ namespace UsbGuard
                     dev.HasDriver = MultiSz(set, ref did, SPDRP_DRIVER).Count > 0;
                     dev.Ids.Add(dev.InstanceId);
                     dev.Ids.AddRange(MultiSz(set, ref did, SPDRP_HARDWAREID));
+                    if (presentOnly && dev.Present)
+                    {
+                        dev.Port = UsbPorts.Locate(did.DevInst);
+                        if (dev.Port != null) dev.Port.Name = dev.Name;
+                    }
                     result.Add(dev);
                 }
             }
@@ -403,10 +414,29 @@ namespace UsbGuard
             if (rescan) Sys.Run("pnputil.exe", "/scan-devices");
         }
 
-        /// <summary>Cho Windows nạp lại 1 thiết bị: chưa cài được thì xoá nút cho cài lại, không thì khởi động lại.</summary>
+        /// <summary>
+        /// Thiết bị USB lưu trữ để hiển thị/cho phép: đang được Windows nhận (kể cả bị chặn driver) + USB đã bị tháo an toàn
+        /// nhưng vẫn đang cắm trong cổng (trước đây loại này "biến mất" khỏi danh sách).
+        /// </summary>
+        public static List<UsbStorageDevice> ListForDisplay()
+        {
+            var list = PresentUsbStorage();
+            foreach (var r in UsbPorts.ConnectedButGone(list)) list.Add(UsbPorts.AsDevice(r));
+            return list;
+        }
+
+        /// <summary>Cho Windows nạp lại 1 thiết bị: đã bị tháo an toàn thì "rút ra cắm lại" cổng đó; chưa cài được thì xoá nút cho cài lại; không thì khởi động lại.</summary>
         public static void Kick(UsbStorageDevice d)
         {
             string o;
+            if ((d.Ejected || d.Problem == ProblemHeldForEject) && d.Port != null)
+            {
+                if (UsbPorts.Cycle(d.Port)) return;
+                Log.Warn("Không nạp lại được cổng USB " + d.Port.Port + " của " + d.Name + ", thử cách khác.");
+                if (!d.Ejected) Sys.Run("pnputil.exe", "/remove-device \"" + d.InstanceId + "\"", out o);
+                UsbPorts.RescanHub(d.Port);
+                return;
+            }
             if (!d.HasDriver || d.Problem == CM_PROB_FAILED_INSTALL || (d.ConfigFlags & CONFIGFLAG_FAILEDINSTALL) != 0)
             {
                 Sys.Run("pnputil.exe", "/remove-device \"" + d.InstanceId + "\"", out o);

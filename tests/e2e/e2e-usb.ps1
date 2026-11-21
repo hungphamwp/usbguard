@@ -198,6 +198,23 @@ Check 'E12' 'Rút USB được phép ra cắm lại vẫn dùng được' ($w.gh
 App @('whitelist', 'remove', $Serial.B, $Pw) | Out-Null
 $w = Watch B 20 -UntilGone
 Check 'E13' 'Xoá khỏi whitelist: USB đang cắm bị chặn lại ngay' (-not (Accessible B)) ("còn ổ: $($w.con_vol)")
+
+# E18-E20 (từ phản hồi kiểm thử trên máy thật): USB bị chặn khi đang cắm thì Windows "tháo an toàn" nó,
+# trước bản 1.2 USB biến khỏi danh sách và phải rút ra cắm lại mới dùng được khi được cho phép/tạm dừng.
+Start-Sleep 4
+$devOut = App @('devices')
+L ($devOut.Trim())
+Check 'E18' 'USB bị chặn khi đang cắm (Windows đã tháo) vẫn hiện trong danh sách thiết bị' ($devOut -match $Serial.B) ((($devOut -split "`n") | Where-Object { $_ -match 'bị chặn|đã tháo' }) -join ' / ')
+App @('whitelist', 'add', $Serial.B, $Pw) | Out-Null
+$w = Watch B 45 -TryWrite -UntilWritable
+Check 'E19' 'Cho phép lại USB đang bị tháo: tự hiện lại trong This PC, không cần rút ra cắm lại' ($w.ghi_duoc) ("ghi được sau $($w.ghi_ms) ms; nhật ký: " + ((((UgLog) -split "`n") | Where-Object { $_ -match 'tự nạp lại' } | Select-Object -Last 1)))
+App @('whitelist', 'remove', $Serial.B, $Pw) | Out-Null
+$w = Watch B 20 -UntilGone
+App @('pause', '5', $Pw) | Out-Null
+$w = Watch B 45 -TryWrite -UntilWritable
+Check 'E20' 'Tạm dừng khi USB đang bị tháo: tự dùng được, không cần rút ra cắm lại' ($w.ghi_duoc) ("ghi được sau $($w.ghi_ms) ms")
+App @('resume', $Pw) | Out-Null
+$w = Watch B 20 -UntilGone
 Unplug B
 
 # E14: tiến trình bị kill trong lúc USB đang cắm -> sau khi tự chạy lại vẫn chặn

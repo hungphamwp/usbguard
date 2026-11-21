@@ -11,7 +11,8 @@ namespace UsbGuard
         {
             if (!Installer.IsAdmin()) { Console.WriteLine("Cần chạy với quyền Administrator (Run as administrator)."); return false; }
             if (!Settings.Exists()) { Console.WriteLine("UsbGuard chưa được cài đặt."); return false; }
-            if (!Auth.Verify(password, Settings.AuthHash)) { Console.WriteLine("Sai mật khẩu quản trị."); return false; }
+            string err;
+            if (!AdminAuth.Check(password, "dòng lệnh", out err)) { Console.WriteLine(err); return false; }
             return true;
         }
 
@@ -112,14 +113,16 @@ namespace UsbGuard
             if (!all)
             {
                 // Thiết bị đang bị chặn từ driver thì không thành ổ đĩa: liệt kê thêm từ phía USB để lấy ID mà không cần tạm dừng.
-                var devs = UsbDisks.PresentUsbStorage();
+                var devs = UsbDisks.ListForDisplay();
                 Console.WriteLine("Thiết bị USB lưu trữ đang cắm (kể cả đang bị chặn): " + devs.Count);
                 List<string> wl = null;
                 try { if (Settings.Exists()) wl = Settings.GetWhitelist(); } catch { }
                 foreach (var d in devs)
                 {
                     string st = wl != null && UsbGuard.Whitelist.Matches(d.Ids, wl) ? "được phép"
-                              : d.Problem == 0 ? "đang hoạt động" : "bị chặn (mã " + d.Problem + ")";
+                              : d.Problem == 0 ? "đang hoạt động"
+                              : d.Ejected ? "bị chặn, đã tháo khỏi Windows (vẫn đang cắm ở cổng " + d.Port.Port + ")"
+                              : "bị chặn (mã " + d.Problem + ")";
                     Console.WriteLine("- " + d.Name + "  [" + st + "]");
                     Console.WriteLine("    ID: " + d.InstanceId);
                     Console.WriteLine("    Gợi ý thêm whitelist: " + d.SuggestedEntry);
@@ -134,7 +137,7 @@ namespace UsbGuard
             Console.WriteLine("  UsbGuard.exe whitelist list");
             Console.WriteLine("  UsbGuard.exe whitelist add <id_thiet_bi> [mat_khau]");
             Console.WriteLine("  UsbGuard.exe whitelist remove <id_thiet_bi> [mat_khau]");
-            Console.WriteLine("Lấy ID bằng: UsbGuard.exe devices (khi đang tạm dừng chặn, cắm USB cần cho phép).");
+            Console.WriteLine("Lấy ID bằng: UsbGuard.exe devices (cắm USB cần cho phép vào máy, không cần tạm dừng).");
         }
     }
 }
