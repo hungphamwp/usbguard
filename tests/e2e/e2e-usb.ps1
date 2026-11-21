@@ -48,6 +48,7 @@ $results = New-Object System.Collections.ArrayList
 function Check([string]$id, [string]$name, [bool]$ok, [string]$detail) {
     [void]$results.Add([pscustomobject]@{ id = $id; ten = $name; dat = $ok; chi_tiet = $detail })
     L ("[" + ($(if ($ok) { 'ĐẠT' } else { 'LỖI' })) + "] $id $name — $detail")
+    if (-not $ok) { L ("  nhật ký dịch vụ khi lỗi: " + ((((UgLog) -split "`n") | Select-Object -Last 15) -join ' || ')) }
 }
 
 $Serial = @{ A = 'UGBLOCK0001'; B = 'UGALLOW0002' }

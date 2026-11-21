@@ -89,6 +89,7 @@ namespace UsbGuard
         private void Tick(object sender, ElapsedEventArgs e)
         {
             lock (_gate) { if (_busy) return; _busy = true; }
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             try
             {
                 if (!Settings.Exists()) return;
@@ -154,8 +155,9 @@ namespace UsbGuard
                     present.Add(dev.InstanceId);
                     if (Whitelist.Matches(dev.Ids, whitelist))
                     {
-                        // Đã bị tháo an toàn (mã 47): ReviveEjected lo, "rút ra cắm lại" cổng đó bằng phần mềm.
-                        if (dev.Problem == UsbDisks.ProblemHeldForEject) continue;
+                        // Đã bị tháo an toàn (mã 47) hoặc đã thử nạp lại mà Windows đòi khởi động lại (mã 14):
+                        // ReviveEjected lo, "rút ra cắm lại" cổng đó bằng phần mềm.
+                        if (UsbDisks.NeedsReplug(dev)) continue;
                         // USB được phép nhưng đang lỗi (bị gỡ/bị chặn trước khi được thêm vào danh sách): nạp lại 1 lần.
                         if (dev.Problem != 0 && dev.Problem != 22 && _kicked.Add(dev.InstanceId))
                         {
@@ -181,6 +183,7 @@ namespace UsbGuard
             }
             finally
             {
+                if (sw.ElapsedMilliseconds > 4000) Log.Warn("Vòng kiểm tra chạy chậm: " + sw.ElapsedMilliseconds + " ms.");
                 lock (_gate) { _busy = false; }
             }
         }
@@ -204,7 +207,7 @@ namespace UsbGuard
                     if (keep.Exists(k => k.InstanceId.Equals(r.InstanceId, StringComparison.OrdinalIgnoreCase))) continue;
                     if (present.Exists(d => UsbPorts.SameDevice(d, r))) { keep.Add(r); continue; }
                     bool connected = false;
-                    try { connected = UsbPorts.IsConnected(r); } catch { }
+                    try { connected = UsbPorts.IsConnected(r); } catch { connected = true; }
                     if (connected) { keep.Add(r); gone.Add(UsbPorts.AsDevice(r)); }   // không còn cắm thì quên đi
                 }
                 if (keep.Count > 50) keep.RemoveRange(0, keep.Count - 50);
@@ -212,7 +215,7 @@ namespace UsbGuard
                 if (sig != _seenSig) { Settings.SetSeenUsb(keep); _seenSig = sig; }
 
                 var candidates = new List<UsbStorageDevice>(gone);
-                candidates.AddRange(present.FindAll(d => d.Problem == UsbDisks.ProblemHeldForEject && d.Port != null));
+                candidates.AddRange(present.FindAll(d => UsbDisks.NeedsReplug(d) && d.Port != null));
                 var active = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 foreach (var d in candidates)
                 {

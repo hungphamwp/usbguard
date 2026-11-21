@@ -70,6 +70,14 @@ namespace UsbGuard
         public const int BusTypeUsb = 7;
         /// <summary>CM_PROB_HELD_FOR_EJECT: Windows đã tháo an toàn thiết bị nhưng nó vẫn đang cắm (mã 47 trong Device Manager).</summary>
         public const uint ProblemHeldForEject = 47;
+        /// <summary>CM_PROB_NEED_RESTART: Windows đòi khởi động lại máy mới dùng được thiết bị (gặp khi khởi động lại 1 USB đã bị tháo).</summary>
+        public const uint ProblemNeedRestart = 14;
+
+        /// <summary>USB đang cắm nhưng chỉ dùng lại được khi rút ra cắm lại (đã bị tháo an toàn, hoặc Windows đòi khởi động lại máy).</summary>
+        public static bool NeedsReplug(UsbStorageDevice d)
+        {
+            return d.Ejected || d.Problem == ProblemHeldForEject || d.Problem == ProblemNeedRestart;
+        }
 
         /// <summary>
         /// Chỉ đi lên tối đa 2 nút: nút đĩa (USBSTOR\Disk... hoặc SCSI\Disk... với UAS) và thiết bị USB cha (USB\VID_...).
@@ -405,7 +413,7 @@ namespace UsbGuard
                     Log.Info("Cho Windows cài lại USB từng bị cấm cài (" + (d.Present ? "đang cắm" : "đã rút") + "): " + d.InstanceId + " (mã " + rc + ")");
                     rescan |= d.Present;
                 }
-                else if (d.Present && d.Problem != 0 && d.Problem != CM_PROB_DISABLED)
+                else if (d.Present && d.Problem != 0 && d.Problem != CM_PROB_DISABLED && !NeedsReplug(d))
                 {
                     Sys.Run("pnputil.exe", "/restart-device \"" + d.InstanceId + "\"", out o);
                     rescan = true;
@@ -429,7 +437,7 @@ namespace UsbGuard
         public static void Kick(UsbStorageDevice d)
         {
             string o;
-            if ((d.Ejected || d.Problem == ProblemHeldForEject) && d.Port != null)
+            if (NeedsReplug(d) && d.Port != null)
             {
                 if (UsbPorts.Cycle(d.Port)) return;
                 Log.Warn("Không nạp lại được cổng USB " + d.Port.Port + " của " + d.Name + ", thử cách khác.");
