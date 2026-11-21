@@ -74,7 +74,7 @@ def ve_hinh1():
     ax.set_ylim(0, 1)
     ax.axis('off')
 
-    ax.text(0.5, 0.975, "KIẾN TRÚC 3 TẦNG CHẶN VÀ LỚP GỠ THIẾT BỊ CỦA USBGUARD 1.1",
+    ax.text(0.5, 0.975, "KIẾN TRÚC 3 TẦNG CHẶN VÀ LỚP GỠ THIẾT BỊ CỦA USBGUARD 1.2",
             ha='center', va='center', fontsize=13, fontweight='bold', color=C_NAVY)
 
     # Cột trái
@@ -159,8 +159,8 @@ def ve_hinh2():
     draw_box(ax, 0.70, 0.64, 0.26, 0.27, "Bảo mật & Cấu hình",
              ["• Settings.cs: Lưu HKLM\\SOFTWARE",
               "  (AuthHash, Whitelist, PauseUntil)",
-              "• Auth.cs: Băm PBKDF2-SHA1,",
-              "  100000 vòng lặp, muối 16 byte",
+              "• Auth.cs: PBKDF2-SHA256, 600000 vòng",
+              "• AdminAuth.cs: khoá tăng dần khi sai",
               "• Reg.cs: Thiết lập DACL an toàn"],
              bg_color=C_LIGHT_GREEN, border_color=C_GREEN, title_color=C_GREEN)
 
@@ -201,7 +201,7 @@ def ve_hinh3():
     sys_box = patches.FancyBboxPatch((0.26, 0.05), 0.48, 0.86, boxstyle="round,pad=0,rounding_size=0.02",
                                      facecolor="#FAFAFA", edgecolor=C_NAVY, linewidth=2, linestyle='--')
     ax.add_patch(sys_box)
-    ax.text(0.50, 0.88, "HỆ THỐNG USBGUARD 1.1", ha='center', va='center', fontsize=11, fontweight='bold', color=C_NAVY)
+    ax.text(0.50, 0.88, "HỆ THỐNG USBGUARD 1.2", ha='center', va='center', fontsize=11, fontweight='bold', color=C_NAVY)
 
     # Actor 1: Người dùng thường (bên trái)
     ax.plot(0.10, 0.70, 'o', markersize=14, color=C_NAVY)
@@ -321,10 +321,11 @@ def ve_hinh4():
     draw_arrow(ax, 0.74, 0.34, 0.55, 0.29, "", C_NAVY)
 
     # Bước 6: Xử lý từng ổ đĩa
-    draw_box(ax, 0.15, 0.08, 0.70, 0.09, "Xử lý từng ổ đĩa USB phát hiện",
+    draw_box(ax, 0.15, 0.05, 0.70, 0.12, "Xử lý từng ổ đĩa USB phát hiện",
              ["• Nếu khớp Whitelist: Bỏ qua cho phép hoạt động",
               "• Nếu KHÔNG khớp: UsbDisks.Eject(disk) -> Nếu lỗi dùng pnputil /disable-device",
-              "• Gửi cảnh báo WTSSendMessage tới người dùng + Ghi nhật ký Log.Warn"],
+              "• Gửi cảnh báo WTSSendMessage tới người dùng + Ghi nhật ký Log.Warn",
+              "• Cuối vòng: ReviveEjected() rút ra cắm lại cổng USB được phép đã bị tháo"],
              bg_color=C_LIGHT_YELLOW if hasattr(patches, 'C_LIGHT_YELLOW') else C_YELLOW, border_color=C_ORANGE, title_size=9, text_size=8)
     draw_arrow(ax, 0.50, 0.22, 0.50, 0.17, "", C_NAVY)
 
@@ -607,10 +608,10 @@ def ve_hinh9():
     draw_box(ax, 0.04, 0.46, 0.44, 0.44, "1. Cơ chế băm mật khẩu PBKDF2 (Auth.cs)",
              ["• Chuẩn: RFC 8018 / PKCS #5 v2.0 (Rfc2898DeriveBytes)",
               "• Muối ngẫu nhiên (Salt): 16 byte tạo từ RNGCryptoServiceProvider",
-              "• Số vòng lặp (Iterations): 100000 vòng",
+              "• Số vòng lặp (Iterations): 600000 vòng (SHA-256)",
               "  (tăng chi phí tính toán, chống tấn công brute-force)",
               "• Độ dài khóa dẫn xuất: 32 byte (256-bit)",
-              "• Định dạng lưu trữ: pbkdf2$100000$<salt_b64>$<hash_b64>",
+              "• Lưu: pbkdf2-sha256$600000$<salt>$<hash>",
               "• So sánh xác thực thời gian hằng (ConstantTimeEquals):",
               "  diff |= a[i] ^ b[i] -> Chống tấn công thời gian (timing attack)"],
              bg_color=C_VERY_LIGHT_BLUE, border_color=C_NAVY)

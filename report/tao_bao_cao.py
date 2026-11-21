@@ -33,7 +33,7 @@ THONG_TIN = {
     "khoa": "KHOA CÔNG NGHỆ THÔNG TIN",
     "loai_bao_cao": "BÁO CÁO SEMINAR CHUYÊN ĐỀ",
     "de_tai": "XÂY DỰNG ỨNG DỤNG NGĂN NGƯỜI DÙNG CẮM USB FLASH DISK VÀO MÁY TÍNH WINDOWS, CHẠY NHƯ DỊCH VỤ KHÔNG TẮT ĐƯỢC",
-    "ten_san_pham": "UsbGuard 1.1",
+    "ten_san_pham": "UsbGuard 1.2",
     "sinh_vien": "Phạm Văn Hưng",
     "mssv": "3120410225",
     "giang_vien": "............................................",
@@ -468,7 +468,7 @@ class BaoCaoUsbGuard:
             ["VID", "Vendor Identifier", "Mã định danh nhà sản xuất thiết bị do tổ chức USB-IF cấp."],
             ["WMI", "Windows Management Instrumentation", "Hạ tầng quản lý và theo dõi sự kiện phần cứng của Windows."]
         ]
-        self.tbl("TBL_ABBR", "Bảng 0.1: Danh mục thuật ngữ và từ viết tắt kỹ thuật", headers, rows, widths, ["center", "left", "left"], sz=18)
+        self.tbl("TBL_ABBR", "Bảng 0.1: Danh mục thuật ngữ và từ viết tắt kỹ thuật", headers, rows, widths, ["center", "left", "left"], sz=17)
 
     # ==========================================================================
     # CHƯƠNG 1: TỔNG QUAN
@@ -478,7 +478,7 @@ class BaoCaoUsbGuard:
         
         self.h2("1.1. Đề tài và bối cảnh nghiên cứu")
         self.p("Trong kỷ nguyên chuyển đổi số hiện nay, an toàn thông tin tại các cơ quan, doanh nghiệp và trường học đối mặt với những thách thức ngày càng tinh vi. Thiết bị lưu trữ di động kết nối qua cổng USB (USB flash disk, ổ cứng di động) là phương tiện trao đổi dữ liệu vô cùng tiện lợi và phổ biến nhờ kích thước nhỏ gọn, dung lượng lớn và khả năng tương thích cao. Tuy nhiên, tính tiện lợi này đồng thời biến cổng USB thành 1 trong những vectơ tấn công nguy hiểm hàng đầu đối với an ninh máy tính.")
-        self.p("Đề tài Seminar Chuyên đề được đặt ra với nhiệm vụ trọng tâm: *'Xây dựng ứng dụng ngăn người dùng cắm USB flash disk vào máy hệ điều hành Windows, ứng dụng được chạy như dịch vụ không tắt được'*. Mục tiêu là tạo ra 1 công cụ kiểm soát thiết bị ngoại vi chuyên dụng, mang tên **UsbGuard 1.1**, nhằm vô hiệu hóa khả năng đọc/ghi dữ liệu trái phép qua các thiết bị lưu trữ USB mà không làm gián đoạn các thiết bị ngoại vi cần thiết khác như chuột và bàn phím. Sản phẩm hoàn chỉnh gồm dịch vụ chạy nền, giao diện quản lý đồ họa và bộ cài `setup.exe`, đã được kiểm thử bằng cách cắm USB thật vào Windows 10 và Windows 11.")
+        self.p("Đề tài Seminar Chuyên đề được đặt ra với nhiệm vụ trọng tâm: *'Xây dựng ứng dụng ngăn người dùng cắm USB flash disk vào máy hệ điều hành Windows, ứng dụng được chạy như dịch vụ không tắt được'*. Mục tiêu là tạo ra 1 công cụ kiểm soát thiết bị ngoại vi chuyên dụng, mang tên **UsbGuard 1.2**, nhằm vô hiệu hóa khả năng đọc/ghi dữ liệu trái phép qua các thiết bị lưu trữ USB mà không làm gián đoạn các thiết bị ngoại vi cần thiết khác như chuột và bàn phím. Sản phẩm hoàn chỉnh gồm dịch vụ chạy nền, giao diện quản lý đồ họa và bộ cài `setup.exe`, đã được kiểm thử bằng cách cắm USB thật vào Windows 10 và Windows 11, cùng 1 lượt thử thủ công trên máy Windows thật với USB vật lý.")
 
         self.h2("1.2. Lý do chọn đề tài và tính cấp thiết")
         self.p("Thực tế vận hành tại các tổ chức cho thấy cổng USB tiềm ẩn 2 rủi ro an ninh nghiêm trọng bậc nhất:")
@@ -496,7 +496,7 @@ class BaoCaoUsbGuard:
         self.h2("1.4. Đối tượng, phạm vi và giới hạn của đề tài")
         self.p("**Đối tượng nghiên cứu:** Kiến trúc hệ thống Windows, cây thiết bị Plug and Play, mô hình Windows Service, Service Control Manager (SCM), Windows Registry, chuẩn lưu trữ USB Mass Storage (BOT/UAS), và các API Win32 tầng thấp.")
         self.p("**Phạm vi áp dụng:** Hệ điều hành Microsoft Windows 64-bit (bao gồm Windows 10, Windows 11, Windows Server 2022 và Windows Server 2025).")
-        self.p("**Phạm vi sản phẩm:** UsbGuard 1.1 gồm dịch vụ chạy nền (3 tầng chặn, lớp gỡ thiết bị, 3 chế độ vận hành, cơ chế 'không tắt được'), giao diện quản lý đồ họa WinForms, bộ cài `setup.exe` tiếng Việt có đặt mật khẩu và trình gỡ, cùng quy trình kiểm thử tự động có cắm USB thật trên Windows 10 và Windows 11.")
+        self.p("**Phạm vi sản phẩm:** UsbGuard 1.2 gồm dịch vụ chạy nền (3 tầng chặn, lớp gỡ thiết bị, 3 chế độ vận hành, cơ chế 'không tắt được'), giao diện quản lý đồ họa WinForms, bộ cài `setup.exe` tiếng Việt có đặt mật khẩu và trình gỡ, cùng quy trình kiểm thử tự động có cắm USB thật trên Windows 10 và Windows 11. Bản 1.2 bổ sung tự nạp lại USB đã bị Windows tháo và khoá chống dò mật khẩu.")
         self.p("**Giới hạn kỹ thuật đã xác định:**")
         self.b("Phiên bản hiện tại tập trung vào kiểm soát các thiết bị lưu trữ dạng khối (Mass Storage Class và UAS). Các thiết bị truyền thông đa phương tiện MTP/PTP (như điện thoại thông minh Android/iOS) và ổ đĩa quang CD/DVD chưa nằm trong phạm vi xử lý.")
         self.b("Danh sách cho phép nhận diện USB theo số serial (hoặc chuỗi VID/PID); với các thiết bị cùng model không có số serial duy nhất từ nhà sản xuất, chính sách sẽ áp dụng chung.")
@@ -508,7 +508,7 @@ class BaoCaoUsbGuard:
         self.b("Khảo sát và đối chiếu thiết kế với 4 dự án mã nguồn mở uy tín cùng chủ đề.")
         self.b("Phát triển sản phẩm bằng ngôn ngữ C# trên nền tảng .NET Framework 4.8, sử dụng kỹ thuật P/Invoke để tương tác trực tiếp với các thư viện lõi hệ thống (`setupapi.dll`, `cfgmgr32.dll`, `kernel32.dll`, `advapi32.dll`, `wtsapi32.dll`).")
         D = lay_du_lieu()
-        self.b(f"Xây dựng quy trình kiểm thử tự động trên GitHub Actions: {D['u22']['tong']} ca unit test, {D['t22']['tong']} ca kiểm thử tích hợp trên Windows Server 2022 và 2025, {D['w10']['tong']} ca kiểm thử cắm USB thật trên Windows 10 và Windows 11.")
+        self.b(f"Xây dựng quy trình kiểm thử tự động trên GitHub Actions: {D['u22']['tong']} ca unit test, {D['t22']['tong']} ca kiểm thử tích hợp trên Windows Server 2022 và 2025, {D['w10']['tong']} ca kiểm thử cắm USB thật trên Windows 10 và Windows 11, cùng 1 lượt thử trên máy thật.")
 
         self.h2("1.6. Bố cục của báo cáo")
         self.p("Nội dung báo cáo được cấu trúc thành 6 chương logic:")
@@ -516,7 +516,7 @@ class BaoCaoUsbGuard:
         self.b("**Chương 2:** Cơ sở lý thuyết (USB, PnP, SCM, Registry, chính sách thiết bị) và khảo sát giải pháp hiện có.")
         self.b("**Chương 3:** Phân tích và thiết kế: yêu cầu, ca sử dụng, kiến trúc 3 tầng chặn và lớp gỡ thiết bị, 3 chế độ, cơ chế không tắt được, bảo mật.")
         self.b("**Chương 4:** Cài đặt: mã nguồn cốt lõi, tập lệnh CLI, giao diện quản lý, bộ cài `setup.exe`, hướng dẫn vận hành.")
-        self.b(f"**Chương 5:** Kiểm thử: {D['u22']['tong']} ca unit, {D['t22']['tong']} ca tích hợp trên Windows Server, {D['w10']['tong']} ca cắm USB thật trên Windows 10 và Windows 11, 3 lỗi phát hiện, đánh giá yêu cầu.")
+        self.b(f"**Chương 5:** Kiểm thử: {D['u22']['tong']} ca unit, {D['t22']['tong']} ca tích hợp trên Windows Server, {D['w10']['tong']} ca cắm USB thật trên Windows 10 và Windows 11, thử trên máy thật, các lỗi phát hiện và cách sửa, đánh giá yêu cầu.")
         self.b("**Chương 6:** Kết luận, hạn chế và hướng phát triển.")
 
     # ==========================================================================
@@ -581,7 +581,7 @@ class BaoCaoUsbGuard:
         self.h2("2.9. Chuẩn băm và dẫn xuất khóa bảo mật PBKDF2")
         self.p("Để bảo vệ mật khẩu quản trị, UsbGuard tuân thủ chuẩn mật mã học quốc tế **RFC 8018 (PKCS #5 v2.0)** về hàm dẫn xuất khóa dựa trên mật khẩu (**PBKDF2** - Password-Based Key Derivation Function 2):")
         self.b("**Muối ngẫu nhiên (Salt):** Mỗi lần băm mật khẩu, hệ thống sinh ra 1 chuỗi muối ngẫu nhiên 16 byte (128 bit) bằng bộ sinh số ngẫu nhiên an toàn mật mã học (`RandomNumberGenerator`). Việc sử dụng muối riêng biệt ngăn chặn các cuộc tấn công tra cứu bảng tính sẵn (Rainbow Table).")
-        self.b("**Số vòng lặp (Iterations):** Thiết lập 100000 vòng lặp HMAC-SHA1. Số vòng lặp lớn làm tăng đáng kể chi phí tính toán phần cứng, vô hiệu hóa các nỗ lực tấn công vét cạn (brute-force) bằng GPU chuyên dụng.")
+        self.b("**Số vòng lặp (Iterations):** Bản 1.2 dùng HMAC-SHA256, 600000 vòng (trước là SHA1, 100000 vòng). Số vòng lớn làm tăng chi phí tính toán, chống vét cạn (brute-force) bằng GPU.")
         self.b("**So sánh thời gian hằng (Constant-Time Comparison):** Khi kiểm tra mật khẩu, việc so sánh 2 mảng byte được thực hiện bằng toán tử XOR trên toàn bộ độ dài chuỗi (`diff |= a[i] ^ b[i]`), không dừng sớm khi phát hiện ký tự sai. Kỹ thuật này ngăn chặn nguy cơ rò rỉ thông tin qua tấn công kênh kề đo thời gian thực thi (Timing Attack).")
 
         self.h2("2.10. Khảo sát các giải pháp hiện có và bảng so sánh")
@@ -591,7 +591,7 @@ class BaoCaoUsbGuard:
         self.b("**Phần mềm DLP thương mại (Symantec, McAfee):** Chi phí cao, cấu hình cồng kềnh và chiếm dụng lớn tài nguyên bộ nhớ (trên 500 MB RAM).")
         self.b("**Các dự án mã nguồn mở tham khảo:** `JBalanza/USBBlocker` (khóa màn hình khi cắm USB lạ, gây bất tiện); `sidd607/usbAlert` (bắt sự kiện SetupAPI nhưng thiếu lớp chặn driver và chống tắt); `amir13872/usb-control-application` (chạy dạng ứng dụng thường, dễ bị tắt qua Task Manager); `Den-Sec/USBBlocker` (PowerShell thao tác Registry khóa USBSTOR).")
 
-        headers_ss = ["Tiêu chí so sánh", "Group Policy (GPO)", "Microsoft Intune", "Dự án nguồn mở tham khảo", "Giải pháp UsbGuard 1.1"]
+        headers_ss = ["Tiêu chí so sánh", "Group Policy (GPO)", "Microsoft Intune", "Dự án nguồn mở tham khảo", "Giải pháp UsbGuard 1.2"]
         widths_ss = [2200, 2200, 2200, 2200, 2271]
         rows_ss = [
             ["Yêu cầu hạ tầng", "Active Directory / Domain", "Đám mây Azure / Intune", "Máy tính cá nhân", "Độc lập, mọi bản Windows"],
@@ -620,7 +620,7 @@ class BaoCaoUsbGuard:
             ["YC-CN03", "Chức năng", "Hỗ trợ 3 chế độ hoạt động linh hoạt.", "Chuyển đổi mượt mà giữa CHẶN TẤT CẢ, CHO PHÉP, TẠM DỪNG."],
             ["YC-CN04", "Chức năng", "Quản lý danh sách thiết bị cho phép (Whitelist).", "Cho phép thêm, xóa, xem các thiết bị USB được phê duyệt."],
             ["YC-CN05", "Chức năng", "Tạm dừng chế độ chặn có thời hạn định mức.", "Tự động kích hoạt lại chế độ chặn khi hết thời gian tạm dừng."],
-            ["YC-CN06", "Chức năng", "Xác thực bảo mật mật khẩu quản trị.", "Yêu cầu mật khẩu đối với mọi lệnh quản trị nhạy cảm."],
+            ["YC-CN06", "Chức năng", "Xác thực bảo mật mật khẩu quản trị.", "Yêu cầu mật khẩu đối với mọi lệnh quản trị nhạy cảm; nhập sai nhiều lần thì bị khoá tăng dần."],
             ["YC-CN07", "Chức năng", "Gỡ cài đặt an toàn và hoàn trả cài đặt gốc.", "Dừng dịch vụ đúng quy trình, khôi phục mặc định Registry."],
             ["YC-CN08", "Chức năng", "Giao diện quản lý đồ họa cho người không rành dòng lệnh.", "Xem trạng thái, cho phép USB đang cắm, tạm dừng, gỡ cài đặt có mật khẩu."],
             ["YC-CN09", "Chức năng", "Bộ cài setup.exe có đặt mật khẩu và trình gỡ.", "Cài đủ 3 tầng chặn; gỡ bắt buộc đúng mật khẩu."],
@@ -637,7 +637,7 @@ class BaoCaoUsbGuard:
         self.b("**Quản trị viên (Administrator):** Là người có quyền quản trị cao nhất trên máy tính và nắm mật khẩu quản trị UsbGuard. Quản trị viên có toàn quyền cài đặt, tạm dừng, cấu hình whitelist, đổi mật khẩu và gỡ cài đặt hệ thống.")
         self.b("**Hệ điều hành Windows (Windows OS / SCM):** Là môi trường nền tảng thực thi dịch vụ, phát sinh sự kiện cắm rút phần cứng qua WMI, quản lý phân quyền và kích hoạt cơ chế tự phục hồi dịch vụ sau sự cố.")
         
-        self.fig("hinh3_so_do_ca_su_dung.png", "Hình 3.1: Sơ đồ ca sử dụng của hệ thống UsbGuard 1.1", width_cm=15.0)
+        self.fig("hinh3_so_do_ca_su_dung.png", "Hình 3.1: Sơ đồ ca sử dụng của hệ thống UsbGuard 1.2", width_cm=13.5)
 
         self.h2("3.3. Thiết kế kiến trúc 3 tầng chặn và lớp gỡ thiết bị (Defense in Depth)")
         self.p("Nguyên lý phòng thủ đa tầng (Defense in Depth) được áp dụng trong UsbGuard nhằm đảm bảo không có khe hở nào cho phép thiết bị USB trái phép hoạt động. Kiến trúc gồm 3 tầng chặn ở mức hệ điều hành (do `Enforcer.cs` đặt) và 1 lớp gỡ thiết bị chủ động (do `UsbDisks.cs` thực hiện):")
@@ -647,7 +647,7 @@ class BaoCaoUsbGuard:
         self.b("**Lớp gỡ thiết bị (`UsbDisks.cs`):** Tuyến dự phòng chủ động cho thiết bị đã được nạp sẵn (cắm trước khi dịch vụ chạy, hoặc đang ở chế độ danh sách cho phép). Lớp này quét ổ đĩa qua SetupAPI, xác định bus qua IOCTL, gỡ bằng `CM_Request_Device_Eject`, buộc tháo ổ khi đang mở tệp và nạp lại thiết bị khi bỏ chặn.")
         self.p("Cả 3 tầng đều là cơ chế chuẩn mà doanh nghiệp vẫn đặt qua Group Policy hoặc Intune, nên không gây xung đột với công cụ quản trị sẵn có. Dịch vụ gọi lại `Enforcer.Block()` mỗi chu kỳ nên nếu ai đó đổi tay giá trị Registry thì dịch vụ tự sửa lại.")
 
-        self.fig("hinh1_kien_truc_3_tang.png", "Hình 3.2: Kiến trúc 3 tầng chặn và lớp gỡ thiết bị của UsbGuard", width_cm=14.0)
+        self.fig("hinh1_kien_truc_3_tang.png", "Hình 3.2: Kiến trúc 3 tầng chặn và lớp gỡ thiết bị của UsbGuard", width_cm=12.5)
 
         self.h2("3.4. Thiết kế tầng chặn thứ 3: cấm cài đặt thiết bị lưu trữ USB")
         self.p("Tầng 1 và tầng 2 chặn ở khâu nạp driver và truy cập dữ liệu, nhưng Windows vẫn có thể cài nút thiết bị cho ổ USB mới. Tầng 3 chặn sớm hơn, ngay ở khâu cài đặt thiết bị, bằng chính sách Windows \"Device Installation Restrictions\":")
@@ -671,11 +671,11 @@ class BaoCaoUsbGuard:
         self.h2("3.6. Sơ đồ thành phần hệ thống và tổ chức mã nguồn")
         self.p("Hệ thống được thiết kế theo mô hình mô-đun hóa cao, phân định trách nhiệm rõ ràng giữa các tệp mã nguồn C# (.NET Framework 4.8):")
         self.b("**Khối điều khiển, giao diện & Quản trị:** `Program.cs` (điểm khởi nhập), `Cli.cs` (bộ phân tích lệnh quản trị), `Gui.cs` (giao diện quản lý WinForms), `Installer.cs` (cài đặt và cấu hình SCM), `Password.cs` (nhập mật khẩu ẩn an toàn).")
-        self.b("**Khối dịch vụ & Thực thi:** `Worker.cs` (lớp dịch vụ nền tảng, điều phối sự kiện), `Enforcer.cs` (đặt 3 tầng chặn), `UsbDisks.cs` (quét, gỡ và nạp lại thiết bị), `Whitelist.cs` (thuật toán so khớp ID).")
-        self.b("**Khối bảo mật & Lưu trữ:** `Auth.cs` (băm PBKDF2), `Settings.cs` (đọc ghi HKLM\\SOFTWARE\\UsbGuard), `Reg.cs` (phân quyền DACL).")
+        self.b("**Khối dịch vụ & Thực thi:** `Worker.cs` (lớp dịch vụ nền tảng, điều phối sự kiện), `Enforcer.cs` (đặt 3 tầng chặn), `UsbDisks.cs` (quét, gỡ và nạp lại thiết bị), `UsbPorts.cs` (đọc và nạp lại cổng USB qua driver hub), `Whitelist.cs` (thuật toán so khớp ID).")
+        self.b("**Khối bảo mật & Lưu trữ:** `Auth.cs` (băm PBKDF2-SHA256), `AdminAuth.cs` (kiểm tra mật khẩu và khoá chống dò), `Settings.cs` (đọc ghi HKLM\\SOFTWARE\\UsbGuard), `Reg.cs` (phân quyền DACL).")
         self.b("**Khối hạ tầng tầng thấp:** `Native.cs` (khai báo P/Invoke Win32 API), `Sys.cs` (thực thi tiến trình phụ trợ), `Log.cs` (nhật ký hệ thống), `Constants.cs` (hằng số).")
 
-        self.fig("hinh2_so_do_thanh_phan.png", "Hình 3.3: Sơ đồ thành phần hệ thống và các tệp mã nguồn", width_cm=14.5)
+        self.fig("hinh2_so_do_thanh_phan.png", "Hình 3.3: Sơ đồ thành phần hệ thống và các tệp mã nguồn", width_cm=13.0)
 
         self.h2("3.7. Thiết kế luồng xử lý vòng kiểm tra dịch vụ (Worker.Tick)")
         self.p("Trái tim của dịch vụ là phương thức `Worker.Tick`. Mỗi khi được kích hoạt (bởi sự kiện WMI tức thì hoặc bởi Timer định kỳ 2 giây), luồng xử lý thực hiện tuần tự các bước:")
@@ -685,8 +685,9 @@ class BaoCaoUsbGuard:
         self.b("Bước 4: Đọc danh sách Whitelist. Nếu rỗng, đặt chế độ CHẶN TẤT CẢ và gọi `Enforcer.Block()` (đủ 3 tầng). Nếu có mục, đặt chế độ DANH SÁCH CHO PHÉP và gọi `Enforcer.Unblock()` để thiết bị hợp lệ chạy được.")
         self.b("Bước 5: Gọi `UsbDisks.Scan()` lấy danh sách ổ đĩa USB đang kết nối. Ổ nào không khớp Whitelist thì gỡ bằng `UsbDisks.Eject(disk)` (có buộc tháo ổ khi cần), hiện cảnh báo `WTSSendMessage` và ghi nhật ký.")
         self.b("Bước 6: Duyệt `UsbDisks.PresentUsbStorage()` để báo người dùng về thiết bị bị chặn ngay từ driver, và nạp lại 1 lần USB được phép nhưng đang ở trạng thái lỗi.")
+        self.b("Bước 7 (bản 1.2): Gọi `ReviveEjected` để ghi nhớ cổng USB và \"rút ra cắm lại bằng phần mềm\" USB được phép đã bị tháo (mục 3.14).")
 
-        self.fig("hinh4_luong_vong_kiem_tra.png", "Hình 3.4: Lưu đồ thực thi chi tiết của vòng kiểm tra Worker.Tick", width_cm=13.5)
+        self.fig("hinh4_luong_vong_kiem_tra.png", "Hình 3.4: Lưu đồ thực thi chi tiết của vòng kiểm tra Worker.Tick", width_cm=12.0)
 
         self.h2("3.8. Thiết kế chuyển đổi trạng thái 3 chế độ hoạt động")
         self.p("UsbGuard vận hành linh hoạt dựa trên máy trạng thái hữu hạn với 3 chế độ hoạt động rõ ràng:")
@@ -694,14 +695,14 @@ class BaoCaoUsbGuard:
         self.b("**Chế độ 2 — DANH SÁCH CHO PHÉP (Allow List):** Tự động kích hoạt khi danh sách Whitelist có ít nhất 1 mục. Driver lưu trữ được mở lại (`Start = 3`), gỡ `Deny_All` và các mục của tầng 3 để hệ thống nhận diện thiết bị. Lớp gỡ giám sát và gỡ ngay bất kỳ ổ USB nào không có ID khớp với Whitelist.")
         self.b("**Chế độ 3 — TẠM DỪNG (Paused):** Được kích hoạt khi quản trị viên tạm dừng (lệnh `pause <số_phút>` hoặc nút \"Tạm dừng chặn\") với đúng mật khẩu. Hệ thống mở lại toàn bộ driver, nạp lại thiết bị đang bị chặn và tạm dừng cơ chế quét gỡ. Hết thời gian, hệ thống tự quay về trạng thái chặn.")
 
-        self.fig("hinh5_trang_thai_3_che_do.png", "Hình 3.5: Sơ đồ chuyển đổi giữa 3 chế độ hoạt động của UsbGuard", width_cm=14.5)
+        self.fig("hinh5_trang_thai_3_che_do.png", "Hình 3.5: Sơ đồ chuyển đổi giữa 3 chế độ hoạt động của UsbGuard", width_cm=13.0)
 
         self.h2("3.9. Thiết kế cây thiết bị và ranh giới cô lập an toàn")
         self.p("Vấn đề khó khăn của các phần mềm chặn USB là nguy cơ ngắt nhầm chuột hoặc bàn phím cắm chung cổng hub USB. Để giải quyết vấn đề này, UsbGuard thiết lập 1 ranh giới cô lập phần cứng chuẩn xác:")
         self.b("Lớp gỡ chỉ nhắm vào giao diện đĩa `GUID_DEVINTERFACE_DISK` và kiểm tra `BusType == BusTypeUsb` (giá trị 7). Chuột, bàn phím thuộc giao diện `GUID_DEVINTERFACE_HID` nên bị bỏ qua ngay từ vòng lọc đầu tiên. Tầng 3 cũng chỉ nhắm lớp 08 nên không ảnh hưởng thiết bị HID.")
         self.b("Khi duyệt cây thiết bị để tìm ID và gỡ bỏ, hằng số `MaxDepth = 2` giới hạn việc duyệt chỉ đi từ Nút đĩa (Disk Node) lên Nút thiết bị USB cha (Parent USB Node). Ứng dụng **không duyệt tiếp lên Nút Hub (USB Generic Hub hoặc Root Hub)**, nên cổng hub vật lý vẫn duy trì tín hiệu cho chuột, bàn phím.")
 
-        self.fig("hinh7_cay_thiet_bi_usb.png", "Hình 3.6: Cây thiết bị PnP và ranh giới gỡ bỏ an toàn tránh ảnh hưởng hub", width_cm=14.5)
+        self.fig("hinh7_cay_thiet_bi_usb.png", "Hình 3.6: Cây thiết bị PnP và ranh giới gỡ bỏ an toàn tránh ảnh hưởng hub", width_cm=13.0)
 
         self.h2("3.10. Thiết kế cấu trúc lưu trữ cấu hình trong Windows Registry")
         self.p("Toàn bộ trạng thái và cấu hình vận hành của UsbGuard được lưu trữ tập trung tại phân nhánh Registry hệ thống `HKLM\\SOFTWARE\\UsbGuard`:")
@@ -709,11 +710,13 @@ class BaoCaoUsbGuard:
         headers_reg = ["Tên giá trị (Value)", "Kiểu dữ liệu", "Mục đích sử dụng", "Ví dụ giá trị thực tế"]
         widths_reg = [2000, 1800, 3600, 3671]
         rows_reg = [
-            ["AuthHash", "REG_SZ", "Chuỗi băm mật khẩu quản trị chuẩn PBKDF2.", "pbkdf2$100000$rQ...==$Ab...=="],
+            ["AuthHash", "REG_SZ", "Chuỗi băm mật khẩu quản trị chuẩn PBKDF2-SHA256.", "pbkdf2-sha256$600000$rQ...==$Ab...=="],
             ["Uninstalling", "REG_QWORD", "Cờ báo hiệu dịch vụ cần tự dừng để phục vụ gỡ cài đặt.", "0L (bình thường), 1L (đang gỡ)"],
             ["PauseUntil", "REG_QWORD", "Thời điểm hết hạn tạm dừng tính theo Ticks UTC.", "638989536000000000L"],
             ["Whitelist", "REG_MULTI_SZ", "Danh sách các chuỗi định danh USB được phép sử dụng.", "VID_0951&PID_1666\\0 08606E6B..."],
-            ["DisabledDevices", "REG_MULTI_SZ", "Danh sách thiết bị tạm bị vô hiệu hóa bởi pnputil.", "USB\\VID_0951&PID_1666\\0860..."]
+            ["DisabledDevices", "REG_MULTI_SZ", "Danh sách thiết bị tạm bị vô hiệu hóa bởi pnputil.", "USB\\VID_0951&PID_1666\\0860..."],
+            ["SeenUsb", "REG_MULTI_SZ", "Vị trí cổng (hub và số cổng) của các USB lưu trữ từng thấy, dùng để nạp lại USB đã bị tháo.", "USB\\VID_0951&PID_1666\\0860...|<hub>|3|..."],
+            ["AuthFails, AuthLockUntil", "REG_QWORD", "Số lần nhập sai mật khẩu liên tiếp và thời điểm hết khoá (Ticks UTC).", "5L, 638989536300000000L"]
         ]
         self.tbl("TBL_REG", "Bảng 3.2: Đặc tả cấu trúc lưu trữ cấu hình HKLM\\SOFTWARE\\UsbGuard", headers_reg, rows_reg, widths_reg, ["center", "center", "left", "left"])
 
@@ -723,14 +726,16 @@ class BaoCaoUsbGuard:
         self.b("**Lớp phân quyền truy cập DACL:** Người dùng thông thường không có quyền gửi mã điều khiển tới SCM hoặc chỉnh sửa cấu hình dịch vụ. Mọi lệnh `sc stop`, `sc delete`, `sc config` từ người dùng thường đều bị chặn với mã lỗi `5 (ERROR_ACCESS_DENIED)`.")
         self.b("**Lớp phục hồi tự động sau sự cố (`sc.exe failure`):** Nếu tiến trình `UsbGuard.exe` bị cưỡng chế kết thúc (`taskkill /F` từ quyền Administrator), cấu hình phục hồi ra lệnh cho Windows chạy lại tiến trình sau khoảng 5 giây (`actions= restart/5000/restart/30000`).")
 
-        self.fig("hinh8_co_che_khong_tat_duoc.png", "Hình 3.7: Cơ chế 'không tắt được' và tự phục hồi dịch vụ của UsbGuard", width_cm=14.5)
+        self.fig("hinh8_co_che_khong_tat_duoc.png", "Hình 3.7: Cơ chế 'không tắt được' và tự phục hồi dịch vụ của UsbGuard", width_cm=13.0)
 
         self.h2("3.12. Thiết kế bảo mật thông tin và phân quyền Registry DACL")
         self.p("Hệ thống áp dụng các tiêu chuẩn an ninh thông tin nghiêm ngặt để bảo vệ toàn vẹn dữ liệu cấu hình:")
         self.b("Khóa Registry `HKLM\\SOFTWARE\\UsbGuard` được ngắt kế thừa quyền (`SetAccessRuleProtection(true, false)`) và chỉ cấp `FullControl` cho 2 SID: `LocalSystem` và `BuiltinAdministrators`. Nhóm người dùng thường không có quyền đọc, ngăn việc sao chép chuỗi mã băm `AuthHash` để bẻ khóa ngoại tuyến.")
-        self.b("Cơ chế nhập mật khẩu an toàn (`Password.cs`): đọc phím với thuộc tính ẩn `Console.ReadKey(true)`, không hiển thị ký tự và không ghi vết vào lịch sử dòng lệnh. Giao diện quản lý hỏi mật khẩu cho mọi thao tác và khoá 60 giây nếu nhập sai 5 lần liên tiếp.")
+        self.b("Cơ chế nhập mật khẩu an toàn (`Password.cs`): đọc phím với thuộc tính ẩn `Console.ReadKey(true)`, không hiển thị ký tự và không ghi vết vào lịch sử dòng lệnh. Giao diện quản lý hỏi mật khẩu cho mọi thao tác.")
+        self.b("**Băm mật khẩu (bản 1.2):** PBKDF2-HMAC-SHA256, muối ngẫu nhiên 16 byte, 600000 vòng (trước đây là SHA1, 100000 vòng). Mã băm của bản cũ vẫn dùng được và được băm lại ở lần nhập đúng kế tiếp (`Auth.NeedsRehash`).")
+        self.b("**Chống dò mật khẩu (`AdminAuth.cs`):** Số lần sai lưu trong Registry HKLM (người dùng thường không sửa được) nên đóng mở lại phần mềm không xóa được. Sai 4 lần đầu chưa khoá; lần thứ 5 khoá 30 giây, mỗi lần sai tiếp gấp đôi, tối đa 1 giờ; nhập đúng thì về 0. Giao diện, dòng lệnh và trình gỡ dùng chung 1 hàm kiểm tra.")
 
-        self.fig("hinh9_mo_hinh_bao_mat_pbkdf2.png", "Hình 3.8: Thiết kế bảo mật mật khẩu PBKDF2 và phân quyền DACL", width_cm=14.5)
+        self.fig("hinh9_mo_hinh_bao_mat_pbkdf2.png", "Hình 3.8: Thiết kế bảo mật mật khẩu PBKDF2 và phân quyền DACL", width_cm=13.0)
 
         self.h2("3.13. Thiết kế quy trình gỡ cài đặt an toàn có xác thực mật khẩu")
         self.p("Vì dịch vụ không nhận lệnh Stop trực tiếp, quy trình gỡ cài đặt được thiết kế thông qua cơ chế cờ báo hiệu an toàn:")
@@ -738,14 +743,21 @@ class BaoCaoUsbGuard:
         self.b("Nếu xác thực thành công, chương trình ghi cờ `Uninstalling = 1` vào Registry. Dịch vụ `Worker` trong vòng kiểm tra tiếp theo đọc cờ này sẽ chủ động dừng Timer và gọi `Stop()`.")
         self.b("Tiến trình gỡ chờ dịch vụ dừng hẳn (tối đa 20 giây), xóa dịch vụ khỏi SCM (`sc delete`), trả lại cấu hình Windows (`USBSTOR Start = 3`, xóa `Deny_All`, xóa các mục `UsbGuardN` của tầng 3 và giữ nguyên mục của công ty), bật lại và nạp lại thiết bị bị chặn, xóa khóa `HKLM\\SOFTWARE\\UsbGuard` và các tệp cài đặt.")
 
-        self.fig("hinh6_luong_go_cai_dat.png", "Hình 3.9: Quy trình gỡ cài đặt bảo mật và khôi phục cài đặt gốc Windows", width_cm=14.0)
+        self.fig("hinh6_luong_go_cai_dat.png", "Hình 3.9: Quy trình gỡ cài đặt bảo mật và khôi phục cài đặt gốc Windows", width_cm=12.5)
+
+        self.h2("3.14. Thiết kế nạp lại USB đã bị Windows tháo (bản 1.2)")
+        self.p("Lượt thử trên máy Windows thật (mục 5.6) cho thấy 2 vấn đề: (a) USB bị chặn lúc đang cắm thì Windows \"tháo an toàn\" (mã 47), nên khi được cho phép hoặc tạm dừng phải rút ra cắm lại mới dùng được; (b) USB đó có lúc biến khỏi danh sách trong phần mềm. Bản 1.2 xử lý bằng `UsbPorts.cs` và `Worker.ReviveEjected`:")
+        self.b("**Ghi nhớ vị trí cổng:** Dịch vụ lưu vào Registry (`SeenUsb`) Instance ID, hub và số cổng của mỗi USB lưu trữ đang cắm, nên vẫn nhận ra USB dù Windows không còn liệt kê nó (lỗi b).")
+        self.b("**Đọc trạng thái cổng từ driver hub:** Gửi `IOCTL_USB_GET_NODE_CONNECTION_INFORMATION` tới hub để biết cổng còn cắm đúng USB (VID, PID) không. Hết cắm thì quên; vẫn cắm nhưng đã bị tháo thì hiện lại với trạng thái \"Bị chặn (đã tháo)\".")
+        self.b("**Rút ra cắm lại bằng phần mềm:** Khi USB được phép dùng (đang tạm dừng hoặc có trong danh sách cho phép) mà đã bị tháo, gửi `IOCTL_USB_HUB_CYCLE_PORT` tới đúng cổng đó. Windows nhận lại USB như vừa cắm vào, không ảnh hưởng thiết bị khác. Thử tối đa 3 lần, mỗi lần cách nhau 10 giây (khắc phục lỗi a).")
+        self.b("**Không dùng `pnputil /restart-device` cho USB mã 47:** lệnh này làm USB chuyển sang mã 14 (đòi khởi động lại máy).")
 
     # ==========================================================================
     # CHƯƠNG 4: CÀI ĐẶT VÀ TRIỂN KHAI ỨNG DỤNG
     # ==========================================================================
     VAI_TRO_TEP = {
         "Program.cs": "Điểm khởi nhập (Main), phân luồng các lệnh CLI và giao diện.",
-        "Worker.cs": "Lớp ServiceBase, vòng lặp 2s, giám sát WMI, điều phối 3 chế độ, thông báo.",
+        "Worker.cs": "Lớp ServiceBase, vòng lặp 2s, giám sát WMI, điều phối 3 chế độ, thông báo, nạp lại USB đã bị tháo.",
         "Enforcer.cs": "Đặt và gỡ 3 tầng chặn: driver USBSTOR/UASPStor, Deny_All, DenyDeviceIDs.",
         "UsbDisks.cs": "Lớp gỡ: quét SetupAPI/IOCTL, eject, buộc tháo ổ, nạp lại thiết bị.",
         "Gui.cs": "Giao diện quản lý WinForms: thanh trạng thái, 3 tab, hộp thoại mật khẩu.",
@@ -753,13 +765,15 @@ class BaoCaoUsbGuard:
         "Settings.cs": "Đọc/ghi cấu hình Registry tại HKLM\\SOFTWARE\\UsbGuard.",
         "Cli.cs": "Xử lý các lệnh quản trị: pause, resume, whitelist, passwd, devices.",
         "Native.cs": "Khai báo P/Invoke các hàm Win32 API tầng thấp.",
-        "Auth.cs": "Băm mật khẩu PBKDF2-SHA1 100000 vòng, so sánh thời gian hằng.",
+        "Auth.cs": "Băm mật khẩu PBKDF2-SHA256 600000 vòng, nâng cấp mã băm cũ, tính thời gian khoá.",
         "Log.cs": "Ghi nhật ký ra tệp usbguard.log và Windows Event Log.",
         "Reg.cs": "Tiện ích Registry an toàn và phân quyền DACL.",
         "Whitelist.cs": "So khớp chuỗi ID thiết bị với danh sách cho phép.",
         "Password.cs": "Đọc mật khẩu ẩn không hiện ký tự từ bàn phím console.",
         "Sys.cs": "Khởi chạy tiến trình hệ thống (sc.exe, pnputil.exe).",
         "Constants.cs": "Hằng số tên dịch vụ, tên hiển thị và mô tả hệ thống.",
+        "UsbPorts.cs": "Đọc trạng thái cổng USB từ driver hub và rút ra cắm lại bằng phần mềm (IOCTL).",
+        "AdminAuth.cs": "Kiểm tra mật khẩu quản trị dùng chung, đếm số lần sai trong HKLM và khoá tăng dần.",
     }
 
     def tao_chuong_4(self):
@@ -788,7 +802,7 @@ class BaoCaoUsbGuard:
         self.tbl("TBL_SRC", "Bảng 4.1: Cấu trúc tệp mã nguồn và số dòng lệnh của UsbGuard", headers_src, rows_src, widths_src, ["center", "left", "center", "left"], sz=21)
 
         self.h2("4.3. Phân tích các trích đoạn mã nguồn quan trọng")
-        self.p("Dưới đây là các trích đoạn mã nguồn tiêu biểu (đã rút gọn) thể hiện giải pháp kỹ thuật cốt lõi của UsbGuard 1.1:")
+        self.p("Dưới đây là các trích đoạn mã nguồn tiêu biểu (đã rút gọn) thể hiện giải pháp kỹ thuật cốt lõi của UsbGuard 1.2:")
 
         self.h3("4.3.1. Điều phối vòng lặp và xử lý chế độ (Worker.Tick)")
         self.p("Đoạn mã thể hiện việc kiểm tra cờ dừng, xác định 3 chế độ, quét gỡ thiết bị vi phạm và báo thiết bị bị chặn từ driver:")
@@ -803,7 +817,8 @@ private void Tick(object sender, ElapsedEventArgs e)
         if (Settings.IsPaused)
         {
             UsbDisks.ReleaseLocksExcept(null);
-            SetMode("TẠM DỪNG"); Enforcer.Unblock(); AfterUnblock(); return;
+            SetMode("TẠM DỪNG"); Enforcer.Unblock(); AfterUnblock();
+            ReviveEjected(UsbDisks.PresentUsbStorage(), d => true); return;
         }
         var whitelist = Settings.GetWhitelist();
         if (whitelist.Count == 0) { SetMode("CHẶN TẤT CẢ"); Enforcer.Block(); }
@@ -814,6 +829,7 @@ private void Tick(object sender, ElapsedEventArgs e)
 
         foreach (var dev in UsbDisks.PresentUsbStorage())   // bị chặn từ driver
             if (dev.Problem != 0 && !Whitelist.Matches(dev.Ids, whitelist)) Notify(dev.Name);
+        ReviveEjected(UsbDisks.PresentUsbStorage(), d => Whitelist.Matches(d.Ids, whitelist));
     }
     finally { lock (_gate) { _busy = false; } }
 }""")
@@ -914,23 +930,23 @@ private static int ForceDismount(UsbDisk d)
         self.tbl("TBL_CLI", "Bảng 4.2: Danh mục tập lệnh điều khiển dòng lệnh của UsbGuard", headers_cli, rows_cli, widths_cli, ["left", "center", "left"], sz=21)
 
         self.h2("4.5. Giao diện quản lý")
-        self.p("Để người dùng không rành dòng lệnh vẫn quản trị được, UsbGuard 1.1 có giao diện quản lý WinForms (`src/Gui.cs`), mở bằng lối tắt trên Start Menu hoặc Desktop. Giao diện tự xin quyền Administrator (UAC), cập nhật trạng thái mỗi 2 giây và dùng chung mã Enforcer, Settings, UsbDisks với dịch vụ.")
-        self.fig(pathlib.Path(PROJECT_ROOT / "release" / "anh" / "gui-quan-ly.png"), "Hình 4.1: Giao diện quản lý UsbGuard 1.1 ở chế độ danh sách cho phép", width_cm=12.5)
+        self.p("Để người dùng không rành dòng lệnh vẫn quản trị được, UsbGuard 1.2 có giao diện quản lý WinForms (`src/Gui.cs`), mở bằng lối tắt trên Start Menu hoặc Desktop. Giao diện tự xin quyền Administrator (UAC), cập nhật trạng thái mỗi 2 giây và dùng chung mã Enforcer, Settings, UsbDisks với dịch vụ.")
+        self.fig(kq.anh_gui(), "Hình 4.1: Giao diện quản lý UsbGuard 1.2 ở chế độ danh sách cho phép", width_cm=11.0)
         headers_gui = ["Thành phần", "Chức năng"]
         widths_gui = [2800, 6271]
         rows_gui = [
-            ["Thanh trạng thái màu", "Đỏ: chặn tất cả; xanh: chỉ cho phép danh sách; vàng: tạm dừng; xám: chưa cài đặt. Kèm dòng báo dịch vụ đang chạy, không tắt được."],
-            ["Tab \"USB đang cắm\"", "Liệt kê USB đang cắm (kể cả đang bị chặn) theo số serial; chọn 1 USB rồi bấm \"Cho phép USB đã chọn\" mà không cần tạm dừng."],
+            ["Thanh trạng thái màu", "Đỏ: chặn tất cả; xanh: chỉ cho phép danh sách; vàng: tạm dừng (kèm dòng \"Muốn chặn ngay: bấm Bật lại chặn\"); xám: chưa cài đặt. Kèm dòng báo dịch vụ không tắt được."],
+            ["Tab \"USB đang cắm\"", "Liệt kê USB đang cắm (kể cả đang bị chặn) theo số serial, kèm trạng thái \"Bị chặn (đã tháo)\" nếu Windows đã tháo; chọn 1 USB rồi bấm \"Cho phép USB đã chọn\" mà không cần tạm dừng."],
             ["Tab \"Danh sách cho phép\"", "Xem, thêm theo ID và xóa mục. Danh sách trống nghĩa là chặn tất cả."],
             ["Tab \"Nhật ký\"", "Hiển thị nhật ký hoạt động, có nút mở thư mục chứa tệp nhật ký."],
             ["Hàng nút dưới", "Tạm dừng chặn, Bật lại chặn, Đổi mật khẩu, Gỡ cài đặt (hoặc Cài đặt khi chưa cài)."],
-            ["Bảo vệ thao tác", "Mọi thao tác thay đổi đều hỏi mật khẩu quản trị; nhập sai 5 lần liên tiếp thì khoá 60 giây."]
+            ["Bảo vệ thao tác", "Mọi thao tác thay đổi đều hỏi mật khẩu quản trị; nhập sai 5 lần liên tiếp thì khoá 30 giây, gấp đôi mỗi lần sai tiếp, tối đa 1 giờ."]
         ]
         self.tbl("TBL_GUI", "Bảng 4.3: Các thành phần của giao diện quản lý", headers_gui, rows_gui, widths_gui, ["left", "left"], sz=21)
 
         self.h2("4.6. Bộ cài đặt setup.exe")
         self.p("Bộ cài `UsbGuard-Setup-<phiên bản>.exe` được đóng gói bằng Inno Setup 6 (`installer/UsbGuard.iss`), giao diện tiếng Việt, giúp người dùng cài UsbGuard như phần mềm Windows thông thường:")
-        self.fig("hinh11_bo_cai_setup.png", "Hình 4.2: Các bước của bộ cài setup.exe và trình gỡ cài đặt", width_cm=14.0)
+        self.fig("hinh11_bo_cai_setup.png", "Hình 4.2: Các bước của bộ cài setup.exe và trình gỡ cài đặt", width_cm=12.5)
         headers_set = ["Tính năng", "Mô tả"]
         widths_set = [3000, 6071]
         rows_set = [
@@ -946,8 +962,8 @@ private static int ForceDismount(UsbDisk d)
         self.h2("4.7. Hướng dẫn vận hành dành cho quản trị viên hệ thống")
         self.p("Quy trình vận hành chuẩn trong thực tế của quản trị viên:")
         self.b("**Bước 1 (Cài đặt):** Chạy `setup.exe`, đồng ý điều khoản, đặt mật khẩu quản trị. Dịch vụ được cài, tự khởi động cùng Windows và vào chế độ CHẶN TẤT CẢ. Có thể cài bằng dòng lệnh: `UsbGuard.exe install <mật_khẩu>`.")
-        self.b("**Bước 2 (Cho phép USB hợp lệ):** Cắm USB công vụ vào máy (không cần tạm dừng), mở giao diện quản lý, vào tab \"USB đang cắm\", chọn USB và bấm \"Cho phép USB đã chọn\". Từ lúc này chỉ USB đó dùng được. Bằng dòng lệnh: `UsbGuard.exe devices` để lấy số serial rồi `UsbGuard.exe whitelist add <serial> <mật_khẩu>`.")
-        self.b("**Bước 3 (Kiểm tra nhật ký):** Mở tab \"Nhật ký\" hoặc tệp `C:\\ProgramData\\UsbGuard\\usbguard.log` để theo dõi lịch sử cắm rút và cảnh báo vi phạm.")
+        self.b("**Bước 2 (Cho phép USB hợp lệ):** Cắm USB công vụ vào máy (không cần tạm dừng), mở giao diện quản lý, vào tab \"USB đang cắm\", chọn USB và bấm \"Cho phép USB đã chọn\". Từ lúc này chỉ USB đó dùng được (dòng lệnh: `devices` rồi `whitelist add <serial>`).")
+        self.b("**Bước 3 (Kiểm tra nhật ký):** Mở tab \"Nhật ký\" hoặc tệp `C:\\ProgramData\\UsbGuard\\usbguard.log` để theo dõi lịch sử cắm rút.")
         self.b("**Bước 4 (Gỡ cài đặt):** Dùng Settings > Apps hoặc nút \"Gỡ cài đặt\" trong giao diện; nhập đúng mật khẩu quản trị để hoàn trả cấu hình USB mặc định của Windows.")
 
     # ==========================================================================
@@ -966,6 +982,9 @@ private static int ForceDismount(UsbDisk d)
         "Matches_KhongPhanBietHoaThuong": "So khớp whitelist không phân biệt chữ hoa, chữ thường.",
         "Matches_WhitelistRong_KhongKhopGi": "Whitelist rỗng thì không khớp với bất kỳ thiết bị nào.",
         "Matches_MucWhitelistQuaNgan_BiBoQua": "Mục whitelist quá ngắn tự động bị bỏ qua trong thuật toán khớp.",
+        "Hash_MoiDungSha256_600000Vong": "Mã băm mới dùng PBKDF2-SHA256 với 600000 vòng và xác thực đúng.",
+        "Verify_MaBamCuaBan11_VanDung_VaCanBamLai": "Mã băm SHA1 của bản 1.1 vẫn đăng nhập được và được đánh dấu cần băm lại.",
+        "LockSeconds_TangGapDoi_ToiDa1Gio": "Thời gian khoá khi nhập sai: 4 lần đầu không khoá, lần 5 khoá 30 giây, gấp đôi mỗi lần, tối đa 1 giờ.",
     }
 
     def tao_chuong_5(self):
@@ -974,22 +993,31 @@ private static int ForceDismount(UsbDisk d)
         self.h1("CHƯƠNG 5: KIỂM THỬ VÀ ĐÁNH GIÁ KẾT QUẢ")
 
         self.h2("5.1. Chiến lược kiểm thử hệ thống")
-        self.p("Để đảm bảo độ tin cậy cao cho 1 ứng dụng can thiệp tầng sâu hệ thống, tác giả xây dựng chiến lược kiểm thử đa tầng gồm 3 cấp độ, tất cả chạy tự động trên GitHub Actions:")
+        self.p("Để đảm bảo độ tin cậy cao cho 1 ứng dụng can thiệp tầng sâu hệ thống, tác giả xây dựng chiến lược kiểm thử đa tầng gồm 3 cấp độ chạy tự động trên GitHub Actions, bổ sung 1 lượt thử thủ công trên máy Windows thật:")
         self.b(f"**Cấp độ 1 — Unit Test (`tests/AuthTests.cs`):** {u22['tong']} ca kiểm tra các thuật toán nghiệp vụ độc lập (băm PBKDF2, so khớp whitelist) bằng xUnit.")
-        self.b(f"**Cấp độ 2 — Kiểm thử tích hợp trên Windows Server (`tests/integration.ps1`):** {t22['tong']} ca chạy trên Windows Server 2022 và Windows Server 2025: cài dịch vụ thật, đo phản ứng Registry, kiểm tra 3 tầng chặn, thử tắt dịch vụ bằng Administrator và người dùng thường, gỡ cài đặt.")
-        self.b(f"**Cấp độ 3 — Kiểm thử cắm USB thật trên Windows 10 và Windows 11 (`tests/e2e/`):** {w10['tong']} ca cài bằng setup.exe rồi cắm, rút ổ USB và bàn phím USB vào máy ảo Windows 10 Pro và Windows 11 Pro, kiểm tra chặn, danh sách cho phép, tệp đang mở và gỡ bằng trình gỡ.")
+        self.b(f"**Cấp độ 2 — Kiểm thử tích hợp trên Windows Server (`tests/integration.ps1`):** {t22['tong']} ca chạy trên Windows Server 2022 và Windows Server 2025: cài dịch vụ thật, đo phản ứng Registry, kiểm tra 3 tầng chặn, thử tắt dịch vụ bằng Administrator và người dùng thường, chống dò mật khẩu, gỡ cài đặt.")
+        self.b(f"**Cấp độ 3 — Kiểm thử cắm USB thật trên Windows 10 và Windows 11 (`tests/e2e/`):** {w10['tong']} ca cài bằng setup.exe rồi cắm, rút ổ USB và bàn phím USB vào máy ảo Windows 10 Pro và Windows 11 Pro, kiểm tra chặn, danh sách cho phép, tệp đang mở, USB đã bị Windows tháo và gỡ bằng trình gỡ.")
+        self.b("**Thử thủ công trên máy thật:** 1 thành viên nhóm cài bản 1.1.0 lên máy Windows thật, dùng USB vật lý thử 7 kịch bản (mục 5.6). Kết quả này sinh ra các cải tiến của bản 1.2.")
 
         self.h2("5.2. Kết quả kiểm thử Unit Test")
         self.p(f"Bộ kiểm thử đơn vị gồm {u22['tong']} ca, kết quả đọc từ tệp `.trx` do GitHub Actions xuất ra: **{kqs(u22)} ca đạt** trên Windows Server 2022 và **{kqs(u25)} ca đạt** trên Windows Server 2025.")
         headers_ut = ["Mã test", "Tên phương thức kiểm thử", "Mục đích kiểm tra", "Kết quả"]
         widths_ut = [900, 3700, 3971, 1500]
         thu_tu = list(self.MO_TA_UNIT)
-        ca_ut = sorted(u22["ca"], key=lambda c: (thu_tu.index(c[0]) if c[0] in thu_tu else 99, c[0]))
-        kq25 = dict(u25["ca"])
+        gop = {}
+        for t, o in u22["ca"]:
+            gop.setdefault(t.split("(")[0], []).append(o)
+        u22_ca = [(k, all(v)) for k, v in gop.items()]
+        ca_ut = sorted(u22_ca, key=lambda c: (thu_tu.index(c[0].split("(")[0]) if c[0].split("(")[0] in thu_tu else 99, c[0]))
+        gop25 = {}
+        for t, o in u25["ca"]:
+            gop25.setdefault(t.split("(")[0], []).append(o)
+        kq25 = {k: all(v) for k, v in gop25.items()}
         rows_ut = []
         for i, (ten, ok) in enumerate(ca_ut, 1):
             ok = ok and kq25.get(ten, False)
-            rows_ut.append([f"UT{i:02d}", ten, self.MO_TA_UNIT.get(ten, "Xem mã nguồn trong tests/."), "Đạt" if ok else "Không đạt"])
+            n_ca = len(gop[ten])
+            rows_ut.append([f"UT{i:02d}", ten + (f" ({n_ca} ca tham số)" if n_ca > 1 else ""), self.MO_TA_UNIT.get(ten, "Xem mã nguồn trong tests/."), "Đạt" if ok else "Không đạt"])
         self.tbl("TBL_UT", f"Bảng 5.1: Kết quả thực thi {u22['tong']} ca kiểm thử đơn vị (Unit Test) xUnit", headers_ut, rows_ut, widths_ut, ["center", "left", "left", "center"], sz=20)
 
         self.h2(f"5.3. Kết quả kiểm thử tích hợp tự động trên Windows Server ({t22['tong']} ca)")
@@ -1002,7 +1030,7 @@ private static int ForceDismount(UsbDisk d)
             rows_it.append([c["id"], c["ten"], kq_chu(c["dat"]), kq_chu(c25["dat"]) if c25 else "Thiếu"])
         self.tbl("TBL_IT", f"Bảng 5.2: Kết quả {t22['tong']} ca kiểm thử tích hợp trên Windows Server", headers_it, rows_it, widths_it, ["center", "left", "center", "center"], sz=20)
 
-        self.fig("hinh10_terminal_log.png", f"Hình 5.1: Nhật ký chạy kiểm thử tích hợp {t22['tong']} ca trên Windows Server", width_cm=14.0)
+        self.fig("hinh10_terminal_log.png", f"Hình 5.1: Nhật ký chạy kiểm thử tích hợp {t22['tong']} ca trên Windows Server", width_cm=11.5)
 
         self.p("Các thông số đo thời gian phản ứng ghi nhận qua kiểm thử tích hợp trên 2 nền tảng Windows Server:")
         self.b(f"**Thời gian tự sửa Registry (`tu_sua_ms`):** Khi sửa tay `USBSTOR\\Start = 3`, dịch vụ phát hiện và khôi phục `Start = 4` sau **{t22['tu_sua_ms']} ms** (Windows Server 2022) và **{t25['tu_sua_ms']} ms** (Windows Server 2025).")
@@ -1014,7 +1042,7 @@ private static int ForceDismount(UsbDisk d)
         self.b("**Máy ảo:** Runner Ubuntu bật KVM chạy Windows 10 Pro và Windows 11 Pro trong QEMU (dockur/windows).")
         self.b("**Ổ USB:** Ổ QEMU `usb-storage` cắm nóng vào cổng USB 3 (xHCI) bằng lệnh `device_add` và `device_del` của QEMU monitor. Windows nhận đúng như USB flash disk thật: bus USB, driver USBSTOR, có ký tự ổ và ghi được tệp (ca E01). Ca E05 còn cắm thêm bàn phím USB.")
         self.b("**Mã nguồn kiểm thử:** `tests/e2e/e2e-usb.ps1` (chạy trong Windows), `tests/e2e/host.py` (điều khiển cắm rút từ máy chủ) và `.github/workflows/e2e-usb.yml`.")
-        self.fig("hinh12_moi_truong_e2e.png", "Hình 5.2: Môi trường kiểm thử cắm USB thật", width_cm=14.0)
+        self.fig("hinh12_moi_truong_e2e.png", "Hình 5.2: Môi trường kiểm thử cắm USB thật", width_cm=12.0)
         self.p(f"Kết quả: **{kqs(w10)} ca đạt trên {w10['he_dieu_hanh'].replace('Microsoft ', '')}** và **{kqs(w11)} ca đạt trên {w11['he_dieu_hanh'].replace('Microsoft ', '')}**. Bảng 5.3 liệt kê từng ca:")
         headers_e2e = ["Mã ca", "Ca kiểm thử cắm USB thật", "Windows 10", "Windows 11"]
         widths_e2e = [800, 5771, 1250, 1250]
@@ -1031,12 +1059,11 @@ private static int ForceDismount(UsbDisk d)
         self.b(f"**Cho phép USB đang cắm không cần rút ra:** sau lệnh tạm dừng (E06) USB ghi được sau {ms(w10, 'E06')} ms (Windows 10) và {ms(w11, 'E06')} ms (Windows 11); sau khi thêm serial vào danh sách cho phép (E09) là {ms(w10, 'E09')} ms và {ms(w11, 'E09')} ms.")
         self.b(f"**Rút ra cắm lại USB được phép (E12):** ghi được sau {ms(w10, 'E12')} ms (Windows 10) và {ms(w11, 'E12')} ms (Windows 11) tính từ lúc bắt đầu theo dõi ổ.")
 
-        anh_e10 = ghep_doc([w10["anh_dir"] / "e10-whitelist-chan-usb-la.png", w11["anh_dir"] / "e10-whitelist-chan-usb-la.png"], "e10-ghep.png")
-        self.fig(anh_e10, "Hình 5.3: Thông báo chặn USB lạ (ca E10), Windows 10 trên, Windows 11 dưới", width_cm=8.5)
-        self.fig(w11["anh_dir"] / "gui-quan-ly.png", "Hình 5.4: Windows 11 Pro, giao diện quản lý khi chặn USB lạ", width_cm=12.0)
+        self.fig(pathlib.Path(PROJECT_ROOT / "release" / "anh" / "thong-bao-chan.png"), "Hình 5.3: Hộp thoại UsbGuard báo người dùng khi USB bị chặn", width_cm=7.5)
+        self.fig(w11["anh_dir"] / "gui-quan-ly.png", "Hình 5.4: Windows 11 Pro, giao diện quản lý khi chặn USB lạ", width_cm=8.0)
 
         self.h2("5.5. 3 lỗi phát hiện khi cắm USB thật và cách sửa")
-        self.p(f"Lần chạy kiểm thử cắm USB đầu tiên chỉ đạt 11/{w10['tong']} ca. Việc cắm USB thật đã phát hiện 3 lỗi mà kiểm thử trên Windows Server không bắt được. Sau khi sửa cả 3 lỗi, bộ kiểm thử đạt {kqs(w10)} trên Windows 10 và {kqs(w11)} trên Windows 11, còn kiểm thử Windows Server vẫn đạt {kqs(t22)}.")
+        self.p("Ở bản 1.1, lần chạy kiểm thử cắm USB đầu tiên (khi đó có 17 ca) chỉ đạt 11/17 ca. Việc cắm USB thật đã phát hiện 3 lỗi mà kiểm thử trên Windows Server không bắt được. Sau khi sửa cả 3 lỗi, bộ kiểm thử khi đó đạt đủ 17 ca trên cả Windows 10 và Windows 11. Ở bản 1.2 bộ kiểm thử có thêm 3 ca (E18 đến E20) và đạt toàn bộ (Bảng 5.3).")
         headers_bug = ["Lỗi", "Hiện tượng", "Nguyên nhân và cách sửa"]
         widths_bug = [1900, 3000, 4171]
         rows_bug = [
@@ -1046,11 +1073,40 @@ private static int ForceDismount(UsbDisk d)
         ]
         self.tbl("TBL_BUG", "Bảng 5.4: 3 lỗi phát hiện khi cắm USB thật và cách sửa", headers_bug, rows_bug, widths_bug, ["left", "left", "left"], sz=21)
 
-        self.h2("5.6. Đánh giá mức độ đáp ứng các yêu cầu hệ thống")
+        self.h2("5.6. Kiểm thử thủ công trên máy Windows thật (bản 1.1.0)")
+        self.p("Sau các lượt kiểm thử tự động, 1 thành viên nhóm đã cài UsbGuard 1.1.0 (bản Release, biên dịch với 0 cảnh báo và 0 lỗi) lên máy Windows thật và thử bằng USB vật lý. Các thao tác được đối chiếu qua This PC, trạng thái dịch vụ, lệnh `devices` và Registry. Cả 7 kịch bản đều cho kết quả đạt:")
+        headers_mt = ["STT", "Kịch bản", "Kết quả quan sát", "Đánh giá"]
+        widths_mt = [750, 2400, 4721, 1200]
+        rows_mt = [
+            ["1", "Cài đặt và tự khởi động cùng Windows", "Sau khi khởi động lại máy, `sc.exe query UsbGuard` trả về STATE: 4 RUNNING.", "Đạt"],
+            ["2", "Chặn USB lưu trữ ở chế độ CHẶN TẤT CẢ", "Hiện thông báo chặn; ổ USB không xuất hiện trong This PC; lệnh `devices` ghi nhận thiết bị bị chặn với mã 47.", "Đạt"],
+            ["3", "Tạm dừng, bật lại và danh sách cho phép", "USB dùng được khi tạm dừng và bị chặn lại sau khi bật lại; thêm số serial vào danh sách thì dịch vụ chuyển sang DANH SÁCH CHO PHÉP và USB hiện lại trong This PC.", "Đạt (với USB đã thử)"],
+            ["4", "Administrator gửi lệnh dừng dịch vụ", "`sc.exe stop UsbGuard` trả lỗi 1052; truy vấn ngay sau đó vẫn báo RUNNING.", "Đạt"],
+            ["5", "Phiên PowerShell không nâng quyền gửi lệnh dừng", "`sc.exe stop UsbGuard` trả lỗi 5 (Access is denied).", "Đạt"],
+            ["6", "Chuột và bàn phím USB", "Vẫn dùng được khi ở chế độ CHẶN TẤT CẢ.", "Đạt"],
+            ["7", "Gỡ cài đặt và khôi phục cấu hình", "Sai mật khẩu bị từ chối, dịch vụ vẫn chạy; đúng mật khẩu thì gỡ thành công. Sau khi gỡ: `sc.exe query` trả mã 1060, USBSTOR Start = 3, giá trị Deny_All và khóa cấu hình UsbGuard đã bị xóa.", "Đạt"]
+        ]
+        self.tbl("TBL_MAYTHAT", "Bảng 5.5: Kết quả 7 kịch bản thử thủ công trên máy Windows thật (bản 1.1.0)", headers_mt, rows_mt, widths_mt, ["center", "left", "left", "center"], sz=20)
+        self.p("Giới hạn của lượt thử này: whitelist mới được xác nhận với USB đã thử; kết quả từ chối `sc.exe stop` chỉ xác nhận các tình huống đã thực hiện, không chứng minh dịch vụ không thể bị dừng bằng mọi phương thức; chưa ghi lại kết quả cắm lại USB sau khi gỡ cài đặt, cũng như thông tin chi tiết về phiên bản Windows, cấu hình máy và số lượng USB đã dùng. Vì vậy cần thử thêm nhiều loại USB và nhiều máy.")
+
+        self.h2("5.7. Phản hồi từ thử nghiệm máy thật và các thay đổi ở bản 1.2")
+        self.p("Ngoài 7 kịch bản đạt, lượt thử trên máy thật cho thấy 2 điểm chưa hoàn thiện về trải nghiệm. Cả 2 đã được tái hiện trong môi trường máy ảo Windows trước khi sửa (lần chạy 44881182584: ca E19 và E20 không đạt), rồi đạt sau khi sửa (lần chạy 44884948981). Bản 1.2 cũng nâng cấp bảo mật mật khẩu và hoàn thiện giao diện:")
+        headers_p = ["Phản hồi / thay đổi", "Hiện tượng hoặc mục tiêu", "Cách xử lý ở bản 1.2 và ca kiểm chứng"]
+        widths_p = [1900, 2900, 4271]
+        rows_p = [
+            ["a. USB bị tháo khi được cho phép", "USB bị chặn lúc đang cắm thì Windows tháo an toàn (mã 47). Khi được cho phép hoặc tạm dừng, phải rút ra cắm lại mới dùng được.", f"Ghi nhớ vị trí hub và số cổng; \"rút ra cắm lại bằng phần mềm\" bằng `IOCTL_USB_HUB_CYCLE_PORT`, tối đa 3 lần cách 10 giây; không dùng `pnputil /restart-device` vì chuyển USB sang mã 14 (đòi khởi động lại máy). Ca E19, E20: ghi được sau {ms(w10, 'E19')} ms và {ms(w10, 'E20')} ms (Windows 10), {ms(w11, 'E19')} ms và {ms(w11, 'E20')} ms (Windows 11)."],
+            ["b. USB biến khỏi danh sách", "USB đã bị tháo nhưng vẫn cắm có lúc không còn trong danh sách của phần mềm.", "Đọc trạng thái cổng từ driver hub (`IOCTL_USB_GET_NODE_CONNECTION_INFORMATION`) nên USB vẫn hiện, với trạng thái \"Bị chặn (đã tháo)\" (ca E18)."],
+            ["c. Mật khẩu mạnh hơn", "Giảm nguy cơ bị dò mật khẩu, kể cả khi lộ mã băm hoặc thử liên tục.", f"PBKDF2-HMAC-SHA256 600000 vòng, tự nâng cấp mã băm cũ; sai 5 lần khoá 30 giây, mỗi lần sai tiếp gấp đôi, tối đa 1 giờ, áp dụng cho giao diện, dòng lệnh và trình gỡ (ca TC35, TC36, TC37: {kqs(t22)} ca tích hợp đạt)."],
+            ["d. Giao diện rõ hơn", "Người dùng dễ nhầm khi đang tạm dừng và khi USB đã bị tháo.", "Thanh tạm dừng ghi \"Muốn chặn ngay: bấm Bật lại chặn\"; danh sách USB hiện trạng thái \"Bị chặn (đã tháo)\"."]
+        ]
+        self.tbl("TBL_MT12", "Bảng 5.6: Phản hồi từ thử nghiệm máy thật và các thay đổi ở bản 1.2", headers_p, rows_p, widths_p, ["left", "left", "left"], sz=20)
+
+        self.h2("5.8. Đánh giá mức độ đáp ứng các yêu cầu hệ thống")
         self.p("Đối chiếu kết quả thực nghiệm với các yêu cầu đã đặt ra tại Chương 3. Một yêu cầu chỉ được ghi là đáp ứng khi toàn bộ ca kiểm thử liên quan đều đạt trong các tệp kết quả:")
         okS = ok_ca(t22) and ok_ca(t25)
         okU = ok_ca(u22) and ok_ca(u25)
         okE = lambda *ids: all(w["theo_ma"][i]["dat"] for w in (w10, w11) for i in ids)
+        okT = lambda *ids: all(t["theo_ma"][i]["dat"] for t in (t22, t25) for i in ids)
         ok_dg = lambda cond, text: text if cond else "CHƯA ĐẠT: có ca kiểm thử không đạt"
         headers_dg = ["Mã yêu cầu", "Tiêu chuẩn thiết kế", "Kết quả thực tế đạt được", "Đánh giá mức độ đáp ứng"]
         widths_dg = [1250, 2500, 3721, 1600]
@@ -1059,17 +1115,17 @@ private static int ForceDismount(UsbDisk d)
             ["YC-CN02", "Bảo toàn chuột, bàn phím HID.", f"E05: {ct(w10, 'E05').split(':')[0]}; không thiết bị nào báo lỗi.", ok_dg(okE("E05"), "Đáp ứng (đã kiểm thử cắm USB trên Windows 10/11)")],
             ["YC-CN03", "Hỗ trợ 3 chế độ hoạt động.", f"Chuyển đúng giữa chặn tất cả, danh sách cho phép, tạm dừng ({kqs(t22)} ca tích hợp; E06, E09, E13).", ok_dg(okS and okE("E06", "E09", "E13"), "Đáp ứng (CI và cắm USB thật)")],
             ["YC-CN04", "Quản lý danh sách Whitelist.", "Thêm, xóa, xem danh sách theo serial; USB được phép dùng, USB lạ bị gỡ (E09, E10, E11, E13).", ok_dg(okS and okE("E09", "E10", "E11", "E13"), "Đáp ứng (CI và cắm USB thật)")],
-            ["YC-CN05", "Tạm dừng chặn có thời hạn.", "Tạm dừng mở USB đang cắm (E06); hết hạn tự chặn lại (ca tích hợp).", ok_dg(okS and okE("E06"), "Đáp ứng (CI và cắm USB thật)")],
-            ["YC-CN06", "Xác thực mật khẩu quản trị.", f"PBKDF2 100000 vòng, so sánh thời gian hằng; {kqs(u22)} unit test; sai mật khẩu bị từ chối (E15).", ok_dg(okU and okE("E15"), f"Đáp ứng ({kqs(u22)} unit test đạt)")],
+            ["YC-CN05", "Tạm dừng chặn có thời hạn.", "Tạm dừng mở USB đang cắm, kể cả USB đã bị Windows tháo (E06, E20); hết hạn tự chặn lại (ca tích hợp).", ok_dg(okS and okE("E06", "E20"), "Đáp ứng (CI và cắm USB thật)")],
+            ["YC-CN06", "Xác thực mật khẩu quản trị.", f"PBKDF2-SHA256 600000 vòng, so sánh thời gian hằng, khoá tăng dần khi sai (TC35 đến TC37); {kqs(u22)} unit test; sai mật khẩu bị từ chối (E15).", ok_dg(okU and okE("E15") and okT("TC35", "TC36", "TC37"), f"Đáp ứng ({kqs(u22)} unit test đạt)")],
             ["YC-CN07", "Gỡ cài đặt hoàn trả mặc định.", "Gỡ đúng mật khẩu trả lại cấu hình USB, USB dùng lại bình thường (E16, E17).", ok_dg(okS and okE("E16", "E17"), "Đáp ứng (CI và cắm USB thật)")],
-            ["YC-CN08", "Giao diện quản lý đồ họa.", "Giao diện cho phép USB đang cắm, tạm dừng, gỡ cài đặt; ảnh chụp trên Windows 10/11 (Hình 4.1, 5.5).", ok_dg(okE("E06", "E09"), "Đáp ứng (đã chạy trên Windows 10/11)")],
+            ["YC-CN08", "Giao diện quản lý đồ họa.", "Giao diện cho phép USB đang cắm, tạm dừng, gỡ cài đặt; ảnh chụp trên Windows 10/11 (Hình 4.1, 5.4).", ok_dg(okE("E06", "E09"), "Đáp ứng (đã chạy trên Windows 10/11)")],
             ["YC-CN09", "Bộ cài setup.exe.", "Cài đặt đủ 3 tầng chặn, có lối tắt; trình gỡ sai mật khẩu không gỡ được (E02, E15, E16).", ok_dg(okE("E02", "E15", "E16"), "Đáp ứng (đã cài và gỡ trên Windows 10/11)")],
             ["YC-PCN01", "Cơ chế 'không tắt được'.", "SCM từ chối sc stop (lỗi 1052); user thường bị từ chối (lỗi 5); kill khi USB đang cắm vẫn chặn (E14).", ok_dg(okS and okE("E14"), "Đáp ứng (CI và cắm USB thật)")],
             ["YC-PCN02", "Tự phục hồi khi bị kill.", f"Windows chạy lại dịch vụ sau {t22['chay_lai_ms']} ms (Server 2022) và {t25['chay_lai_ms']} ms (Server 2025).", ok_dg(okS, "Đáp ứng (đã kiểm thử CI)")],
             ["YC-PCN03", "Tài nguyên: CPU < 1%, RAM < 50 MB.", f"RAM trung bình {t22['ram_tb_mb']} MB (cao nhất {t22['ram_max_mb']} MB), CPU {t22['cpu_pct']}% (Server 2022); RAM {t25['ram_tb_mb']} MB (cao nhất {t25['ram_max_mb']} MB), CPU {t25['cpu_pct']}% (Server 2025).", ok_dg(max(t22['ram_max_mb'], t25['ram_max_mb']) < 50 and max(t22['cpu_pct'], t25['cpu_pct']) < 1, "Đáp ứng (đo trên Windows Server 2022/2025)")],
             ["YC-PCN04", "Bảo mật cấu hình Registry.", "DACL ngắt kế thừa, chỉ SYSTEM và Administrators truy cập; user thường bị từ chối (ca tích hợp).", ok_dg(okS, "Đáp ứng (đã kiểm thử CI)")]
         ]
-        self.tbl("TBL_DG", "Bảng 5.5: Đánh giá mức độ đáp ứng các yêu cầu hệ thống", headers_dg, rows_dg, widths_dg, ["center", "left", "left", "center"], sz=20)
+        self.tbl("TBL_DG", "Bảng 5.7: Đánh giá mức độ đáp ứng các yêu cầu hệ thống", headers_dg, rows_dg, widths_dg, ["center", "left", "left", "center"], sz=20)
 
     # ==========================================================================
     # CHƯƠNG 6: KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
@@ -1081,21 +1137,21 @@ private static int ForceDismount(UsbDisk d)
 
         self.h2("6.1. Các kết quả chính đã đạt được")
         self.p("Sau quá trình nghiên cứu lý thuyết và triển khai thực nghiệm, đề tài Seminar Chuyên đề đã hoàn thành các mục tiêu đề ra:")
-        self.b("**Xây dựng sản phẩm UsbGuard 1.1:** Ứng dụng chạy như 1 Windows Service độc lập, gọn nhẹ trên C# 9.0 và .NET Framework 4.8, kèm giao diện quản lý đồ họa và bộ cài `setup.exe`, ngăn chặn mọi USB flash disk và ổ cứng di động.")
+        self.b("**Xây dựng sản phẩm UsbGuard 1.2:** Ứng dụng chạy như 1 Windows Service độc lập, gọn nhẹ trên C# 9.0 và .NET Framework 4.8, kèm giao diện quản lý đồ họa và bộ cài `setup.exe`, ngăn chặn mọi USB flash disk và ổ cứng di động.")
         self.b("**Kiến trúc 3 tầng chặn và lớp gỡ thiết bị:** Tầng 1 tắt driver `USBSTOR`/`UASPStor`, tầng 2 chính sách `Deny_All`, tầng 3 cấm cài thiết bị lớp USB Mass Storage; lớp gỡ dùng SetupAPI, IOCTL, `CM_Request_Device_Eject`, buộc tháo ổ khi đang mở tệp và nạp lại thiết bị khi bỏ chặn.")
         self.b("**Bảo vệ an toàn cho thiết bị HID:** Nhờ ranh giới `MaxDepth = 2` và tầng 3 chỉ nhắm lớp 08, chuột và bàn phím USB hoạt động liên tục (ca E05 đạt trên Windows 10 và Windows 11).")
         self.b("**Hiện thực hóa tính chất 'không tắt được':** `CanStop = false` để từ chối lệnh dừng từ SCM (lỗi 1052), DACL từ chối người dùng thường (lỗi 5) và `sc failure` tự chạy lại dịch vụ sau khoảng 5 giây nếu bị kill.")
-        self.b("**Bảo mật và quản trị chuyên nghiệp:** 3 chế độ vận hành (CHẶN TẤT CẢ, DANH SÁCH CHO PHÉP, TẠM DỪNG); mật khẩu băm PBKDF2 100000 vòng; giao diện khoá 60 giây sau 5 lần nhập sai; trình gỡ bắt buộc đúng mật khẩu.")
-        self.b(f"**Kiểm chứng tự động trên Windows thật:** {kqs(u22)} ca unit test; {kqs(t22)} ca tích hợp trên Windows Server 2022 và {kqs(t25)} trên Windows Server 2025; {kqs(w10)} ca cắm USB thật trên Windows 10 và {kqs(w11)} trên Windows 11.")
-        self.b("**Quá trình tìm và sửa lỗi:** Kiểm thử cắm USB thật phát hiện 3 lỗi mà Windows Server không bắt được (mục 5.5) và đều đã được sửa, minh chứng cho giá trị của việc thử trên thiết bị thật.")
+        self.b("**Bảo mật và quản trị chuyên nghiệp:** 3 chế độ vận hành (CHẶN TẤT CẢ, DANH SÁCH CHO PHÉP, TẠM DỪNG); mật khẩu băm PBKDF2-SHA256 600000 vòng; khoá tăng dần sau 5 lần nhập sai (30 giây, gấp đôi mỗi lần, tối đa 1 giờ) cho giao diện, dòng lệnh và trình gỡ; trình gỡ bắt buộc đúng mật khẩu.")
+        self.b(f"**Kiểm chứng tự động trên Windows thật:** {kqs(u22)} ca unit test; {kqs(t22)} ca tích hợp trên Windows Server 2022 và {kqs(t25)} trên Windows Server 2025; {kqs(w10)} ca cắm USB thật trên Windows 10 và {kqs(w11)} trên Windows 11; thêm 1 lượt thử thủ công trên máy Windows thật với 7 kịch bản đều đạt.")
+        self.b("**Quá trình tìm và sửa lỗi:** Kiểm thử cắm USB thật phát hiện 3 lỗi mà Windows Server không bắt được (mục 5.5) và đều đã được sửa. Lượt thử trên máy thật tiếp tục cho phản hồi về USB bị Windows tháo, dẫn tới bản 1.2 tự nạp lại USB bằng cách rút ra cắm lại cổng bằng phần mềm (mục 3.14, 5.7), minh chứng cho giá trị của việc thử trên thiết bị thật.")
 
         self.h2("6.2. Hạn chế của giải pháp hiện tại")
-        self.p("Nhìn nhận khách quan, UsbGuard 1.1 còn một số hạn chế kỹ thuật:")
+        self.p("Nhìn nhận khách quan, UsbGuard 1.2 còn một số hạn chế kỹ thuật:")
         self.b("**Chưa có chữ ký số thương mại:** `setup.exe` và `UsbGuard.exe` chưa được ký bằng chứng chỉ thương mại nên Windows SmartScreen có thể cảnh báo khi cài đặt.")
         self.b("**Phạm vi loại thiết bị:** Chưa kiểm soát giao thức MTP/PTP (điện thoại thông minh), ổ đĩa quang CD/DVD và thiết bị truyền dữ liệu qua Bluetooth.")
         self.b("**Giới hạn quyền Administrator:** Nếu kẻ tấn công là Administrator hiểu sâu hệ thống, khởi động vào Safe Mode hoặc sửa Registry ngoại tuyến (offline registry editing) thì vẫn can thiệp được. Đây là giới hạn của giải pháp phần mềm khi không có TPM và BitLocker.")
         self.b("**Nhận diện thiết bị theo VID/PID:** Các USB giá rẻ thường không có số serial duy nhất mà chỉ dùng chung cặp VID/PID, nên đưa ID này vào whitelist sẽ cho phép mọi USB cùng model. Khi đó nên dùng số serial (nếu có) hoặc chế độ tạm dừng có thời hạn.")
-        self.b("**Phạm vi kiểm thử phần cứng:** Ổ USB trong kiểm thử là ổ QEMU `usb-storage` (Windows nhận như USB flash disk thật), chưa thử trên nhiều dòng USB của các hãng khác nhau.")
+        self.b("**Phạm vi kiểm thử phần cứng:** Đã có 1 lượt thử thủ công trên máy Windows thật với USB vật lý (bản 1.1.0, mục 5.6) và các lượt cắm USB trên máy ảo (ổ QEMU `usb-storage`), nên cần thử thêm nhiều loại USB và nhiều máy, kể cả sau khi gỡ cài đặt.")
 
         self.h2("6.3. Hướng nghiên cứu và phát triển tiếp theo")
         self.p("Để nâng UsbGuard thành giải pháp phòng chống thất thoát dữ liệu (DLP) hoàn chỉnh hơn, các hướng phát triển tiếp theo gồm:")
@@ -1321,6 +1377,17 @@ def main():
     print("6. [Lượt 2] Xuất PDF hoàn chỉnh bằng LibreOffice...")
     chuyen_doi_docx_sang_pdf(docx_file, HERE)
     
+    # Lặp tới khi số trang trong mục lục khớp với PDF cuối (bố cục có thể xê dịch sau khi điền mục lục)
+    for lan in range(3):
+        page_map2, _ = trich_xuat_so_trang_pdf(pdf_file, bc2.headings, bc2.figures, bc2.tables)
+        if page_map2 == page_map:
+            break
+        print(f"   [Lượt bổ sung {lan + 1}] Số trang xê dịch, dựng lại mục lục...")
+        page_map = page_map2
+        bc2 = tao_toan_bo_tai_lieu(page_map=page_map)
+        bc2.doc.save(str(docx_file))
+        chuyen_doi_docx_sang_pdf(docx_file, HERE)
+
     # Kiểm tra lại số trang lần cuối
     doc_cuoi = fitz.open(pdf_file)
     tong_so_trang_cuoi = len(doc_cuoi)

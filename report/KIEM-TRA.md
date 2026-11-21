@@ -308,3 +308,11 @@ Thực hiện quét toàn bộ văn bản bằng PyMuPDF trên cả 2 tệp `BAO
 - Quét PDF báo cáo và slide: không có "30/30", "30 ca", "2 lớp", "UsbGuard 1.0", "1.0.0", "chờ kiểm thử USB vật lý", "nhóm tác giả", "C# 7.3", "Claude", "nháp", "TODO", "agy". Có đủ "34/34", "17/17", "Windows 10", "Windows 11", "tầng 3". Số viết bằng chữ số (đã sửa "Ba lỗi" thành "3 lỗi").
 - Đã xem ảnh từng trang đã đổi: không tràn chữ, không hình vỡ; trang 9 (cuối bảng thuật ngữ) và trang 3 (nhận xét giảng viên) còn trống vì cuối phần.
 - Điểm cần lưu ý: ổ USB trong kiểm thử là ổ ảo QEMU, không phải phần cứng thật; ảnh e01 trong thư mục kết quả là màn hình cài Windows nên không dùng; "lần đầu đạt 11/17" lấy từ đề bài, không có trong tệp kết quả (báo cáo chỉ ghi chung 3 lỗi phát hiện).
+
+## Lần 4 (bản 1.2)
+
+- Báo cáo: 50 trang (yêu cầu 35-50). Slide: 20 slide (tối đa 20); bỏ slide "Sơ đồ thành phần", ý về số tệp và số dòng mã chuyển sang slide kiến trúc.
+- Số liệu đọc từ `tests/ket-qua/` qua `report/ket_qua.py`: unit 22/22 (2 bản Windows Server), tích hợp 37/37 mỗi bản (thêm TC35 đến TC37), cắm USB 20/20 mỗi bản Windows 10 và Windows 11 (thêm E18 đến E20). Kết quả máy thật (7 kịch bản) lấy từ `tests/ket-qua/may-that/`.
+- Mục lục, danh mục hình, danh mục bảng so với PDF thật bằng bộ đọc độc lập: 93 mục, lệch: 0. Script sinh báo cáo lặp thêm lượt dựng lại mục lục nếu số trang xê dịch.
+- Quét PDF báo cáo và slide: "1.1.0", "11/17", "SHA1", "100000" chỉ còn ở chỗ nói lịch sử bản 1.1 hoặc tên báo cáo máy thật; không còn "17/17", "34/34", "12/12", "chưa thử", "60 giây". Số viết bằng chữ số.
+- Ảnh giao diện quản lý (Hình 4.1 và slide) lấy từ ảnh chụp thật bản 1.2.0 trên Windows 10 (`ket_qua.anh_gui()` cắt cửa sổ); Hình 5.3 dùng hộp thoại thông báo chặn vì ảnh E10 mới chụp trúng màn hình nền.

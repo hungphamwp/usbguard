@@ -118,3 +118,15 @@ def ma_nguon():
     for p in ds:
         out.append((p.name, len(open(p, encoding="utf-8-sig").read().splitlines())))
     return out
+
+
+def anh_gui():
+    """Ảnh giao diện quản lý bản 1.2 (cắt riêng cửa sổ từ ảnh chụp thật trên Windows 10 trong tests/ket-qua)."""
+    from PIL import Image
+    nguon = E2E / "anh-windows-10" / "gui-quan-ly.png"
+    if not nguon.exists():
+        _loi(f"Thiếu ảnh {nguon}")
+    dich = ROOT / "report" / "hinh" / "gui-quan-ly-1-2.png"
+    im = Image.open(nguon)
+    im.crop((186, 56, 1094, 694)).save(dich)
+    return dich
