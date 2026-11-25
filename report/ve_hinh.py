@@ -30,22 +30,45 @@ C_DARK = "#262626"
 
 
 def draw_box(ax, x, y, w, h, title, lines, bg_color=C_LIGHT_BLUE, border_color=C_NAVY, title_color=C_NAVY, title_size=10, text_size=9, radius=0.015):
-    """Vẽ một hộp nội dung có bo góc nhẹ và văn bản căn chỉnh."""
+    """Vẽ hộp bo góc; chữ luôn nằm gọn trong viền: dàn đều theo chiều cao hộp, tự thu nhỏ cỡ chữ nếu không vừa."""
     box = patches.FancyBboxPatch((x, y), w, h, boxstyle=f"round,pad=0,rounding_size={radius}",
                                  facecolor=bg_color, edgecolor=border_color, linewidth=1.5)
     ax.add_patch(box)
-    
-    if title:
-        ax.text(x + w / 2, y + h - 0.04, title, ha='center', va='top', fontsize=title_size,
-                fontweight='bold', color=title_color)
-        line_start_y = y + h - 0.09
-    else:
-        line_start_y = y + h - 0.04
-        
-    line_spacing = 0.038
-    for i, line in enumerate(lines):
-        ax.text(x + 0.02, line_start_y - i * line_spacing, line, ha='left', va='top',
-                fontsize=text_size, color=C_DARK)
+    fig = ax.figure
+    items = ([(title, True)] if title else []) + [(l, False) for l in lines]
+    if not items:
+        return
+    pad_x, pad_y = 0.015, 0.008
+    k = 1.0
+    while True:
+        ts, bs = title_size * k, text_size * k
+        sizes = [ts if t else bs for _, t in items]
+        # chiều cao 1 dòng (đơn vị trục) = cỡ chữ (pt) * 1.35 / 72 / chiều cao vùng trục (inch)
+        ax_h_in = fig.get_figheight() * ax.get_position().height
+        heights = [sz * 1.35 / 72 / ax_h_in * (ax.get_ylim()[1] - ax.get_ylim()[0]) for sz in sizes]
+        texts = []
+        cy = y + h - pad_y - (h - 2 * pad_y - sum(heights)) / 2 if sum(heights) < h - 2 * pad_y else y + h - pad_y
+        for (txt, is_title), sz, lh in zip(items, sizes, heights):
+            cy -= lh / 2
+            if is_title:
+                texts.append(ax.text(x + w / 2, cy, txt, ha='center', va='center', fontsize=sz, fontweight='bold', color=title_color))
+            else:
+                texts.append(ax.text(x + pad_x + 0.005, cy, txt, ha='left', va='center', fontsize=sz, color=C_DARK))
+            cy -= lh / 2
+        fig.canvas.draw()
+        r = fig.canvas.get_renderer()
+        inv = ax.transData.inverted()
+        too_wide = False
+        for t in texts:
+            bb = t.get_window_extent(renderer=r)
+            (x0, _), (x1, _) = inv.transform([(bb.x0, bb.y0), (bb.x1, bb.y1)])
+            if x0 < x + pad_x * 0.5 or x1 > x + w - pad_x * 0.5:
+                too_wide = True
+        if (not too_wide and sum(heights) <= h - 2 * pad_y) or k <= 0.55:
+            return
+        for t in texts:
+            t.remove()
+        k -= 0.05
 
 
 def draw_arrow(ax, x1, y1, x2, y2, label="", color=C_NAVY, lw=1.5, style="->", label_pos=0.5, label_offset=0.02, label_side="top"):
@@ -55,14 +78,16 @@ def draw_arrow(ax, x1, y1, x2, y2, label="", color=C_NAVY, lw=1.5, style="->", l
     if label:
         xm = x1 + (x2 - x1) * label_pos
         ym = y1 + (y2 - y1) * label_pos
+        if abs(x2 - x1) < 1e-6 and label_side in ("top", "bottom"):
+            label_side, label_offset = "right", 0.012
         if label_side == "top":
-            ax.text(xm, ym + label_offset, label, ha='center', va='bottom', fontsize=8, color=color, fontweight='bold')
+            ax.text(xm, ym + label_offset, label, ha='center', va='bottom', fontsize=8, color=color, fontweight='bold', bbox=dict(facecolor='white', edgecolor='none', pad=1.5))
         elif label_side == "bottom":
-            ax.text(xm, ym - label_offset, label, ha='center', va='top', fontsize=8, color=color, fontweight='bold')
+            ax.text(xm, ym - label_offset, label, ha='center', va='top', fontsize=8, color=color, fontweight='bold', bbox=dict(facecolor='white', edgecolor='none', pad=1.5))
         elif label_side == "right":
-            ax.text(xm + label_offset, ym, label, ha='left', va='center', fontsize=8, color=color, fontweight='bold')
+            ax.text(xm + label_offset, ym, label, ha='left', va='center', fontsize=8, color=color, fontweight='bold', bbox=dict(facecolor='white', edgecolor='none', pad=1.5))
         else:
-            ax.text(xm - label_offset, ym, label, ha='right', va='center', fontsize=8, color=color, fontweight='bold')
+            ax.text(xm - label_offset, ym, label, ha='right', va='center', fontsize=8, color=color, fontweight='bold', bbox=dict(facecolor='white', edgecolor='none', pad=1.5))
 
 
 # ==============================================================================
@@ -436,18 +461,19 @@ def ve_hinh6():
              ["WaitStopped(20s) -> sc.exe delete UsbGuard"], bg_color=C_VERY_LIGHT_BLUE, border_color=C_BLUE)
     draw_arrow(ax, 0.50, 0.48, 0.50, 0.44, "", C_NAVY)
 
-    draw_box(ax, 0.20, 0.23, 0.60, 0.09, "3. Khôi phục hoàn toàn cấu hình mặc định Windows",
+    draw_box(ax, 0.20, 0.195, 0.60, 0.13, "3. Khôi phục hoàn toàn cấu hình mặc định Windows",
              ["Enforcer.Unblock(): USBSTOR Start=3, xóa Deny_All",
-              "ReenableDisabled(): Bật lại các thiết bị bị pnputil tắt"],
+              "ReenableDisabled(): Bật lại các thiết bị bị pnputil tắt",
+              "USB đang cắm bị chặn: rút ra cắm lại cổng bằng phần mềm (1.2.1)"],
              bg_color=C_VERY_LIGHT_BLUE, border_color=C_BLUE)
-    draw_arrow(ax, 0.50, 0.36, 0.50, 0.32, "", C_NAVY)
+    draw_arrow(ax, 0.50, 0.36, 0.50, 0.325, "", C_NAVY)
 
-    draw_box(ax, 0.20, 0.08, 0.60, 0.11, "4. Dọn dẹp tệp tin và hoàn tất",
+    draw_box(ax, 0.20, 0.02, 0.60, 0.135, "4. Dọn dẹp tệp tin và hoàn tất",
              ["- Xóa khóa Registry: HKLM\\SOFTWARE\\UsbGuard",
               "- Xóa thư mục cài đặt: Program Files\\UsbGuard",
               "-> Hệ thống trở về trạng thái nguyên bản của Windows."],
              bg_color=C_LIGHT_GREEN, border_color=C_GREEN, title_color=C_GREEN)
-    draw_arrow(ax, 0.50, 0.23, 0.50, 0.19, "", C_NAVY)
+    draw_arrow(ax, 0.50, 0.195, 0.50, 0.155, "", C_NAVY)
 
     plt.tight_layout()
     plt.savefig(os.path.join(OUT_DIR, "hinh6_luong_go_cai_dat.png"), dpi=200)
@@ -479,7 +505,7 @@ def ve_hinh7():
     hid_box = patches.FancyBboxPatch((0.04, 0.10), 0.38, 0.48, boxstyle="round,pad=0,rounding_size=0.02",
                                      facecolor=C_LIGHT_GREEN, edgecolor=C_GREEN, linewidth=1.5, linestyle='--')
     ax.add_patch(hid_box)
-    ax.text(0.23, 0.55, "VÙNG BẢO VỆ: THIẾT BỊ HID", ha='center', va='center', fontsize=10, fontweight='bold', color=C_GREEN)
+    ax.text(0.23, 0.55, "VÙNG BẢO VỆ: THIẾT BỊ HID", ha='center', va='center', fontsize=10, fontweight='bold', color=C_GREEN, bbox=dict(facecolor=C_LIGHT_GREEN, edgecolor='none', pad=2), zorder=5)
     
     draw_box(ax, 0.08, 0.36, 0.30, 0.14, "Chuột USB (Mouse)",
              ["• HID-compliant mouse", "• BusType = USB", "• Lớp: GUID_DEVINTERFACE_HID", "• KHÔNG thuộc lớp Disk -> Bỏ qua"],
@@ -495,7 +521,7 @@ def ve_hinh7():
     usb_box = patches.FancyBboxPatch((0.54, 0.10), 0.42, 0.48, boxstyle="round,pad=0,rounding_size=0.02",
                                      facecolor=C_LIGHT_RED, edgecolor=C_RED, linewidth=1.5)
     ax.add_patch(usb_box)
-    ax.text(0.75, 0.55, "VÙNG XỬ LÝ: Ổ ĐĨA LƯU TRỮ USB", ha='center', va='center', fontsize=10, fontweight='bold', color=C_RED)
+    ax.text(0.75, 0.55, "VÙNG XỬ LÝ: Ổ ĐĨA LƯU TRỮ USB", ha='center', va='center', fontsize=10, fontweight='bold', color=C_RED, bbox=dict(facecolor=C_LIGHT_RED, edgecolor='none', pad=2), zorder=5)
 
     # Nút thiết bị USB cha
     draw_box(ax, 0.58, 0.36, 0.34, 0.14, "Nút USB Cha (Parent USB Node)",

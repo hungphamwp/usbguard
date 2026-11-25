@@ -33,7 +33,7 @@ THONG_TIN = {
     "khoa": "KHOA CÔNG NGHỆ THÔNG TIN",
     "loai_bao_cao": "BÁO CÁO SEMINAR CHUYÊN ĐỀ",
     "de_tai": "XÂY DỰNG ỨNG DỤNG NGĂN NGƯỜI DÙNG CẮM USB FLASH DISK VÀO MÁY TÍNH WINDOWS, CHẠY NHƯ DỊCH VỤ KHÔNG TẮT ĐƯỢC",
-    "ten_san_pham": "UsbGuard 1.2",
+    "ten_san_pham": "UsbGuard 1.2.1",
     "sinh_vien": "Phạm Văn Hưng",
     "mssv": "3120410225",
     "giang_vien": "............................................",
@@ -1063,7 +1063,7 @@ private static int ForceDismount(UsbDisk d)
         self.fig(w11["anh_dir"] / "gui-quan-ly.png", "Hình 5.4: Windows 11 Pro, giao diện quản lý khi chặn USB lạ", width_cm=8.0)
 
         self.h2("5.5. 3 lỗi phát hiện khi cắm USB thật và cách sửa")
-        self.p("Ở bản 1.1, lần chạy kiểm thử cắm USB đầu tiên (khi đó có 17 ca) chỉ đạt 11/17 ca. Việc cắm USB thật đã phát hiện 3 lỗi mà kiểm thử trên Windows Server không bắt được. Sau khi sửa cả 3 lỗi, bộ kiểm thử khi đó đạt đủ 17 ca trên cả Windows 10 và Windows 11. Ở bản 1.2 bộ kiểm thử có thêm 3 ca (E18 đến E20) và đạt toàn bộ (Bảng 5.3).")
+        self.p("Ở bản 1.1, lần chạy kiểm thử cắm USB đầu tiên (khi đó có 17 ca) chỉ đạt 11/17 ca. Việc cắm USB thật đã phát hiện 3 lỗi mà kiểm thử trên Windows Server không bắt được. Sau khi sửa cả 3 lỗi, bộ kiểm thử khi đó đạt đủ 17 ca trên cả Windows 10 và Windows 11. Ở bản 1.2 bộ kiểm thử có thêm 3 ca (E18 đến E20), bản 1.2.1 thêm ca E21, và đạt toàn bộ (Bảng 5.3).")
         headers_bug = ["Lỗi", "Hiện tượng", "Nguyên nhân và cách sửa"]
         widths_bug = [1900, 3000, 4171]
         rows_bug = [
@@ -1089,17 +1089,19 @@ private static int ForceDismount(UsbDisk d)
         self.tbl("TBL_MAYTHAT", "Bảng 5.5: Kết quả 7 kịch bản thử thủ công trên máy Windows thật (bản 1.1.0)", headers_mt, rows_mt, widths_mt, ["center", "left", "left", "center"], sz=20)
         self.p("Giới hạn của lượt thử này: whitelist mới được xác nhận với USB đã thử; kết quả từ chối `sc.exe stop` chỉ xác nhận các tình huống đã thực hiện, không chứng minh dịch vụ không thể bị dừng bằng mọi phương thức; chưa ghi lại kết quả cắm lại USB sau khi gỡ cài đặt, cũng như thông tin chi tiết về phiên bản Windows, cấu hình máy và số lượng USB đã dùng. Vì vậy cần thử thêm nhiều loại USB và nhiều máy.")
 
-        self.h2("5.7. Phản hồi từ thử nghiệm máy thật và các thay đổi ở bản 1.2")
-        self.p("Ngoài 7 kịch bản đạt, lượt thử trên máy thật cho thấy 2 điểm chưa hoàn thiện về trải nghiệm. Cả 2 đã được tái hiện trong môi trường máy ảo Windows trước khi sửa (lần chạy 44881182584: ca E19 và E20 không đạt), rồi đạt sau khi sửa (lần chạy 44884948981). Bản 1.2 cũng nâng cấp bảo mật mật khẩu và hoàn thiện giao diện:")
+        self.h2("5.7. Phản hồi từ thử nghiệm máy thật và các thay đổi ở bản 1.2, 1.2.1")
+        self.p("Ngoài 7 kịch bản đạt, lượt thử trên máy thật cho thấy 2 điểm chưa hoàn thiện về trải nghiệm. Cả 2 đã được tái hiện trong môi trường máy ảo Windows trước khi sửa (lần chạy 44881182584: ca E19 và E20 không đạt), rồi đạt sau khi sửa (lần chạy 44884948981). Bản 1.2 cũng nâng cấp bảo mật mật khẩu và hoàn thiện giao diện. Lượt thử bản 1.2 trên máy thật của 2 thành viên nhóm cho thêm 2 phản hồi (e, f), được sửa ở bản 1.2.1:")
         headers_p = ["Phản hồi / thay đổi", "Hiện tượng hoặc mục tiêu", "Cách xử lý ở bản 1.2 và ca kiểm chứng"]
         widths_p = [1900, 2900, 4271]
         rows_p = [
             ["a. USB bị tháo khi được cho phép", "USB bị chặn lúc đang cắm thì Windows tháo an toàn (mã 47). Khi được cho phép hoặc tạm dừng, phải rút ra cắm lại mới dùng được.", f"Ghi nhớ vị trí hub và số cổng; \"rút ra cắm lại bằng phần mềm\" bằng `IOCTL_USB_HUB_CYCLE_PORT`, tối đa 3 lần cách 10 giây; không dùng `pnputil /restart-device` vì chuyển USB sang mã 14 (đòi khởi động lại máy). Ca E19, E20: ghi được sau {ms(w10, 'E19')} ms và {ms(w10, 'E20')} ms (Windows 10), {ms(w11, 'E19')} ms và {ms(w11, 'E20')} ms (Windows 11)."],
             ["b. USB biến khỏi danh sách", "USB đã bị tháo nhưng vẫn cắm có lúc không còn trong danh sách của phần mềm.", "Đọc trạng thái cổng từ driver hub (`IOCTL_USB_GET_NODE_CONNECTION_INFORMATION`) nên USB vẫn hiện, với trạng thái \"Bị chặn (đã tháo)\" (ca E18)."],
             ["c. Mật khẩu mạnh hơn", "Giảm nguy cơ bị dò mật khẩu, kể cả khi lộ mã băm hoặc thử liên tục.", f"PBKDF2-HMAC-SHA256 600000 vòng, tự nâng cấp mã băm cũ; sai 5 lần khoá 30 giây, mỗi lần sai tiếp gấp đôi, tối đa 1 giờ, áp dụng cho giao diện, dòng lệnh và trình gỡ (ca TC35, TC36, TC37: {kqs(t22)} ca tích hợp đạt)."],
-            ["d. Giao diện rõ hơn", "Người dùng dễ nhầm khi đang tạm dừng và khi USB đã bị tháo.", "Thanh tạm dừng ghi \"Muốn chặn ngay: bấm Bật lại chặn\"; danh sách USB hiện trạng thái \"Bị chặn (đã tháo)\"."]
+            ["d. Giao diện rõ hơn", "Người dùng dễ nhầm khi đang tạm dừng và khi USB đã bị tháo.", "Thanh tạm dừng ghi \"Muốn chặn ngay: bấm Bật lại chặn\"; danh sách USB hiện trạng thái \"Bị chặn (đã tháo)\"."],
+            ["e. Đặt dịch vụ Disabled (1.2.1)", "Administrator vào services.msc đổi Startup type thành Disabled rồi khởi động lại máy: dịch vụ không chạy. USB vẫn bị chặn (3 tầng nằm trong Registry) nhưng không có thông báo, và cho phép USB không có tác dụng (kẹt \"Đang nạp lại\").", f"CanStop = false chỉ chặn lệnh dừng, không chặn đổi kiểu khởi động. Mỗi vòng kiểm tra dịch vụ đọc lại cấu hình của chính nó, thấy khác Automatic hoặc mất cấu hình tự chạy lại thì đặt lại và ghi nhật ký; giao diện thấy dịch vụ không chạy thì tự bật lại. Ca TC38: trả lại Automatic sau {ct(t22, 'TC38').split('sau ')[1].split(',')[0]} (Server 2022); TC39: tự đặt lại cấu hình chạy lại."],
+            ["f. Gỡ cài đặt khi USB đang cắm (1.2.1)", "USB đang bị chặn lúc gỡ vẫn bị chặn sau khi gỡ, phải rút ra cắm lại.", f"Trình gỡ bỏ chặn xong thì rút ra cắm lại cổng của các USB còn lỗi bằng phần mềm, trước khi xoá cấu hình. Ca E21: ghi được sau {ms(w10, 'E21')} ms (Windows 10) và {ms(w11, 'E21')} ms (Windows 11), không rút tay."]
         ]
-        self.tbl("TBL_MT12", "Bảng 5.6: Phản hồi từ thử nghiệm máy thật và các thay đổi ở bản 1.2", headers_p, rows_p, widths_p, ["left", "left", "left"], sz=20)
+        self.tbl("TBL_MT12", "Bảng 5.6: Phản hồi từ thử nghiệm máy thật và các thay đổi ở bản 1.2, 1.2.1", headers_p, rows_p, widths_p, ["left", "left", "left"], sz=20)
 
         self.h2("5.8. Đánh giá mức độ đáp ứng các yêu cầu hệ thống")
         self.p("Đối chiếu kết quả thực nghiệm với các yêu cầu đã đặt ra tại Chương 3. Một yêu cầu chỉ được ghi là đáp ứng khi toàn bộ ca kiểm thử liên quan đều đạt trong các tệp kết quả:")
@@ -1117,10 +1119,10 @@ private static int ForceDismount(UsbDisk d)
             ["YC-CN04", "Quản lý danh sách Whitelist.", "Thêm, xóa, xem danh sách theo serial; USB được phép dùng, USB lạ bị gỡ (E09, E10, E11, E13).", ok_dg(okS and okE("E09", "E10", "E11", "E13"), "Đáp ứng (CI và cắm USB thật)")],
             ["YC-CN05", "Tạm dừng chặn có thời hạn.", "Tạm dừng mở USB đang cắm, kể cả USB đã bị Windows tháo (E06, E20); hết hạn tự chặn lại (ca tích hợp).", ok_dg(okS and okE("E06", "E20"), "Đáp ứng (CI và cắm USB thật)")],
             ["YC-CN06", "Xác thực mật khẩu quản trị.", f"PBKDF2-SHA256 600000 vòng, so sánh thời gian hằng, khoá tăng dần khi sai (TC35 đến TC37); {kqs(u22)} unit test; sai mật khẩu bị từ chối (E15).", ok_dg(okU and okE("E15") and okT("TC35", "TC36", "TC37"), f"Đáp ứng ({kqs(u22)} unit test đạt)")],
-            ["YC-CN07", "Gỡ cài đặt hoàn trả mặc định.", "Gỡ đúng mật khẩu trả lại cấu hình USB, USB dùng lại bình thường (E16, E17).", ok_dg(okS and okE("E16", "E17"), "Đáp ứng (CI và cắm USB thật)")],
+            ["YC-CN07", "Gỡ cài đặt hoàn trả mặc định.", "Gỡ đúng mật khẩu trả lại cấu hình USB, USB đang cắm dùng được ngay, cắm lại dùng bình thường (E16, E17, E21).", ok_dg(okS and okE("E16", "E17", "E21"), "Đáp ứng (CI và cắm USB thật)")],
             ["YC-CN08", "Giao diện quản lý đồ họa.", "Giao diện cho phép USB đang cắm, tạm dừng, gỡ cài đặt; ảnh chụp trên Windows 10/11 (Hình 4.1, 5.4).", ok_dg(okE("E06", "E09"), "Đáp ứng (đã chạy trên Windows 10/11)")],
             ["YC-CN09", "Bộ cài setup.exe.", "Cài đặt đủ 3 tầng chặn, có lối tắt; trình gỡ sai mật khẩu không gỡ được (E02, E15, E16).", ok_dg(okE("E02", "E15", "E16"), "Đáp ứng (đã cài và gỡ trên Windows 10/11)")],
-            ["YC-PCN01", "Cơ chế 'không tắt được'.", "SCM từ chối sc stop (lỗi 1052); user thường bị từ chối (lỗi 5); kill khi USB đang cắm vẫn chặn (E14).", ok_dg(okS and okE("E14"), "Đáp ứng (CI và cắm USB thật)")],
+            ["YC-PCN01", "Cơ chế 'không tắt được'.", "SCM từ chối sc stop (lỗi 1052); user thường bị từ chối (lỗi 5); đặt Disabled thì tự trả lại Automatic (TC38, TC39); kill khi USB đang cắm vẫn chặn (E14).", ok_dg(okS and okE("E14") and okT("TC38", "TC39"), "Đáp ứng (CI và cắm USB thật)")],
             ["YC-PCN02", "Tự phục hồi khi bị kill.", f"Windows chạy lại dịch vụ sau {t22['chay_lai_ms']} ms (Server 2022) và {t25['chay_lai_ms']} ms (Server 2025).", ok_dg(okS, "Đáp ứng (đã kiểm thử CI)")],
             ["YC-PCN03", "Tài nguyên: CPU < 1%, RAM < 50 MB.", f"RAM trung bình {t22['ram_tb_mb']} MB (cao nhất {t22['ram_max_mb']} MB), CPU {t22['cpu_pct']}% (Server 2022); RAM {t25['ram_tb_mb']} MB (cao nhất {t25['ram_max_mb']} MB), CPU {t25['cpu_pct']}% (Server 2025).", ok_dg(max(t22['ram_max_mb'], t25['ram_max_mb']) < 50 and max(t22['cpu_pct'], t25['cpu_pct']) < 1, "Đáp ứng (đo trên Windows Server 2022/2025)")],
             ["YC-PCN04", "Bảo mật cấu hình Registry.", "DACL ngắt kế thừa, chỉ SYSTEM và Administrators truy cập; user thường bị từ chối (ca tích hợp).", ok_dg(okS, "Đáp ứng (đã kiểm thử CI)")]

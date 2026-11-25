@@ -226,16 +226,18 @@ $r = Run-Exe @('resume', $Pw)
 $fails = (Get-ItemProperty 'HKLM:\SOFTWARE\UsbGuard').AuthFails
 Check 'TC37' 'Hết 30 giây khoá: đúng mật khẩu dùng lại được, bộ đếm sai về 0' ($r.rc -eq 0 -and $fails -eq 0) ("mã $($r.rc), số lần sai còn lại $fails")
 
-# ---------- TC38-39: Admin đổi kiểu khởi động trong services.msc ----------
+# ---------- TC38-40: Admin đổi kiểu khởi động (services.msc / sc config / Registry) ----------
 Say ""; Say "--- TC38 Đổi Startup type thành Disabled ---"
 $SvcKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$Svc"
 $r = Run-Cmd 'sc.exe' "config $Svc start= disabled"
-$t = Wait-Until { (Get-ItemProperty $SvcKey -Name Start).Start -eq 2 } 15000
 $st = (Get-CimInstance Win32_Service -Filter "Name='$Svc'").StartMode
-Check 'TC38' 'Admin đặt dịch vụ Disabled: dịch vụ tự trả lại Automatic' ($r.rc -eq 0 -and $t -ge 0 -and $st -eq 'Auto' -and (Svc-State) -eq 'Running') ("sc config mã $($r.rc), trả lại sau $t ms, StartMode = $st")
-$r = Run-Cmd 'sc.exe' "failure $Svc reset= 0 actions= `"`"/0"
+Check 'TC38' 'Admin đổi Startup type (services.msc, sc config): bị từ chối' ($r.rc -eq 5 -and $st -eq 'Auto') ("sc config mã $($r.rc), StartMode = $st")
+Set-ItemProperty $SvcKey -Name Start -Value 4
+$t = Wait-Until { (Get-ItemProperty $SvcKey -Name Start).Start -eq 2 } 15000
+Check 'TC39' 'Admin sửa thẳng Registry đặt dịch vụ Disabled: dịch vụ tự trả lại Automatic' ($t -ge 0 -and (Svc-State) -eq 'Running') ("trả lại sau $t ms")
+Remove-ItemProperty $SvcKey -Name FailureActions -ErrorAction SilentlyContinue
 $t = Wait-Until { $q = cmd.exe /c "sc.exe qfailure $Svc 2>&1" | Out-String; $q -match 'RESTART' } 15000
-Check 'TC39' 'Admin xoá cấu hình tự chạy lại khi bị kill: dịch vụ tự đặt lại' ($t -ge 0) ("đặt lại sau $t ms")
+Check 'TC40' 'Admin xoá cấu hình tự chạy lại khi bị kill: dịch vụ tự đặt lại' ($t -ge 0) ("đặt lại sau $t ms")
 
 # ---------- Đo tài nguyên (không tính đạt/lỗi, chỉ ghi số đo) ----------
 Say ""; Say "--- Đo tài nguyên dịch vụ trong 60 giây ---"

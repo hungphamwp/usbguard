@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<title>Hướng dẫn sử dụng UsbGuard 1.2</title>
+<title>Hướng dẫn sử dụng UsbGuard 1.2.1</title>
 <style>
   @page { size: A4; margin: 16mm 17mm 16mm 19mm; }
   body { font-family: "Segoe UI", Arial, sans-serif; font-size: 10.5pt; line-height: 1.45; color: #1a1a1a; }
@@ -25,7 +25,7 @@
 </head>
 <body>
 
-<div class="top"><img src="anh/logo.png" alt=""><div><h1>Hướng dẫn sử dụng UsbGuard 1.2</h1>
+<div class="top"><img src="anh/logo.png" alt=""><div><h1>Hướng dẫn sử dụng UsbGuard 1.2.1</h1>
 <div class="sub">Phần mềm chặn USB flash disk trên máy tính Windows, chạy như dịch vụ không tắt được.</div></div></div>
 
 <h2>1. UsbGuard làm gì</h2>
@@ -41,15 +41,15 @@
 <p><b>Máy:</b> Windows 10 hoặc Windows 11, 64-bit (Home, Pro, Enterprise đều được). Không cần cài thêm gì. Cần tài khoản có quyền Administrator để cài.</p>
 <table>
   <tr><th>File</th><th>Dùng để</th></tr>
-  <tr><td><code>UsbGuard-Setup-1.2.0.exe</code></td><td>Bộ cài. Khách chỉ cần file này.</td></tr>
+  <tr><td><code>UsbGuard-Setup-1.2.1.exe</code></td><td>Bộ cài. Khách chỉ cần file này.</td></tr>
   <tr><td><code>HUONG-DAN-SU-DUNG.pdf</code></td><td>Tài liệu này</td></tr>
-  <tr><td><code>UsbGuard-1.2-khong-cai-dat.zip</code></td><td>Dành cho bộ phận IT: bản chạy bằng dòng lệnh, cài hàng loạt bằng script (mục 9)</td></tr>
+  <tr><td><code>UsbGuard-1.2.1-khong-cai-dat.zip</code></td><td>Dành cho bộ phận IT: bản chạy bằng dòng lệnh, cài hàng loạt bằng script (mục 9)</td></tr>
 </table>
 
 <h2>3. Cài đặt</h2>
 <ol>
   <li>Nếu trình duyệt (Chrome, Edge) báo file "không thường được tải xuống" hoặc tự chặn: mở danh sách tải xuống, bấm vào file, chọn <b>Keep</b> / <b>Giữ lại</b> (Edge: bấm dấu <b>…</b> rồi <b>Keep anyway</b>). Trình duyệt cảnh báo vì phần mềm mới, chưa có chữ ký số thương mại. Cách khác: tải từ thư mục Google Drive bằng nút Download.</li>
-  <li>Nhấp đúp <b>UsbGuard-Setup-1.2.0.exe</b>, bấm <b>Yes</b> ở hộp thoại hỏi quyền.</li>
+  <li>Nhấp đúp <b>UsbGuard-Setup-1.2.1.exe</b>, bấm <b>Yes</b> ở hộp thoại hỏi quyền.</li>
   <li>Nếu Windows hiện màn hình xanh "Windows protected your PC": bấm <b>More info</b> rồi <b>Run anyway</b>. Màn hình này hiện ra vì phần mềm chưa có chữ ký số thương mại, không phải virus.</li>
   <li>Đọc điều khoản, chọn <b>Tôi đồng ý với các điều khoản trên</b>, bấm <b>Tiếp theo</b>.</li>
   <li><b>Đặt mật khẩu quản trị</b> (ít nhất 8 ký tự) và nhập lại lần nữa.</li>
@@ -93,7 +93,7 @@
 <ol>
   <li>Mở <b>Settings &gt; Apps</b> (hoặc Control Panel &gt; Programs and Features), chọn <b>UsbGuard</b>, bấm <b>Uninstall</b>. Hoặc bấm <b>Gỡ cài đặt…</b> trong cửa sổ quản lý.</li>
   <li>Nhập mật khẩu quản trị. Sai mật khẩu thì không gỡ được.</li>
-  <li>UsbGuard tự dừng, bị xoá khỏi máy, cổng USB trở lại bình thường. Không cần khởi động lại máy.</li>
+  <li>UsbGuard tự dừng, bị xoá khỏi máy, cổng USB trở lại bình thường. USB đang cắm cũng dùng được ngay, không cần rút ra cắm lại, không cần khởi động lại máy.</li>
 </ol>
 
 <h2>8. Xử lý sự cố</h2>
@@ -102,12 +102,13 @@
   <tr><td>"Thử lại sau … giây/phút"</td><td>Đã nhập sai nhiều lần, chờ hết thời gian ghi trên thông báo rồi nhập lại.</td></tr>
   <tr><td>"Sai mật khẩu quản trị" dù gõ đúng</td><td>Tắt bộ gõ tiếng Việt (Unikey, EVKey) khi gõ mật khẩu và kiểm tra phím Caps Lock.</td></tr>
   <tr><td>Đã cho phép nhưng USB chưa hiện</td><td>Chờ khoảng 10 giây (UsbGuard tự nạp lại USB tối đa 3 lần). Vẫn chưa hiện thì rút USB ra cắm lại.</td></tr>
+  <tr><td>Ai đó đổi dịch vụ UsbGuard sang Disabled trong services.msc</td><td>UsbGuard tự trả lại Automatic trong khoảng 2 giây và ghi vào Nhật ký. Mở phần mềm quản lý cũng tự bật lại dịch vụ nếu thấy nó không chạy.</td></tr>
   <tr><td>Bộ cài báo "UsbGuard đã được cài trên máy này"</td><td>Máy đã có UsbGuard. Gỡ bản cũ (mục 7) rồi cài lại.</td></tr>
   <tr><td>Cần xem lịch sử USB bị chặn</td><td>Tab <b>Nhật ký</b> trong cửa sổ quản lý, hoặc file <code>C:\ProgramData\UsbGuard\usbguard.log</code>.</td></tr>
 </table>
 
 <h2>9. Dành cho bộ phận IT: dòng lệnh</h2>
-<p>Cài im lặng hàng loạt: <code>UsbGuard-Setup-1.2.0.exe /VERYSILENT /ADMINPW=MatKhau</code>. Gỡ im lặng: <code>"C:\Program Files\UsbGuard\unins000.exe" /VERYSILENT /ADMINPW=MatKhau</code>.</p>
+<p>Cài im lặng hàng loạt: <code>UsbGuard-Setup-1.2.1.exe /VERYSILENT /ADMINPW=MatKhau</code>. Gỡ im lặng: <code>"C:\Program Files\UsbGuard\unins000.exe" /VERYSILENT /ADMINPW=MatKhau</code>.</p>
 <table>
   <tr><th>Lệnh (chạy cmd bằng Run as administrator)</th><th>Việc</th></tr>
   <tr><td><code>UsbGuard.exe status</code></td><td>Trạng thái dịch vụ, chế độ, 3 tầng chặn</td></tr>

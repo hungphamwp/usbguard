@@ -71,6 +71,7 @@ namespace UsbGuard
             Sys.Run("sc.exe", "description " + Hardening.ServiceName + " \"" + Hardening.Description + "\"");
             // Tự khởi động lại nếu service crash — hành vi hợp lệ, chuẩn Windows, không phải chống gỡ.
             Sys.Run("sc.exe", "failure " + Hardening.ServiceName + FailureArgs);
+            LockServiceAcl();
 
             rc = Sys.Run("sc.exe", "start " + Hardening.ServiceName, out output);
             if (rc != 0 && rc != 1056)
@@ -83,6 +84,17 @@ namespace UsbGuard
             Console.WriteLine("Kiểm tra: UsbGuard.exe status");
             return 0;
         }
+
+        /// <summary>
+        /// Quyền trên dịch vụ: giống mặc định của Windows nhưng nhóm Administrators KHÔNG có quyền đổi cấu hình (DC),
+        /// nên services.msc / sc config đổi Startup type thành Disabled bị từ chối (lỗi 5). Chỉ SYSTEM (chính dịch vụ) có DC.
+        /// Administrators vẫn khởi động (RP), xoá (SD) và đổi quyền (WD) được: trình gỡ cài đặt trả lại quyền mặc định trước khi gỡ.
+        /// SYSTEM thuộc nhóm Administrators nên không dùng ACE từ chối (sẽ chặn luôn SYSTEM), chỉ bỏ DC khỏi ACE cho phép.
+        /// </summary>
+        public const string LockedSddl = "D:(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;SY)(A;;CCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)";
+        public const string DefaultSddl = "D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)";
+
+        public static int LockServiceAcl() { return Sys.Run("sc.exe", "sdset " + Hardening.ServiceName + " " + LockedSddl); }
 
         private const string FailureArgs = " reset= 86400 actions= restart/5000/restart/30000/\"\"/0";
 
@@ -107,7 +119,12 @@ namespace UsbGuard
             string fixedWhat = "";
             if (start != 2)
             {
-                Sys.Run("sc.exe", "config " + Hardening.ServiceName + " start= auto");
+                if (Sys.Run("sc.exe", "config " + Hardening.ServiceName + " start= auto") != 0)
+                {
+                    using (var hk = Reg.Hklm())
+                    using (var k = hk.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\" + Hardening.ServiceName, true))
+                        if (k != null) k.SetValue("Start", 2, Microsoft.Win32.RegistryValueKind.DWord);
+                }
                 fixedWhat = "kiểu khởi động " + (start == 4 ? "Disabled" : start == 3 ? "Manual" : "Start=" + start) + " → Automatic";
             }
             if (!hasFailure)
@@ -138,6 +155,7 @@ namespace UsbGuard
             }
 
             // Dịch vụ từ chối lệnh Stop (CanStop = false). Bật cờ Uninstalling, dịch vụ thấy cờ thì tự dừng.
+            Sys.Run("sc.exe", "sdset " + Hardening.ServiceName + " " + DefaultSddl);   // để bước dự phòng (sc failure) chạy được
             Settings.SetUninstalling(true);
             Log.Info("Nhận lệnh gỡ cài đặt (đúng mật khẩu), chờ dịch vụ tự dừng.");
             if (!WaitStopped(TimeSpan.FromSeconds(20)))
