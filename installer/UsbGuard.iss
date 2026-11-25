@@ -1,6 +1,6 @@
-﻿; Bộ cài UsbGuard (Inno Setup 6). Biên dịch: ISCC.exe /DAppVersion=1.2.0 installer\UsbGuard.iss
+﻿; Bộ cài UsbGuard (Inno Setup 6). Biên dịch: ISCC.exe /DAppVersion=1.2.1 installer\UsbGuard.iss
 #ifndef AppVersion
-  #define AppVersion "1.2.0"
+  #define AppVersion "1.2.1"
 #endif
 
 [Setup]

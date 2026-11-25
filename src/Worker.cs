@@ -99,6 +99,12 @@ namespace UsbGuard
                     return;
                 }
 
+                if (!_interactive)
+                {
+                    string fx = Installer.RepairServiceConfig();
+                    if (fx.Length > 0) Log.Warn("Có người đổi cấu hình dịch vụ UsbGuard (services.msc / sc config), đã trả lại: " + fx + ".");
+                }
+
                 if (Settings.IsPaused)
                 {
                     UsbDisks.ReleaseLocksExcept(null);

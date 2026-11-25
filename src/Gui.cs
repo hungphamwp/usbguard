@@ -165,6 +165,9 @@ namespace UsbGuard
             return new Label { Text = text, Dock = DockStyle.Top, Height = 44, ForeColor = Color.FromArgb(70, 70, 70) };
         }
 
+        private bool _svcRunning = true;
+        private DateTime _lastSvcStart = DateTime.MinValue;
+
         private static bool Installed()
         {
             try { return Installer.ServiceExists() && Settings.Exists(); } catch { return false; }
@@ -176,9 +179,20 @@ namespace UsbGuard
             string svc = "";
             if (inst)
             {
-                string o;
-                Sys.Run("sc.exe", "query " + Hardening.ServiceName, out o);
-                svc = o.IndexOf("RUNNING", StringComparison.OrdinalIgnoreCase) >= 0 ? "Dịch vụ đang chạy, không tắt được" : "Dịch vụ đang khởi động lại";
+                _svcRunning = Installer.ServiceRunning();
+                if (!_svcRunning && DateTime.UtcNow - _lastSvcStart > TimeSpan.FromSeconds(15))
+                {
+                    // Dịch vụ bị đặt Disabled rồi khởi động lại máy (hoặc chưa kịp chạy): không có dịch vụ thì
+                    // cho phép/tạm dừng không có tác dụng (USB kẹt "Đang nạp lại…"). Bật lại ngay, không cần mật khẩu
+                    // vì việc này chỉ làm máy được bảo vệ chặt hơn.
+                    _lastSvcStart = DateTime.UtcNow;
+                    string fx = "";
+                    try { fx = Installer.RepairServiceConfig(); } catch { }
+                    int rc = Sys.Run("sc.exe", "start " + Hardening.ServiceName);
+                    Log.Warn("Giao diện thấy dịch vụ UsbGuard không chạy" + (fx.Length > 0 ? " (" + fx + ")" : "") + ", đã bật lại (sc start mã " + rc + ").");
+                    _svcRunning = Installer.ServiceRunning();
+                }
+                svc = _svcRunning ? "Dịch vụ đang chạy, không tắt được" : "CẢNH BÁO: dịch vụ không chạy, thay đổi chưa có tác dụng";
             }
 
             List<string> wl = inst ? Settings.GetWhitelist() : new List<string>();
@@ -208,7 +222,7 @@ namespace UsbGuard
             string sel = _devices.SelectedItems.Count > 0 ? (string)_devices.SelectedItems[0].Tag : null;
             List<UsbStorageDevice> devs;
             try { devs = UsbDisks.ListForDisplay(); } catch { devs = new List<UsbStorageDevice>(); }
-            string sig = string.Join("|", devs.Select(d => d.InstanceId + d.Problem)) + "#" + string.Join("|", wl) + Settings.IsPausedSafe();
+            string sig = string.Join("|", devs.Select(d => d.InstanceId + d.Problem)) + "#" + string.Join("|", wl) + Settings.IsPausedSafe() + _svcRunning;
             if (!sig.Equals(_devices.Tag as string))
             {
                 _devices.Tag = sig;
@@ -219,6 +233,7 @@ namespace UsbGuard
                     bool allowed = Whitelist.Matches(d.Ids, wl);
                     bool paused = Settings.IsPausedSafe();
                     string st = d.Problem == 0 ? (allowed ? "Được phép" : "Đang dùng được")
+                              : (allowed || paused) && !_svcRunning ? "Chờ dịch vụ chạy"
                               : allowed || paused ? "Đang nạp lại…"
                               : d.Ejected ? "Bị chặn (đã tháo)" : "Bị chặn";
                     var it = new ListViewItem(new[] { d.Name, st, d.Serial.Length > 0 ? d.Serial : d.InstanceId }) { Tag = d.InstanceId };

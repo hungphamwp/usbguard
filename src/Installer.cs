@@ -70,7 +70,7 @@ namespace UsbGuard
             }
             Sys.Run("sc.exe", "description " + Hardening.ServiceName + " \"" + Hardening.Description + "\"");
             // Tự khởi động lại nếu service crash — hành vi hợp lệ, chuẩn Windows, không phải chống gỡ.
-            Sys.Run("sc.exe", "failure " + Hardening.ServiceName + " reset= 86400 actions= restart/5000/restart/30000/\"\"/0");
+            Sys.Run("sc.exe", "failure " + Hardening.ServiceName + FailureArgs);
 
             rc = Sys.Run("sc.exe", "start " + Hardening.ServiceName, out output);
             if (rc != 0 && rc != 1056)
@@ -82,6 +82,48 @@ namespace UsbGuard
             Console.WriteLine("Đã cài đặt và khởi động dịch vụ UsbGuard.");
             Console.WriteLine("Kiểm tra: UsbGuard.exe status");
             return 0;
+        }
+
+        private const string FailureArgs = " reset= 86400 actions= restart/5000/restart/30000/\"\"/0";
+
+        /// <summary>
+        /// Admin đổi "Startup type" của dịch vụ trong services.msc (Disabled/Manual) hoặc xoá cấu hình tự chạy lại:
+        /// trả lại Automatic + restart khi bị kill. Đổi kiểu khởi động không cần dừng dịch vụ nên CanStop = false không chặn được,
+        /// phải tự sửa. Trả về mô tả những gì đã sửa (rỗng nếu không phải sửa).
+        /// </summary>
+        public static string RepairServiceConfig()
+        {
+            int start = -1; bool hasFailure;
+            using (var hk = Reg.Hklm())
+            using (var k = hk.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\" + Hardening.ServiceName))
+            {
+                if (k == null) return "";
+                var v = k.GetValue("Start");
+                if (v is int) start = (int)v;
+                // SERVICE_FAILURE_ACTIONS lưu dạng nhị phân: số hành động ở byte 12, hành động đầu (loại, chờ) từ byte 20; 1 = RESTART.
+                var b = k.GetValue("FailureActions") as byte[];
+                hasFailure = b != null && b.Length >= 28 && BitConverter.ToInt32(b, 12) > 0 && BitConverter.ToInt32(b, 20) == 1;
+            }
+            string fixedWhat = "";
+            if (start != 2)
+            {
+                Sys.Run("sc.exe", "config " + Hardening.ServiceName + " start= auto");
+                fixedWhat = "kiểu khởi động " + (start == 4 ? "Disabled" : start == 3 ? "Manual" : "Start=" + start) + " → Automatic";
+            }
+            if (!hasFailure)
+            {
+                Sys.Run("sc.exe", "failure " + Hardening.ServiceName + FailureArgs);
+                fixedWhat += (fixedWhat.Length > 0 ? ", " : "") + "cấu hình tự chạy lại khi bị kill";
+            }
+            return fixedWhat;
+        }
+
+        /// <summary>Dịch vụ đang chạy không (RUNNING hoặc đang khởi động).</summary>
+        public static bool ServiceRunning()
+        {
+            string o;
+            Sys.Run("sc.exe", "query " + Hardening.ServiceName, out o);
+            return o.IndexOf("RUNNING", StringComparison.OrdinalIgnoreCase) >= 0 || o.IndexOf("START_PENDING", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         public static int Uninstall(string password, bool keepFiles = false)
