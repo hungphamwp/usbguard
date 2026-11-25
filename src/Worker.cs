@@ -50,10 +50,12 @@ namespace UsbGuard
             Log.Info("Dịch vụ khởi động (phiên bản " + Program.Version + ").");
             try { Settings.LockAcl(); } catch (Exception ex) { Log.Warn("Không đặt được ACL cho khoá cấu hình: " + ex.Message); }
             if (!_interactive)
-            {
-                int rc = Installer.LockServiceAcl();   // máy cài từ bản cũ cũng được khoá quyền đổi Startup type
-                if (rc != 0) Log.Warn("Không khoá được quyền đổi cấu hình dịch vụ (sc sdset mã " + rc + ").");
-            }
+                System.Threading.ThreadPool.QueueUserWorkItem(_ =>
+                {
+                    // Chạy nền để OnStart trả về nhanh (SCM báo RUNNING ngay). Máy cài từ bản cũ cũng được khoá quyền đổi Startup type.
+                    int rc = Installer.LockServiceAcl();
+                    if (rc != 0) Log.Warn("Không khoá được quyền đổi cấu hình dịch vụ (sc sdset mã " + rc + ").");
+                });
             Tick(null, null);
             _timer.Elapsed += Tick;
             _timer.AutoReset = true;

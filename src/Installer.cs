@@ -79,6 +79,7 @@ namespace UsbGuard
                 Console.WriteLine("Cảnh báo: khởi động dịch vụ thất bại (mã " + rc + "): " + output);
             }
 
+            for (int i = 0; i < 30 && !ServiceRunningNow(); i++) System.Threading.Thread.Sleep(500);   // chờ tối đa 15 giây cho dịch vụ chạy hẳn
             Log.Info("Đã cài đặt UsbGuard.");
             Console.WriteLine("Đã cài đặt và khởi động dịch vụ UsbGuard.");
             Console.WriteLine("Kiểm tra: UsbGuard.exe status");
@@ -133,6 +134,13 @@ namespace UsbGuard
                 fixedWhat += (fixedWhat.Length > 0 ? ", " : "") + "cấu hình tự chạy lại khi bị kill";
             }
             return fixedWhat;
+        }
+
+        private static bool ServiceRunningNow()
+        {
+            string o;
+            Sys.Run("sc.exe", "query " + Hardening.ServiceName, out o);
+            return o.IndexOf("RUNNING", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         /// <summary>Dịch vụ đang chạy không (RUNNING hoặc đang khởi động).</summary>

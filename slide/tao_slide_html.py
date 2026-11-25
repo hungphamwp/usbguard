@@ -94,7 +94,7 @@ def trang(n, phan, tieu_de, noi_dung, lead=None):
     nav = "".join(f'<div class="{"on" if i == phan else ""}">{p}</div>' for i, p in enumerate(PHAN))
     ld = f'<div class="lead">{lead}</div>' if lead else ""
     return f'''<section class="s">
-<div class="top"><span><b>UsbGuard 1.2</b> · Seminar chuyên đề</span><span>{n:02d} / 20</span></div>
+<div class="top"><span><b>UsbGuard 1.2.1</b> · Seminar chuyên đề</span><span>{n:02d} / 20</span></div>
 <h1>{tieu_de}</h1>{ld}
 <div class="body">{noi_dung}</div>
 <div class="nav">{nav}</div></section>'''
@@ -218,6 +218,9 @@ S.append(trang(6, 1, "Thử tắt UsbGuard: bị chặn hoặc tự chạy lại
 <div style="margin-top:18px"><span class="c"># Administrator ép tắt tiến trình</span></div>
 <div><span class="p">&gt;</span> taskkill /F /IM UsbGuard.exe</div>
 <div class="y">Windows chạy lại dịch vụ sau {giay(K22['chay_lai_ms'])} (Server 2022), {giay(K25['chay_lai_ms'])} (Server 2025)</div>
+<div style="margin-top:18px"><span class="c"># Admin vào services.msc đổi Startup type thành Disabled</span></div>
+<div><span class="p">&gt;</span> sc config UsbGuard start= disabled</div>
+<div class="r">[SC] ChangeServiceConfig FAILED 5: Access is denied</div>
 <div style="margin-top:18px"><span class="c"># Sửa Registry để mở USB</span></div>
 <div><span class="p">&gt;</span> reg add ...\\USBSTOR /v Start /d 3</div>
 <div class="y">Dịch vụ đặt lại Start = 4 sau {giay(K22['tu_sua_ms'])} (2022), {giay(K25['tu_sua_ms'])} (2025)</div>
@@ -389,7 +392,7 @@ S.append(trang(17, 3, "Máy Windows thật, USB thật: 7/7 kịch bản đạt"
 <p class="note" style="margin-top:18px">Thành viên nhóm tự thử và gửi báo cáo. Các góp ý kèm theo dẫn tới bản 1.2.</p>'''))
 
 # 18. Phản hồi -> 1.2
-S.append(trang(18, 3, "Góp ý từ máy thật và bản 1.2", f'''
+S.append(trang(18, 3, "Góp ý từ máy thật: bản 1.2 và 1.2.1", f'''
 <div class="row" style="gap:48px;height:auto">
  <div class="col" style="background:var(--red-2);border-radius:14px;padding:34px 38px">
   <span class="tag" style="background:#fff;color:var(--red)">Bản 1.1</span>
@@ -402,7 +405,7 @@ S.append(trang(18, 3, "Góp ý từ máy thật và bản 1.2", f'''
 </div>
 <table style="margin-top:44px">
  <tr><td style="padding-left:0;width:300px" class="muted">Kiểm chứng</td><td>Tái hiện lỗi trong máy ảo trước (E19, E20 không đạt), sửa xong đạt {W10['dat']}/{W10['tong']} trên Windows 10 và {W11['dat']}/{W11['tong']} trên Windows 11</td></tr>
- <tr><td style="padding-left:0" class="muted">Góp ý mật khẩu</td><td>Đổi sang PBKDF2-SHA256 {vn(600000)} vòng, thêm khoá khi nhập sai (ca TC35 đến TC37)</td></tr>
+ <tr><td style="padding-left:0" class="muted">Bản 1.2.1</td><td>Admin đổi dịch vụ sang Disabled bị từ chối, sửa Registry thì tự trả lại (TC38 đến TC40). Gỡ cài đặt khi USB đang cắm: USB dùng được ngay (E21)</td></tr>
 </table>'''))
 
 # 19. Đáp ứng yêu cầu
