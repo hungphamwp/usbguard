@@ -155,6 +155,7 @@ namespace UsbGuard
             Enforcer.Unblock();
             UsbDisks.ReenableDisabled();
             try { UsbDisks.RetryBlockedDevices(); } catch { }
+            ReplugBlockedUsb();
             Settings.Delete();
             // Cài bằng bộ cài (setup.exe) thì để trình gỡ của bộ cài tự xoá file và mục trong "Apps & features".
             if (!keepFiles)
@@ -170,6 +171,28 @@ namespace UsbGuard
 
             Console.WriteLine("Đã gỡ cài đặt UsbGuard và khôi phục cấu hình USB mặc định của Windows.");
             return 0;
+        }
+
+        /// <summary>
+        /// USB đang cắm mà bị chặn lúc gỡ (Windows đã "tháo an toàn" nó, mã 47/14, hoặc còn lỗi khác): bỏ chặn xong
+        /// "rút ra cắm lại" cổng đó bằng phần mềm để USB dùng được ngay. Không có bước này người dùng phải rút tay
+        /// (dịch vụ đã dừng nên không còn ai nạp lại). Phải chạy trước Settings.Delete vì cần danh sách cổng đã nhớ.
+        /// </summary>
+        private static void ReplugBlockedUsb()
+        {
+            try
+            {
+                System.Threading.Thread.Sleep(2500);   // cho Windows kịp nạp lại các USB chỉ cần bật driver
+                foreach (var d in UsbDisks.ListForDisplay())
+                {
+                    if (d.Problem == 0) continue;
+                    bool cycled = d.Port != null && UsbPorts.Cycle(d.Port);
+                    if (!cycled) UsbDisks.Kick(d);
+                    Log.Info("Gỡ cài đặt: nạp lại USB đang cắm (mã " + d.Problem + (d.Ejected ? ", đã tháo" : "") + "): " + d.Name +
+                             " | " + d.InstanceId + (cycled ? " | rút ra cắm lại cổng " + d.Port.Port : " | nạp lại thiết bị"));
+                }
+            }
+            catch (Exception ex) { Log.Warn("Gỡ cài đặt: không nạp lại được USB đang cắm: " + ex.Message); }
         }
 
         /// <summary>Chờ tiến trình dịch vụ thoát hẳn (để bộ cài xoá được file UsbGuard.exe ngay, không phải chờ khởi động lại).</summary>

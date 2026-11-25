@@ -237,6 +237,10 @@ Start-Sleep 25
 Check 'E15' 'Trình gỡ của bộ cài, sai mật khẩu: không gỡ được' ((Get-Service UsbGuard -ErrorAction SilentlyContinue).Status -eq 'Running' -and (Test-Path $App)) ''
 
 # E16: gỡ đúng mật khẩu -> sạch, USB dùng lại được
+# E21 (phản hồi máy thật 25/11): USB đang cắm và đang bị chặn lúc gỡ phải tự dùng được, không cần rút ra cắm lại.
+Plug A
+$w = Watch A 6
+L ("  trước khi gỡ, USB A dùng được: " + (Accessible A))
 Start-Process $unins -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/ADMINPW=$Pw" | Out-Null
 $t = [DateTime]::UtcNow
 while (([DateTime]::UtcNow - $t).TotalSeconds -lt 90 -and ((Get-Service UsbGuard -ErrorAction SilentlyContinue) -or (Test-Path $App))) { Start-Sleep 1 }
@@ -245,6 +249,9 @@ $st = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\USBSTOR).Start
 $denyKey = Test-Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyDeviceIDs'
 $uninsEntry = @(Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall' | Where-Object { (Get-ItemProperty $_.PSPath).DisplayName -like 'UsbGuard*' }).Count
 Check 'E16' 'Gỡ đúng mật khẩu: xoá dịch vụ, file, mục Apps & features, trả lại cấu hình USB' (-not (Get-Service UsbGuard -ErrorAction SilentlyContinue) -and -not (Test-Path $App) -and $st -eq 3 -and -not $denyKey -and $uninsEntry -eq 0) ("USBSTOR Start=$st, còn DenyDeviceIDs: $denyKey, còn mục gỡ cài đặt: $uninsEntry, còn file: $(Test-Path $App)")
+$w = Watch A 45 -TryWrite -UntilWritable
+Check 'E21' 'Gỡ cài đặt khi USB đang cắm và bị chặn: USB tự dùng được, không cần rút ra cắm lại' ($w.ghi_duoc) ("ghi được sau $($w.ghi_ms) ms")
+Unplug A
 Plug A
 $w = Watch A 40 -TryWrite -UntilWritable
 Check 'E17' 'Sau khi gỡ: cắm USB dùng lại bình thường' ($w.ghi_duoc) ("ghi được sau $($w.ghi_ms) ms")
