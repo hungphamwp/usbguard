@@ -1,146 +1,146 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TestRun id="2e218114-1402-4b2c-9dbd-758cbc253a1d" name="runneradmin@runnervmbpeip 2026-11-25 11:42:03" runUser="runnervmbpeip\runneradmin" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
-  <Times creation="2026-11-25T11:42:03.7254751+00:00" queuing="2026-11-25T11:42:03.7254754+00:00" start="2026-11-25T11:42:00.1495232+00:00" finish="2026-11-25T11:42:05.3209391+00:00" />
-  <TestSettings name="default" id="97f7558b-1baa-4a2b-ab5b-6bd0b88c2840">
-    <Deployment runDeploymentRoot="runneradmin_runnervmbpeip_2026-11-25_11_42_03" />
+<TestRun id="92f5ad56-114b-46e4-ad11-01967432b65e" name="runneradmin@runnervmbpeip 2026-11-25 12:03:10" runUser="runnervmbpeip\runneradmin" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-25T12:03:10.8591963+00:00" queuing="2026-11-25T12:03:10.8591966+00:00" start="2026-11-25T12:03:07.0588560+00:00" finish="2026-11-25T12:03:12.6716710+00:00" />
+  <TestSettings name="default" id="cafbd24c-5ce9-4858-8133-0720e8ea6a94">
+    <Deployment runDeploymentRoot="runneradmin_runnervmbpeip_2026-11-25_12_03_10" />
   </TestSettings>
   <Results>
-    <UnitTestResult executionId="2543e39f-3d2c-4558-9e66-4b26e3fbafca" testId="6610bee9-f0ec-6e86-cebb-5959307ed87a" testName="UsbGuard.Tests.AuthTests.Verify_SaiMatKhau_PhaiSai" computerName="runnervmbpeip" duration="00:00:00.2907126" startTime="2026-11-25T11:42:05.2573701+00:00" endTime="2026-11-25T11:42:05.2573707+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2543e39f-3d2c-4558-9e66-4b26e3fbafca" />
-    <UnitTestResult executionId="f3e81553-dd11-44ce-85aa-c35628c37817" testId="98f22ef1-ddfb-9493-487d-7fa483cad709" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 5, seconds: 30)" computerName="runnervmbpeip" duration="00:00:00.0000105" startTime="2026-11-25T11:42:03.7081122+00:00" endTime="2026-11-25T11:42:03.7081123+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3e81553-dd11-44ce-85aa-c35628c37817" />
-    <UnitTestResult executionId="79655867-2699-495f-82f6-b9cd72075b0a" testId="0076496d-a1b1-8bab-b235-1da584c9c00e" testName="UsbGuard.Tests.WhitelistTests.Matches_KhongPhanBietHoaThuong" computerName="runnervmbpeip" duration="00:00:00.0001838" startTime="2026-11-25T11:42:03.6737482+00:00" endTime="2026-11-25T11:42:03.6737482+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="79655867-2699-495f-82f6-b9cd72075b0a" />
-    <UnitTestResult executionId="b86351b2-3ace-4c37-aaf5-c2b5f5b2175e" testId="e23e9c50-fc78-0dd8-7df3-afce37fdded4" testName="UsbGuard.Tests.AuthTests.Verify_ChuoiLuuRong_PhaiSai" computerName="runnervmbpeip" duration="00:00:00.0001386" startTime="2026-11-25T11:42:04.9664627+00:00" endTime="2026-11-25T11:42:04.9664629+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b86351b2-3ace-4c37-aaf5-c2b5f5b2175e" />
-    <UnitTestResult executionId="f742d98b-d19a-4a58-a093-8f090bf97d00" testId="ffb0d95f-4039-88f9-c6a3-54bf8d4a5d89" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 11, seconds: 1920)" computerName="runnervmbpeip" duration="00:00:00.0055937" startTime="2026-11-25T11:42:03.6738833+00:00" endTime="2026-11-25T11:42:03.6738833+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f742d98b-d19a-4a58-a093-8f090bf97d00" />
-    <UnitTestResult executionId="cb2b1919-4b83-4a73-b770-8999d69951ff" testId="0ea5b211-a5c0-a1d0-c4ac-3575f5138428" testName="UsbGuard.Tests.AuthTests.Hash_MoiDungSha256_600000Vong" computerName="runnervmbpeip" duration="00:00:00.1525037" startTime="2026-11-25T11:42:04.9662109+00:00" endTime="2026-11-25T11:42:04.9662117+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cb2b1919-4b83-4a73-b770-8999d69951ff" />
-    <UnitTestResult executionId="f8d49042-83e1-4a4b-aba2-8e3d5532037b" testId="39a72136-2d3e-eea9-d8a4-db006170e770" testName="UsbGuard.Tests.AuthTests.Hash_RoiVerify_DungMatKhau_PhaiDung" computerName="runnervmbpeip" duration="00:00:00.2972810" startTime="2026-11-25T11:42:04.8135783+00:00" endTime="2026-11-25T11:42:04.8135788+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f8d49042-83e1-4a4b-aba2-8e3d5532037b" />
-    <UnitTestResult executionId="7ad31671-5382-4fb7-bfe3-ff0500cd7053" testId="f174a63b-954d-6753-6c80-ff6993022246" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 6, seconds: 60)" computerName="runnervmbpeip" duration="00:00:00.0000017" startTime="2026-11-25T11:42:03.7084255+00:00" endTime="2026-11-25T11:42:03.7084256+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7ad31671-5382-4fb7-bfe3-ff0500cd7053" />
-    <UnitTestResult executionId="e4866d04-42cf-4d1c-bf66-bb6a0ceb471b" testId="11464ccc-0aab-0b29-da4b-f99c29db90a6" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 7, seconds: 120)" computerName="runnervmbpeip" duration="00:00:00.0004783" startTime="2026-11-25T11:42:03.6739070+00:00" endTime="2026-11-25T11:42:03.6739070+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e4866d04-42cf-4d1c-bf66-bb6a0ceb471b" />
-    <UnitTestResult executionId="c968a89a-b4c0-45e4-a298-cd06d1c06f4c" testId="ba0cc08b-f4a8-ba8a-7aea-e6d28b2f7e3f" testName="UsbGuard.Tests.WhitelistTests.IsValidEntry_ChuoiQuaNgan_KhongHopLe" computerName="runnervmbpeip" duration="00:00:00.0004004" startTime="2026-11-25T11:42:03.6731926+00:00" endTime="2026-11-25T11:42:03.6731926+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c968a89a-b4c0-45e4-a298-cd06d1c06f4c" />
-    <UnitTestResult executionId="2d7f5efd-f77d-4273-8380-a5db6debbced" testId="8b016dc5-3ae2-5b70-e4d3-58dd9556267f" testName="UsbGuard.Tests.AuthTests.Verify_SaiDinhDang_KhongDuocNem" computerName="runnervmbpeip" duration="00:00:00.0001237" startTime="2026-11-25T11:42:03.9144711+00:00" endTime="2026-11-25T11:42:03.9144712+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2d7f5efd-f77d-4273-8380-a5db6debbced" />
-    <UnitTestResult executionId="09574005-e3fa-40a4-9f79-d44880a0c5d5" testId="4ac61f90-90ea-fadf-7e72-c50cca7ca7d8" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 4, seconds: 0)" computerName="runnervmbpeip" duration="00:00:00.0000023" startTime="2026-11-25T11:42:03.7083666+00:00" endTime="2026-11-25T11:42:03.7083667+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09574005-e3fa-40a4-9f79-d44880a0c5d5" />
-    <UnitTestResult executionId="06cdb678-d9a0-4a92-bcd1-3c26579a256e" testId="36d31ac1-fb29-6d66-69f4-e330e55bd51a" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 12, seconds: 3600)" computerName="runnervmbpeip" duration="00:00:00.0000016" startTime="2026-11-25T11:42:03.7084533+00:00" endTime="2026-11-25T11:42:03.7084533+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06cdb678-d9a0-4a92-bcd1-3c26579a256e" />
-    <UnitTestResult executionId="91ce90c2-16b2-4940-b6ec-6efae0d73625" testId="5f199906-fe11-4cdc-9554-6bc6113f8981" testName="UsbGuard.Tests.AuthTests.Verify_MaBamCuaBan11_VanDung_VaCanBamLai" computerName="runnervmbpeip" duration="00:00:00.2402539" startTime="2026-11-25T11:42:03.9142662+00:00" endTime="2026-11-25T11:42:03.9142670+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91ce90c2-16b2-4940-b6ec-6efae0d73625" />
-    <UnitTestResult executionId="de2923b8-0c21-4c96-a0e3-65c6088c1a19" testId="836450bc-afa2-429e-5a5f-1a0ef0644195" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 100, seconds: 3600)" computerName="runnervmbpeip" duration="00:00:00.0000015" startTime="2026-11-25T11:42:03.7084830+00:00" endTime="2026-11-25T11:42:03.7084830+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de2923b8-0c21-4c96-a0e3-65c6088c1a19" />
-    <UnitTestResult executionId="a1050fff-961c-493a-9fb0-2fb6f6832d69" testId="3264f3b0-5e95-df1e-3a60-90b1fef14722" testName="UsbGuard.Tests.AuthTests.Verify_ThieuIteration_PhaiSai" computerName="runnervmbpeip" duration="00:00:00.0046915" startTime="2026-11-25T11:42:03.6713029+00:00" endTime="2026-11-25T11:42:03.6713030+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a1050fff-961c-493a-9fb0-2fb6f6832d69" />
-    <UnitTestResult executionId="849500c5-984b-4298-a64d-1bd0f16739ed" testId="07655140-cfcf-13a0-bfbf-78416073869a" testName="UsbGuard.Tests.WhitelistTests.Matches_MucWhitelistQuaNgan_BiBoQua" computerName="runnervmbpeip" duration="00:00:00.0001680" startTime="2026-11-25T11:42:03.6738250+00:00" endTime="2026-11-25T11:42:03.6738251+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="849500c5-984b-4298-a64d-1bd0f16739ed" />
-    <UnitTestResult executionId="f20909ed-7e15-46db-89df-f67a4441afc7" testId="d4e2a235-4ff5-e408-1963-aa3ff491153f" testName="UsbGuard.Tests.AuthTests.Hash_HaiLanGoiLienTiep_RaMuoiKhacNhau" computerName="runnervmbpeip" duration="00:00:00.6013877" startTime="2026-11-25T11:42:04.5160491+00:00" endTime="2026-11-25T11:42:04.5160496+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f20909ed-7e15-46db-89df-f67a4441afc7" />
-    <UnitTestResult executionId="7fea6d14-f5d8-4f58-951d-7d238cdad0e6" testId="1330c218-0f29-432b-cf40-a4a79ae09e9c" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 1, seconds: 0)" computerName="runnervmbpeip" duration="00:00:00.0000101" startTime="2026-11-25T11:42:03.7083978+00:00" endTime="2026-11-25T11:42:03.7083978+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7fea6d14-f5d8-4f58-951d-7d238cdad0e6" />
-    <UnitTestResult executionId="43059b4a-c370-456a-b602-59334727491e" testId="28777b9a-c167-75c9-2a01-d3adc91b0461" testName="UsbGuard.Tests.WhitelistTests.Matches_ThietBiCoIdNamTrongWhitelist_PhaiKhop" computerName="runnervmbpeip" duration="00:00:00.0005067" startTime="2026-11-25T11:42:03.6736928+00:00" endTime="2026-11-25T11:42:03.6736928+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43059b4a-c370-456a-b602-59334727491e" />
-    <UnitTestResult executionId="b0fb2007-dc19-404c-bd1d-8accc6a59fc5" testId="3c05ad4a-c348-106b-7268-c22f2fdeff0e" testName="UsbGuard.Tests.WhitelistTests.IsValidEntry_DuDaiToiThieu_HopLe" computerName="runnervmbpeip" duration="00:00:00.0001110" startTime="2026-11-25T11:42:03.6737866+00:00" endTime="2026-11-25T11:42:03.6737866+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0fb2007-dc19-404c-bd1d-8accc6a59fc5" />
-    <UnitTestResult executionId="baec3fa5-042b-4021-ae74-810476e322f0" testId="0720bac9-95a0-c23a-14c1-f645f19ce02e" testName="UsbGuard.Tests.WhitelistTests.Matches_WhitelistRong_KhongKhopGi" computerName="runnervmbpeip" duration="00:00:00.0045532" startTime="2026-11-25T11:42:03.6676728+00:00" endTime="2026-11-25T11:42:03.6677870+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="baec3fa5-042b-4021-ae74-810476e322f0" />
+    <UnitTestResult executionId="4c51d177-1e62-4682-8a50-52809b40cd6a" testId="8b016dc5-3ae2-5b70-e4d3-58dd9556267f" testName="UsbGuard.Tests.AuthTests.Verify_SaiDinhDang_KhongDuocNem" computerName="runnervmbpeip" duration="00:00:00.0001665" startTime="2026-11-25T12:03:11.0630155+00:00" endTime="2026-11-25T12:03:11.0630157+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4c51d177-1e62-4682-8a50-52809b40cd6a" />
+    <UnitTestResult executionId="91c705cb-6746-4000-9ddf-bf3517ba69d1" testId="0720bac9-95a0-c23a-14c1-f645f19ce02e" testName="UsbGuard.Tests.WhitelistTests.Matches_WhitelistRong_KhongKhopGi" computerName="runnervmbpeip" duration="00:00:00.0043321" startTime="2026-11-25T12:03:10.8032144+00:00" endTime="2026-11-25T12:03:10.8032145+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91c705cb-6746-4000-9ddf-bf3517ba69d1" />
+    <UnitTestResult executionId="59bfae54-d14b-4d30-a373-d2f100df3bd0" testId="0076496d-a1b1-8bab-b235-1da584c9c00e" testName="UsbGuard.Tests.WhitelistTests.Matches_KhongPhanBietHoaThuong" computerName="runnervmbpeip" duration="00:00:00.0001692" startTime="2026-11-25T12:03:10.8057510+00:00" endTime="2026-11-25T12:03:10.8057510+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59bfae54-d14b-4d30-a373-d2f100df3bd0" />
+    <UnitTestResult executionId="12348547-459a-4dd7-a7b3-d9808a981526" testId="5f199906-fe11-4cdc-9554-6bc6113f8981" testName="UsbGuard.Tests.AuthTests.Verify_MaBamCuaBan11_VanDung_VaCanBamLai" computerName="runnervmbpeip" duration="00:00:00.2567259" startTime="2026-11-25T12:03:11.0627633+00:00" endTime="2026-11-25T12:03:11.0627637+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="12348547-459a-4dd7-a7b3-d9808a981526" />
+    <UnitTestResult executionId="a92ecf56-793b-4eb7-8163-ae4d1b5a4dd6" testId="36d31ac1-fb29-6d66-69f4-e330e55bd51a" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 12, seconds: 3600)" computerName="runnervmbpeip" duration="00:00:00.0000070" startTime="2026-11-25T12:03:10.8428411+00:00" endTime="2026-11-25T12:03:10.8428412+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a92ecf56-793b-4eb7-8163-ae4d1b5a4dd6" />
+    <UnitTestResult executionId="88b455ad-e624-4780-a712-35a3cdec17d1" testId="07655140-cfcf-13a0-bfbf-78416073869a" testName="UsbGuard.Tests.WhitelistTests.Matches_MucWhitelistQuaNgan_BiBoQua" computerName="runnervmbpeip" duration="00:00:00.0001466" startTime="2026-11-25T12:03:10.8058535+00:00" endTime="2026-11-25T12:03:10.8058535+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="88b455ad-e624-4780-a712-35a3cdec17d1" />
+    <UnitTestResult executionId="c4ce7596-a29c-474f-aaeb-f5f93f12bd2b" testId="ffb0d95f-4039-88f9-c6a3-54bf8d4a5d89" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 11, seconds: 1920)" computerName="runnervmbpeip" duration="00:00:00.0052801" startTime="2026-11-25T12:03:10.8059197+00:00" endTime="2026-11-25T12:03:10.8059197+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c4ce7596-a29c-474f-aaeb-f5f93f12bd2b" />
+    <UnitTestResult executionId="cb547134-3ce7-4bd9-8adf-8b7e2566ed16" testId="f174a63b-954d-6753-6c80-ff6993022246" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 6, seconds: 60)" computerName="runnervmbpeip" duration="00:00:00.0000041" startTime="2026-11-25T12:03:10.8428023+00:00" endTime="2026-11-25T12:03:10.8428023+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cb547134-3ce7-4bd9-8adf-8b7e2566ed16" />
+    <UnitTestResult executionId="08d75463-c307-400d-93e3-760dcffefd16" testId="836450bc-afa2-429e-5a5f-1a0ef0644195" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 100, seconds: 3600)" computerName="runnervmbpeip" duration="00:00:00.0000050" startTime="2026-11-25T12:03:10.8428837+00:00" endTime="2026-11-25T12:03:10.8428838+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="08d75463-c307-400d-93e3-760dcffefd16" />
+    <UnitTestResult executionId="c073d6eb-95a5-4b69-995c-748b509e885a" testId="28777b9a-c167-75c9-2a01-d3adc91b0461" testName="UsbGuard.Tests.WhitelistTests.Matches_ThietBiCoIdNamTrongWhitelist_PhaiKhop" computerName="runnervmbpeip" duration="00:00:00.0005686" startTime="2026-11-25T12:03:10.8056848+00:00" endTime="2026-11-25T12:03:10.8056849+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c073d6eb-95a5-4b69-995c-748b509e885a" />
+    <UnitTestResult executionId="82a5dbb5-639c-411d-b337-a5e5869ae0e9" testId="98f22ef1-ddfb-9493-487d-7fa483cad709" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 5, seconds: 30)" computerName="runnervmbpeip" duration="00:00:00.0000104" startTime="2026-11-25T12:03:10.8424242+00:00" endTime="2026-11-25T12:03:10.8424243+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="82a5dbb5-639c-411d-b337-a5e5869ae0e9" />
+    <UnitTestResult executionId="c381d3de-0c7c-4f76-930d-760b4ddba3ed" testId="ba0cc08b-f4a8-ba8a-7aea-e6d28b2f7e3f" testName="UsbGuard.Tests.WhitelistTests.IsValidEntry_ChuoiQuaNgan_KhongHopLe" computerName="runnervmbpeip" duration="00:00:00.0003460" startTime="2026-11-25T12:03:10.8052621+00:00" endTime="2026-11-25T12:03:10.8052622+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c381d3de-0c7c-4f76-930d-760b4ddba3ed" />
+    <UnitTestResult executionId="3914cb88-fc83-48a6-9360-5f4104132d47" testId="d4e2a235-4ff5-e408-1963-aa3ff491153f" testName="UsbGuard.Tests.AuthTests.Hash_HaiLanGoiLienTiep_RaMuoiKhacNhau" computerName="runnervmbpeip" duration="00:00:00.7004391" startTime="2026-11-25T12:03:11.7636511+00:00" endTime="2026-11-25T12:03:11.7636516+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3914cb88-fc83-48a6-9360-5f4104132d47" />
+    <UnitTestResult executionId="53399318-931c-4c9f-9c00-ce3a56d6d9bc" testId="4ac61f90-90ea-fadf-7e72-c50cca7ca7d8" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 4, seconds: 0)" computerName="runnervmbpeip" duration="00:00:00.0000043" startTime="2026-11-25T12:03:10.8427119+00:00" endTime="2026-11-25T12:03:10.8427120+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="53399318-931c-4c9f-9c00-ce3a56d6d9bc" />
+    <UnitTestResult executionId="43ef67ae-f1da-4366-b999-55720b8ea7b2" testId="3c05ad4a-c348-106b-7268-c22f2fdeff0e" testName="UsbGuard.Tests.WhitelistTests.IsValidEntry_DuDaiToiThieu_HopLe" computerName="runnervmbpeip" duration="00:00:00.0001041" startTime="2026-11-25T12:03:10.8058031+00:00" endTime="2026-11-25T12:03:10.8058032+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43ef67ae-f1da-4366-b999-55720b8ea7b2" />
+    <UnitTestResult executionId="7e6358e0-fda6-446b-a017-a120a8745d65" testId="1330c218-0f29-432b-cf40-a4a79ae09e9c" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 1, seconds: 0)" computerName="runnervmbpeip" duration="00:00:00.0000035" startTime="2026-11-25T12:03:10.8427573+00:00" endTime="2026-11-25T12:03:10.8427574+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e6358e0-fda6-446b-a017-a120a8745d65" />
+    <UnitTestResult executionId="1550f2a2-ea07-4ab1-8823-7ea5aa5dcfaf" testId="6610bee9-f0ec-6e86-cebb-5959307ed87a" testName="UsbGuard.Tests.AuthTests.Verify_SaiMatKhau_PhaiSai" computerName="runnervmbpeip" duration="00:00:00.3203688" startTime="2026-11-25T12:03:12.6099396+00:00" endTime="2026-11-25T12:03:12.6099401+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1550f2a2-ea07-4ab1-8823-7ea5aa5dcfaf" />
+    <UnitTestResult executionId="eeb00392-d3f9-416e-8893-00780cdff85f" testId="3264f3b0-5e95-df1e-3a60-90b1fef14722" testName="UsbGuard.Tests.AuthTests.Verify_ThieuIteration_PhaiSai" computerName="runnervmbpeip" duration="00:00:00.0043484" startTime="2026-11-25T12:03:10.7999801+00:00" endTime="2026-11-25T12:03:10.8000156+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eeb00392-d3f9-416e-8893-00780cdff85f" />
+    <UnitTestResult executionId="b8a5014e-3841-49a7-8060-7482c1a8e739" testId="e23e9c50-fc78-0dd8-7df3-afce37fdded4" testName="UsbGuard.Tests.AuthTests.Verify_ChuoiLuuRong_PhaiSai" computerName="runnervmbpeip" duration="00:00:00.0001431" startTime="2026-11-25T12:03:12.2892825+00:00" endTime="2026-11-25T12:03:12.2892825+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8a5014e-3841-49a7-8060-7482c1a8e739" />
+    <UnitTestResult executionId="e49bc37d-639a-4238-b215-78da6934bab0" testId="39a72136-2d3e-eea9-d8a4-db006170e770" testName="UsbGuard.Tests.AuthTests.Hash_RoiVerify_DungMatKhau_PhaiDung" computerName="runnervmbpeip" duration="00:00:00.3709075" startTime="2026-11-25T12:03:12.1347686+00:00" endTime="2026-11-25T12:03:12.1347692+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e49bc37d-639a-4238-b215-78da6934bab0" />
+    <UnitTestResult executionId="e50ec11d-6138-4fd6-9ee9-4dcc576f4e12" testId="11464ccc-0aab-0b29-da4b-f99c29db90a6" testName="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 7, seconds: 120)" computerName="runnervmbpeip" duration="00:00:00.0003521" startTime="2026-11-25T12:03:10.8059560+00:00" endTime="2026-11-25T12:03:10.8059560+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e50ec11d-6138-4fd6-9ee9-4dcc576f4e12" />
+    <UnitTestResult executionId="42a7a79e-a114-42c8-bec6-121be8bf074b" testId="0ea5b211-a5c0-a1d0-c4ac-3575f5138428" testName="UsbGuard.Tests.AuthTests.Hash_MoiDungSha256_600000Vong" computerName="runnervmbpeip" duration="00:00:00.1541410" startTime="2026-11-25T12:03:12.2890151+00:00" endTime="2026-11-25T12:03:12.2890156+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="42a7a79e-a114-42c8-bec6-121be8bf074b" />
   </Results>
   <TestDefinitions>
     <UnitTest name="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 4, seconds: 0)" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="4ac61f90-90ea-fadf-7e72-c50cca7ca7d8">
-      <Execution id="09574005-e3fa-40a4-9f79-d44880a0c5d5" />
+      <Execution id="53399318-931c-4c9f-9c00-ce3a56d6d9bc" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="LockSeconds_TangGapDoi_ToiDa1Gio" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 5, seconds: 30)" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="98f22ef1-ddfb-9493-487d-7fa483cad709">
-      <Execution id="f3e81553-dd11-44ce-85aa-c35628c37817" />
+      <Execution id="82a5dbb5-639c-411d-b337-a5e5869ae0e9" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="LockSeconds_TangGapDoi_ToiDa1Gio" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 6, seconds: 60)" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="f174a63b-954d-6753-6c80-ff6993022246">
-      <Execution id="7ad31671-5382-4fb7-bfe3-ff0500cd7053" />
+      <Execution id="cb547134-3ce7-4bd9-8adf-8b7e2566ed16" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="LockSeconds_TangGapDoi_ToiDa1Gio" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.Verify_MaBamCuaBan11_VanDung_VaCanBamLai" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="5f199906-fe11-4cdc-9554-6bc6113f8981">
-      <Execution id="91ce90c2-16b2-4940-b6ec-6efae0d73625" />
+      <Execution id="12348547-459a-4dd7-a7b3-d9808a981526" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="Verify_MaBamCuaBan11_VanDung_VaCanBamLai" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 11, seconds: 1920)" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="ffb0d95f-4039-88f9-c6a3-54bf8d4a5d89">
-      <Execution id="f742d98b-d19a-4a58-a093-8f090bf97d00" />
+      <Execution id="c4ce7596-a29c-474f-aaeb-f5f93f12bd2b" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="LockSeconds_TangGapDoi_ToiDa1Gio" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.Hash_HaiLanGoiLienTiep_RaMuoiKhacNhau" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="d4e2a235-4ff5-e408-1963-aa3ff491153f">
-      <Execution id="f20909ed-7e15-46db-89df-f67a4441afc7" />
+      <Execution id="3914cb88-fc83-48a6-9360-5f4104132d47" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="Hash_HaiLanGoiLienTiep_RaMuoiKhacNhau" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.WhitelistTests.Matches_KhongPhanBietHoaThuong" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="0076496d-a1b1-8bab-b235-1da584c9c00e">
-      <Execution id="79655867-2699-495f-82f6-b9cd72075b0a" />
+      <Execution id="59bfae54-d14b-4d30-a373-d2f100df3bd0" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.WhitelistTests" name="Matches_KhongPhanBietHoaThuong" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.Verify_ThieuIteration_PhaiSai" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="3264f3b0-5e95-df1e-3a60-90b1fef14722">
-      <Execution id="a1050fff-961c-493a-9fb0-2fb6f6832d69" />
+      <Execution id="eeb00392-d3f9-416e-8893-00780cdff85f" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="Verify_ThieuIteration_PhaiSai" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 100, seconds: 3600)" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="836450bc-afa2-429e-5a5f-1a0ef0644195">
-      <Execution id="de2923b8-0c21-4c96-a0e3-65c6088c1a19" />
+      <Execution id="08d75463-c307-400d-93e3-760dcffefd16" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="LockSeconds_TangGapDoi_ToiDa1Gio" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.WhitelistTests.IsValidEntry_ChuoiQuaNgan_KhongHopLe" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="ba0cc08b-f4a8-ba8a-7aea-e6d28b2f7e3f">
-      <Execution id="c968a89a-b4c0-45e4-a298-cd06d1c06f4c" />
+      <Execution id="c381d3de-0c7c-4f76-930d-760b4ddba3ed" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.WhitelistTests" name="IsValidEntry_ChuoiQuaNgan_KhongHopLe" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.WhitelistTests.Matches_WhitelistRong_KhongKhopGi" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="0720bac9-95a0-c23a-14c1-f645f19ce02e">
-      <Execution id="baec3fa5-042b-4021-ae74-810476e322f0" />
+      <Execution id="91c705cb-6746-4000-9ddf-bf3517ba69d1" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.WhitelistTests" name="Matches_WhitelistRong_KhongKhopGi" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.Hash_MoiDungSha256_600000Vong" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="0ea5b211-a5c0-a1d0-c4ac-3575f5138428">
-      <Execution id="cb2b1919-4b83-4a73-b770-8999d69951ff" />
+      <Execution id="42a7a79e-a114-42c8-bec6-121be8bf074b" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="Hash_MoiDungSha256_600000Vong" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.Hash_RoiVerify_DungMatKhau_PhaiDung" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="39a72136-2d3e-eea9-d8a4-db006170e770">
-      <Execution id="f8d49042-83e1-4a4b-aba2-8e3d5532037b" />
+      <Execution id="e49bc37d-639a-4238-b215-78da6934bab0" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="Hash_RoiVerify_DungMatKhau_PhaiDung" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.WhitelistTests.Matches_ThietBiCoIdNamTrongWhitelist_PhaiKhop" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="28777b9a-c167-75c9-2a01-d3adc91b0461">
-      <Execution id="43059b4a-c370-456a-b602-59334727491e" />
+      <Execution id="c073d6eb-95a5-4b69-995c-748b509e885a" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.WhitelistTests" name="Matches_ThietBiCoIdNamTrongWhitelist_PhaiKhop" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.Verify_ChuoiLuuRong_PhaiSai" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="e23e9c50-fc78-0dd8-7df3-afce37fdded4">
-      <Execution id="b86351b2-3ace-4c37-aaf5-c2b5f5b2175e" />
+      <Execution id="b8a5014e-3841-49a7-8060-7482c1a8e739" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="Verify_ChuoiLuuRong_PhaiSai" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.Verify_SaiMatKhau_PhaiSai" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="6610bee9-f0ec-6e86-cebb-5959307ed87a">
-      <Execution id="2543e39f-3d2c-4558-9e66-4b26e3fbafca" />
+      <Execution id="1550f2a2-ea07-4ab1-8823-7ea5aa5dcfaf" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="Verify_SaiMatKhau_PhaiSai" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.Verify_SaiDinhDang_KhongDuocNem" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="8b016dc5-3ae2-5b70-e4d3-58dd9556267f">
-      <Execution id="2d7f5efd-f77d-4273-8380-a5db6debbced" />
+      <Execution id="4c51d177-1e62-4682-8a50-52809b40cd6a" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="Verify_SaiDinhDang_KhongDuocNem" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 7, seconds: 120)" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="11464ccc-0aab-0b29-da4b-f99c29db90a6">
-      <Execution id="e4866d04-42cf-4d1c-bf66-bb6a0ceb471b" />
+      <Execution id="e50ec11d-6138-4fd6-9ee9-4dcc576f4e12" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="LockSeconds_TangGapDoi_ToiDa1Gio" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.WhitelistTests.IsValidEntry_DuDaiToiThieu_HopLe" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="3c05ad4a-c348-106b-7268-c22f2fdeff0e">
-      <Execution id="b0fb2007-dc19-404c-bd1d-8accc6a59fc5" />
+      <Execution id="43ef67ae-f1da-4366-b999-55720b8ea7b2" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.WhitelistTests" name="IsValidEntry_DuDaiToiThieu_HopLe" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 12, seconds: 3600)" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="36d31ac1-fb29-6d66-69f4-e330e55bd51a">
-      <Execution id="06cdb678-d9a0-4a92-bcd1-3c26579a256e" />
+      <Execution id="a92ecf56-793b-4eb7-8163-ae4d1b5a4dd6" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="LockSeconds_TangGapDoi_ToiDa1Gio" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.AuthTests.LockSeconds_TangGapDoi_ToiDa1Gio(fails: 1, seconds: 0)" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="1330c218-0f29-432b-cf40-a4a79ae09e9c">
-      <Execution id="7fea6d14-f5d8-4f58-951d-7d238cdad0e6" />
+      <Execution id="7e6358e0-fda6-446b-a017-a120a8745d65" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.AuthTests" name="LockSeconds_TangGapDoi_ToiDa1Gio" />
     </UnitTest>
     <UnitTest name="UsbGuard.Tests.WhitelistTests.Matches_MucWhitelistQuaNgan_BiBoQua" storage="d:\a\usbguard\usbguard\tests\bin\debug\net10.0\usbguard.tests.dll" id="07655140-cfcf-13a0-bfbf-78416073869a">
-      <Execution id="849500c5-984b-4298-a64d-1bd0f16739ed" />
+      <Execution id="88b455ad-e624-4780-a712-35a3cdec17d1" />
       <TestMethod codeBase="D:\a\usbguard\usbguard\tests\bin\Debug\net10.0\UsbGuard.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="UsbGuard.Tests.WhitelistTests" name="Matches_MucWhitelistQuaNgan_BiBoQua" />
     </UnitTest>
   </TestDefinitions>
   <TestEntries>
-    <TestEntry testId="6610bee9-f0ec-6e86-cebb-5959307ed87a" executionId="2543e39f-3d2c-4558-9e66-4b26e3fbafca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="98f22ef1-ddfb-9493-487d-7fa483cad709" executionId="f3e81553-dd11-44ce-85aa-c35628c37817" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="0076496d-a1b1-8bab-b235-1da584c9c00e" executionId="79655867-2699-495f-82f6-b9cd72075b0a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="e23e9c50-fc78-0dd8-7df3-afce37fdded4" executionId="b86351b2-3ace-4c37-aaf5-c2b5f5b2175e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="ffb0d95f-4039-88f9-c6a3-54bf8d4a5d89" executionId="f742d98b-d19a-4a58-a093-8f090bf97d00" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="0ea5b211-a5c0-a1d0-c4ac-3575f5138428" executionId="cb2b1919-4b83-4a73-b770-8999d69951ff" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="39a72136-2d3e-eea9-d8a4-db006170e770" executionId="f8d49042-83e1-4a4b-aba2-8e3d5532037b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="f174a63b-954d-6753-6c80-ff6993022246" executionId="7ad31671-5382-4fb7-bfe3-ff0500cd7053" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="11464ccc-0aab-0b29-da4b-f99c29db90a6" executionId="e4866d04-42cf-4d1c-bf66-bb6a0ceb471b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="ba0cc08b-f4a8-ba8a-7aea-e6d28b2f7e3f" executionId="c968a89a-b4c0-45e4-a298-cd06d1c06f4c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="8b016dc5-3ae2-5b70-e4d3-58dd9556267f" executionId="2d7f5efd-f77d-4273-8380-a5db6debbced" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="4ac61f90-90ea-fadf-7e72-c50cca7ca7d8" executionId="09574005-e3fa-40a4-9f79-d44880a0c5d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="36d31ac1-fb29-6d66-69f4-e330e55bd51a" executionId="06cdb678-d9a0-4a92-bcd1-3c26579a256e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="5f199906-fe11-4cdc-9554-6bc6113f8981" executionId="91ce90c2-16b2-4940-b6ec-6efae0d73625" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="836450bc-afa2-429e-5a5f-1a0ef0644195" executionId="de2923b8-0c21-4c96-a0e3-65c6088c1a19" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="3264f3b0-5e95-df1e-3a60-90b1fef14722" executionId="a1050fff-961c-493a-9fb0-2fb6f6832d69" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="07655140-cfcf-13a0-bfbf-78416073869a" executionId="849500c5-984b-4298-a64d-1bd0f16739ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="d4e2a235-4ff5-e408-1963-aa3ff491153f" executionId="f20909ed-7e15-46db-89df-f67a4441afc7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="1330c218-0f29-432b-cf40-a4a79ae09e9c" executionId="7fea6d14-f5d8-4f58-951d-7d238cdad0e6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="28777b9a-c167-75c9-2a01-d3adc91b0461" executionId="43059b4a-c370-456a-b602-59334727491e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="3c05ad4a-c348-106b-7268-c22f2fdeff0e" executionId="b0fb2007-dc19-404c-bd1d-8accc6a59fc5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
-    <TestEntry testId="0720bac9-95a0-c23a-14c1-f645f19ce02e" executionId="baec3fa5-042b-4021-ae74-810476e322f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8b016dc5-3ae2-5b70-e4d3-58dd9556267f" executionId="4c51d177-1e62-4682-8a50-52809b40cd6a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0720bac9-95a0-c23a-14c1-f645f19ce02e" executionId="91c705cb-6746-4000-9ddf-bf3517ba69d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0076496d-a1b1-8bab-b235-1da584c9c00e" executionId="59bfae54-d14b-4d30-a373-d2f100df3bd0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5f199906-fe11-4cdc-9554-6bc6113f8981" executionId="12348547-459a-4dd7-a7b3-d9808a981526" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="36d31ac1-fb29-6d66-69f4-e330e55bd51a" executionId="a92ecf56-793b-4eb7-8163-ae4d1b5a4dd6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="07655140-cfcf-13a0-bfbf-78416073869a" executionId="88b455ad-e624-4780-a712-35a3cdec17d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ffb0d95f-4039-88f9-c6a3-54bf8d4a5d89" executionId="c4ce7596-a29c-474f-aaeb-f5f93f12bd2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f174a63b-954d-6753-6c80-ff6993022246" executionId="cb547134-3ce7-4bd9-8adf-8b7e2566ed16" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="836450bc-afa2-429e-5a5f-1a0ef0644195" executionId="08d75463-c307-400d-93e3-760dcffefd16" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="28777b9a-c167-75c9-2a01-d3adc91b0461" executionId="c073d6eb-95a5-4b69-995c-748b509e885a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="98f22ef1-ddfb-9493-487d-7fa483cad709" executionId="82a5dbb5-639c-411d-b337-a5e5869ae0e9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ba0cc08b-f4a8-ba8a-7aea-e6d28b2f7e3f" executionId="c381d3de-0c7c-4f76-930d-760b4ddba3ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4e2a235-4ff5-e408-1963-aa3ff491153f" executionId="3914cb88-fc83-48a6-9360-5f4104132d47" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ac61f90-90ea-fadf-7e72-c50cca7ca7d8" executionId="53399318-931c-4c9f-9c00-ce3a56d6d9bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c05ad4a-c348-106b-7268-c22f2fdeff0e" executionId="43ef67ae-f1da-4366-b999-55720b8ea7b2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1330c218-0f29-432b-cf40-a4a79ae09e9c" executionId="7e6358e0-fda6-446b-a017-a120a8745d65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6610bee9-f0ec-6e86-cebb-5959307ed87a" executionId="1550f2a2-ea07-4ab1-8823-7ea5aa5dcfaf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3264f3b0-5e95-df1e-3a60-90b1fef14722" executionId="eeb00392-d3f9-416e-8893-00780cdff85f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e23e9c50-fc78-0dd8-7df3-afce37fdded4" executionId="b8a5014e-3841-49a7-8060-7482c1a8e739" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="39a72136-2d3e-eea9-d8a4-db006170e770" executionId="e49bc37d-639a-4238-b215-78da6934bab0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="11464ccc-0aab-0b29-da4b-f99c29db90a6" executionId="e50ec11d-6138-4fd6-9ee9-4dcc576f4e12" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0ea5b211-a5c0-a1d0-c4ac-3575f5138428" executionId="42a7a79e-a114-42c8-bec6-121be8bf074b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
   </TestEntries>
   <TestLists>
     <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
@@ -150,10 +150,10 @@
     <Counters total="22" executed="22" passed="22" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
     <Output>
       <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 10.0.15)&#xD;
-[xUnit.net 00:00:00.24]   Discovering: UsbGuard.Tests&#xD;
+[xUnit.net 00:00:00.25]   Discovering: UsbGuard.Tests&#xD;
 [xUnit.net 00:00:00.45]   Discovered:  UsbGuard.Tests&#xD;
 [xUnit.net 00:00:00.46]   Starting:    UsbGuard.Tests&#xD;
-[xUnit.net 00:00:02.12]   Finished:    UsbGuard.Tests&#xD;
+[xUnit.net 00:00:02.33]   Finished:    UsbGuard.Tests&#xD;
 </StdOut>
     </Output>
   </ResultSummary>

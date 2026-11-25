@@ -208,26 +208,26 @@ S.append(trang(5, 1, "3 chế độ, cùng màu với phần mềm", f'''
 
 # 6. Không tắt được
 S.append(trang(6, 1, "Thử tắt UsbGuard: bị chặn hoặc tự chạy lại", f'''
-<div class="term">
+<div class="term" style="font-size:21px;line-height:1.5;padding:22px 32px">
 <div><span class="c"># Administrator</span></div>
 <div><span class="p">&gt;</span> sc stop UsbGuard</div>
 <div class="r">[SC] ControlService FAILED 1052: dịch vụ không nhận lệnh dừng</div>
-<div style="margin-top:18px"><span class="c"># Người dùng thường</span></div>
+<div style="margin-top:10px"><span class="c"># Người dùng thường</span></div>
 <div><span class="p">&gt;</span> sc stop UsbGuard &nbsp;·&nbsp; sc config &nbsp;·&nbsp; sc delete</div>
 <div class="r">[SC] OpenService FAILED 5: Access is denied</div>
-<div style="margin-top:18px"><span class="c"># Administrator ép tắt tiến trình</span></div>
+<div style="margin-top:10px"><span class="c"># Administrator ép tắt tiến trình</span></div>
 <div><span class="p">&gt;</span> taskkill /F /IM UsbGuard.exe</div>
 <div class="y">Windows chạy lại dịch vụ sau {giay(K22['chay_lai_ms'])} (Server 2022), {giay(K25['chay_lai_ms'])} (Server 2025)</div>
-<div style="margin-top:18px"><span class="c"># Admin vào services.msc đổi Startup type thành Disabled</span></div>
+<div style="margin-top:10px"><span class="c"># Admin vào services.msc đổi Startup type thành Disabled</span></div>
 <div><span class="p">&gt;</span> sc config UsbGuard start= disabled</div>
 <div class="r">[SC] ChangeServiceConfig FAILED 5: Access is denied</div>
-<div style="margin-top:18px"><span class="c"># Sửa Registry để mở USB</span></div>
+<div style="margin-top:10px"><span class="c"># Sửa Registry để mở USB</span></div>
 <div><span class="p">&gt;</span> reg add ...\\USBSTOR /v Start /d 3</div>
 <div class="y">Dịch vụ đặt lại Start = 4 sau {giay(K22['tu_sua_ms'])} (2022), {giay(K25['tu_sua_ms'])} (2025)</div>
-<div style="margin-top:18px"><span class="c"># Cách duy nhất</span></div>
+<div style="margin-top:10px"><span class="c"># Cách duy nhất</span></div>
 <div><span class="p">&gt;</span> UsbGuard.exe uninstall <span class="g">[đúng mật khẩu]</span></div>
 </div>
-<p class="note" style="margin-top:20px">Số đo lấy từ kiểm thử tích hợp. Admin có mật khẩu vẫn gỡ được: đây là phần mềm quản lý thiết bị công khai, không phải rootkit.</p>'''))
+<p class="note" style="margin-top:12px">Số đo lấy từ kiểm thử tích hợp. Admin có mật khẩu vẫn gỡ được: đây là phần mềm quản lý thiết bị công khai, không phải rootkit.</p>'''))
 
 # 7. Mật khẩu
 khoa = [(5, 30), (6, 60), (7, 120), (8, 240), (9, 480), (10, 960), (11, 1920), (12, 3600)]

@@ -637,7 +637,7 @@ class BaoCaoUsbGuard:
         self.b("**Quản trị viên (Administrator):** Là người có quyền quản trị cao nhất trên máy tính và nắm mật khẩu quản trị UsbGuard. Quản trị viên có toàn quyền cài đặt, tạm dừng, cấu hình whitelist, đổi mật khẩu và gỡ cài đặt hệ thống.")
         self.b("**Hệ điều hành Windows (Windows OS / SCM):** Là môi trường nền tảng thực thi dịch vụ, phát sinh sự kiện cắm rút phần cứng qua WMI, quản lý phân quyền và kích hoạt cơ chế tự phục hồi dịch vụ sau sự cố.")
         
-        self.fig("hinh3_so_do_ca_su_dung.png", "Hình 3.1: Sơ đồ ca sử dụng của hệ thống UsbGuard 1.2", width_cm=13.5)
+        self.fig("hinh3_so_do_ca_su_dung.png", "Hình 3.1: Sơ đồ ca sử dụng của hệ thống UsbGuard", width_cm=12.5)
 
         self.h2("3.3. Thiết kế kiến trúc 3 tầng chặn và lớp gỡ thiết bị (Defense in Depth)")
         self.p("Nguyên lý phòng thủ đa tầng (Defense in Depth) được áp dụng trong UsbGuard nhằm đảm bảo không có khe hở nào cho phép thiết bị USB trái phép hoạt động. Kiến trúc gồm 3 tầng chặn ở mức hệ điều hành (do `Enforcer.cs` đặt) và 1 lớp gỡ thiết bị chủ động (do `UsbDisks.cs` thực hiện):")
@@ -647,7 +647,7 @@ class BaoCaoUsbGuard:
         self.b("**Lớp gỡ thiết bị (`UsbDisks.cs`):** Tuyến dự phòng chủ động cho thiết bị đã được nạp sẵn (cắm trước khi dịch vụ chạy, hoặc đang ở chế độ danh sách cho phép). Lớp này quét ổ đĩa qua SetupAPI, xác định bus qua IOCTL, gỡ bằng `CM_Request_Device_Eject`, buộc tháo ổ khi đang mở tệp và nạp lại thiết bị khi bỏ chặn.")
         self.p("Cả 3 tầng đều là cơ chế chuẩn mà doanh nghiệp vẫn đặt qua Group Policy hoặc Intune, nên không gây xung đột với công cụ quản trị sẵn có. Dịch vụ gọi lại `Enforcer.Block()` mỗi chu kỳ nên nếu ai đó đổi tay giá trị Registry thì dịch vụ tự sửa lại.")
 
-        self.fig("hinh1_kien_truc_3_tang.png", "Hình 3.2: Kiến trúc 3 tầng chặn và lớp gỡ thiết bị của UsbGuard", width_cm=12.5)
+        self.fig("hinh1_kien_truc_3_tang.png", "Hình 3.2: Kiến trúc 3 tầng chặn và lớp gỡ thiết bị của UsbGuard", width_cm=11.5)
 
         self.h2("3.4. Thiết kế tầng chặn thứ 3: cấm cài đặt thiết bị lưu trữ USB")
         self.p("Tầng 1 và tầng 2 chặn ở khâu nạp driver và truy cập dữ liệu, nhưng Windows vẫn có thể cài nút thiết bị cho ổ USB mới. Tầng 3 chặn sớm hơn, ngay ở khâu cài đặt thiết bị, bằng chính sách Windows \"Device Installation Restrictions\":")
@@ -687,7 +687,7 @@ class BaoCaoUsbGuard:
         self.b("Bước 6: Duyệt `UsbDisks.PresentUsbStorage()` để báo người dùng về thiết bị bị chặn ngay từ driver, và nạp lại 1 lần USB được phép nhưng đang ở trạng thái lỗi.")
         self.b("Bước 7 (bản 1.2): Gọi `ReviveEjected` để ghi nhớ cổng USB và \"rút ra cắm lại bằng phần mềm\" USB được phép đã bị tháo (mục 3.14).")
 
-        self.fig("hinh4_luong_vong_kiem_tra.png", "Hình 3.4: Lưu đồ thực thi chi tiết của vòng kiểm tra Worker.Tick", width_cm=12.0)
+        self.fig("hinh4_luong_vong_kiem_tra.png", "Hình 3.4: Lưu đồ thực thi chi tiết của vòng kiểm tra Worker.Tick", width_cm=10.5)
 
         self.h2("3.8. Thiết kế chuyển đổi trạng thái 3 chế độ hoạt động")
         self.p("UsbGuard vận hành linh hoạt dựa trên máy trạng thái hữu hạn với 3 chế độ hoạt động rõ ràng:")
@@ -695,14 +695,14 @@ class BaoCaoUsbGuard:
         self.b("**Chế độ 2 — DANH SÁCH CHO PHÉP (Allow List):** Tự động kích hoạt khi danh sách Whitelist có ít nhất 1 mục. Driver lưu trữ được mở lại (`Start = 3`), gỡ `Deny_All` và các mục của tầng 3 để hệ thống nhận diện thiết bị. Lớp gỡ giám sát và gỡ ngay bất kỳ ổ USB nào không có ID khớp với Whitelist.")
         self.b("**Chế độ 3 — TẠM DỪNG (Paused):** Được kích hoạt khi quản trị viên tạm dừng (lệnh `pause <số_phút>` hoặc nút \"Tạm dừng chặn\") với đúng mật khẩu. Hệ thống mở lại toàn bộ driver, nạp lại thiết bị đang bị chặn và tạm dừng cơ chế quét gỡ. Hết thời gian, hệ thống tự quay về trạng thái chặn.")
 
-        self.fig("hinh5_trang_thai_3_che_do.png", "Hình 3.5: Sơ đồ chuyển đổi giữa 3 chế độ hoạt động của UsbGuard", width_cm=13.0)
+        self.fig("hinh5_trang_thai_3_che_do.png", "Hình 3.5: Sơ đồ chuyển đổi giữa 3 chế độ hoạt động của UsbGuard", width_cm=12.0)
 
         self.h2("3.9. Thiết kế cây thiết bị và ranh giới cô lập an toàn")
         self.p("Vấn đề khó khăn của các phần mềm chặn USB là nguy cơ ngắt nhầm chuột hoặc bàn phím cắm chung cổng hub USB. Để giải quyết vấn đề này, UsbGuard thiết lập 1 ranh giới cô lập phần cứng chuẩn xác:")
         self.b("Lớp gỡ chỉ nhắm vào giao diện đĩa `GUID_DEVINTERFACE_DISK` và kiểm tra `BusType == BusTypeUsb` (giá trị 7). Chuột, bàn phím thuộc giao diện `GUID_DEVINTERFACE_HID` nên bị bỏ qua ngay từ vòng lọc đầu tiên. Tầng 3 cũng chỉ nhắm lớp 08 nên không ảnh hưởng thiết bị HID.")
         self.b("Khi duyệt cây thiết bị để tìm ID và gỡ bỏ, hằng số `MaxDepth = 2` giới hạn việc duyệt chỉ đi từ Nút đĩa (Disk Node) lên Nút thiết bị USB cha (Parent USB Node). Ứng dụng **không duyệt tiếp lên Nút Hub (USB Generic Hub hoặc Root Hub)**, nên cổng hub vật lý vẫn duy trì tín hiệu cho chuột, bàn phím.")
 
-        self.fig("hinh7_cay_thiet_bi_usb.png", "Hình 3.6: Cây thiết bị PnP và ranh giới gỡ bỏ an toàn tránh ảnh hưởng hub", width_cm=13.0)
+        self.fig("hinh7_cay_thiet_bi_usb.png", "Hình 3.6: Cây thiết bị PnP và ranh giới gỡ bỏ an toàn tránh ảnh hưởng hub", width_cm=12.0)
 
         self.h2("3.10. Thiết kế cấu trúc lưu trữ cấu hình trong Windows Registry")
         self.p("Toàn bộ trạng thái và cấu hình vận hành của UsbGuard được lưu trữ tập trung tại phân nhánh Registry hệ thống `HKLM\\SOFTWARE\\UsbGuard`:")
@@ -726,7 +726,7 @@ class BaoCaoUsbGuard:
         self.b("**Lớp phân quyền truy cập DACL:** Người dùng thông thường không có quyền gửi mã điều khiển tới SCM hoặc chỉnh sửa cấu hình dịch vụ. Mọi lệnh `sc stop`, `sc delete`, `sc config` từ người dùng thường đều bị chặn với mã lỗi `5 (ERROR_ACCESS_DENIED)`.")
         self.b("**Lớp phục hồi tự động sau sự cố (`sc.exe failure`):** Nếu tiến trình `UsbGuard.exe` bị cưỡng chế kết thúc (`taskkill /F` từ quyền Administrator), cấu hình phục hồi ra lệnh cho Windows chạy lại tiến trình sau khoảng 5 giây (`actions= restart/5000/restart/30000`).")
 
-        self.fig("hinh8_co_che_khong_tat_duoc.png", "Hình 3.7: Cơ chế 'không tắt được' và tự phục hồi dịch vụ của UsbGuard", width_cm=13.0)
+        self.fig("hinh8_co_che_khong_tat_duoc.png", "Hình 3.7: Cơ chế 'không tắt được' và tự phục hồi dịch vụ của UsbGuard", width_cm=12.0)
 
         self.h2("3.12. Thiết kế bảo mật thông tin và phân quyền Registry DACL")
         self.p("Hệ thống áp dụng các tiêu chuẩn an ninh thông tin nghiêm ngặt để bảo vệ toàn vẹn dữ liệu cấu hình:")
@@ -735,7 +735,7 @@ class BaoCaoUsbGuard:
         self.b("**Băm mật khẩu (bản 1.2):** PBKDF2-HMAC-SHA256, muối ngẫu nhiên 16 byte, 600000 vòng (trước đây là SHA1, 100000 vòng). Mã băm của bản cũ vẫn dùng được và được băm lại ở lần nhập đúng kế tiếp (`Auth.NeedsRehash`).")
         self.b("**Chống dò mật khẩu (`AdminAuth.cs`):** Số lần sai lưu trong Registry HKLM (người dùng thường không sửa được) nên đóng mở lại phần mềm không xóa được. Sai 4 lần đầu chưa khoá; lần thứ 5 khoá 30 giây, mỗi lần sai tiếp gấp đôi, tối đa 1 giờ; nhập đúng thì về 0. Giao diện, dòng lệnh và trình gỡ dùng chung 1 hàm kiểm tra.")
 
-        self.fig("hinh9_mo_hinh_bao_mat_pbkdf2.png", "Hình 3.8: Thiết kế bảo mật mật khẩu PBKDF2 và phân quyền DACL", width_cm=13.0)
+        self.fig("hinh9_mo_hinh_bao_mat_pbkdf2.png", "Hình 3.8: Thiết kế bảo mật mật khẩu PBKDF2 và phân quyền DACL", width_cm=12.0)
 
         self.h2("3.13. Thiết kế quy trình gỡ cài đặt an toàn có xác thực mật khẩu")
         self.p("Vì dịch vụ không nhận lệnh Stop trực tiếp, quy trình gỡ cài đặt được thiết kế thông qua cơ chế cờ báo hiệu an toàn:")
@@ -743,7 +743,7 @@ class BaoCaoUsbGuard:
         self.b("Nếu xác thực thành công, chương trình ghi cờ `Uninstalling = 1` vào Registry. Dịch vụ `Worker` trong vòng kiểm tra tiếp theo đọc cờ này sẽ chủ động dừng Timer và gọi `Stop()`.")
         self.b("Tiến trình gỡ chờ dịch vụ dừng hẳn (tối đa 20 giây), xóa dịch vụ khỏi SCM (`sc delete`), trả lại cấu hình Windows (`USBSTOR Start = 3`, xóa `Deny_All`, xóa các mục `UsbGuardN` của tầng 3 và giữ nguyên mục của công ty), bật lại và nạp lại thiết bị bị chặn, xóa khóa `HKLM\\SOFTWARE\\UsbGuard` và các tệp cài đặt.")
 
-        self.fig("hinh6_luong_go_cai_dat.png", "Hình 3.9: Quy trình gỡ cài đặt bảo mật và khôi phục cài đặt gốc Windows", width_cm=12.5)
+        self.fig("hinh6_luong_go_cai_dat.png", "Hình 3.9: Quy trình gỡ cài đặt bảo mật và khôi phục cài đặt gốc Windows", width_cm=11.0)
 
         self.h2("3.14. Thiết kế nạp lại USB đã bị Windows tháo (bản 1.2)")
         self.p("Lượt thử trên máy Windows thật (mục 5.6) cho thấy 2 vấn đề: (a) USB bị chặn lúc đang cắm thì Windows \"tháo an toàn\" (mã 47), nên khi được cho phép hoặc tạm dừng phải rút ra cắm lại mới dùng được; (b) USB đó có lúc biến khỏi danh sách trong phần mềm. Bản 1.2 xử lý bằng `UsbPorts.cs` và `Worker.ReviveEjected`:")
@@ -1127,7 +1127,7 @@ private static int ForceDismount(UsbDisk d)
             ["YC-PCN03", "Tài nguyên: CPU < 1%, RAM < 50 MB.", f"RAM trung bình {t22['ram_tb_mb']} MB (cao nhất {t22['ram_max_mb']} MB), CPU {t22['cpu_pct']}% (Server 2022); RAM {t25['ram_tb_mb']} MB (cao nhất {t25['ram_max_mb']} MB), CPU {t25['cpu_pct']}% (Server 2025).", ok_dg(max(t22['ram_max_mb'], t25['ram_max_mb']) < 50 and max(t22['cpu_pct'], t25['cpu_pct']) < 1, "Đáp ứng (đo trên Windows Server 2022/2025)")],
             ["YC-PCN04", "Bảo mật cấu hình Registry.", "DACL ngắt kế thừa, chỉ SYSTEM và Administrators truy cập; user thường bị từ chối (ca tích hợp).", ok_dg(okS, "Đáp ứng (đã kiểm thử CI)")]
         ]
-        self.tbl("TBL_DG", "Bảng 5.7: Đánh giá mức độ đáp ứng các yêu cầu hệ thống", headers_dg, rows_dg, widths_dg, ["center", "left", "left", "center"], sz=20)
+        self.tbl("TBL_DG", "Bảng 5.7: Đánh giá mức độ đáp ứng các yêu cầu hệ thống", headers_dg, rows_dg, widths_dg, ["center", "left", "left", "center"], sz=18)
 
     # ==========================================================================
     # CHƯƠNG 6: KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
@@ -1200,11 +1200,11 @@ private static int ForceDismount(UsbDisk d)
             raise SystemExit("[LỖI] Không trích được nội dung installer/UsbGuard.iss")
         self.h2("Phụ lục A: Cấu hình bộ cài đặt (installer/UsbGuard.iss)")
         self.p("Trích đoạn tệp Inno Setup: các mục tệp, lối tắt, chạy sau cài và bước truyền mật khẩu qua biến môi trường:")
-        self.code("; Trích từ installer/UsbGuard.iss\n" + gon(m1.group(0)) + "\n" + gon(m2.group(0)), 17, False)
+        self.code("; Trích từ installer/UsbGuard.iss\n" + gon(m1.group(0)) + "\n" + gon(m2.group(0)), 15, False)
 
         self.h2("Phụ lục B: Kịch bản kiểm thử tích hợp PowerShell (tests/integration.ps1)")
         self.p("Trích đoạn mã cấu trúc thực thi kiểm thử tự động của tệp `tests/integration.ps1`:")
-        self.code(sz=17, keep=False, code_text="""# Trích đoạn mã từ tests/integration.ps1
+        self.code(sz=15, keep=False, code_text="""# Trích đoạn mã từ tests/integration.ps1
 param(
     [Parameter(Mandatory = $true)][string]$Exe,
     [string]$OutDir = (Join-Path $PSScriptRoot 'ket-qua')
@@ -1226,7 +1226,7 @@ Check 'TC10' 'Windows tự khởi động lại dịch vụ' ($t -ge 0)""")
         phan = wf.split("      - name: Dong goi bo cai")[0].rstrip()
         self.h2("Phụ lục C: Cấu hình quy trình CI GitHub Actions (.github/workflows/windows.yml)")
         self.p("Tệp cấu hình quy trình tích hợp liên tục chạy kiểm thử trên Windows Server 2022 và Windows Server 2025 (phần build và kiểm thử; các bước đóng gói bộ cài và tải kết quả được lược bỏ):")
-        self.code("# Trích từ .github/workflows/windows.yml\n" + gon(phan), 17, False)
+        self.code("# Trích từ .github/workflows/windows.yml\n" + gon(phan), 15, False)
 
 
 

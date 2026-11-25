@@ -1,12 +1,12 @@
 {
   "he_dieu_hanh": "Microsoft Windows Server 2022 Datacenter",
   "phien_ban": "10.0.20348",
-  "dat": 39,
-  "tong": 39,
-  "tu_sua_ms": 1108,
+  "dat": 40,
+  "tong": 40,
+  "tu_sua_ms": 550,
   "chay_lai_ms": 5390,
-  "ram_tb_mb": 24.4,
-  "ram_max_mb": 24.7,
+  "ram_tb_mb": 24.5,
+  "ram_max_mb": 24.8,
   "cpu_pct": 0.0,
   "ca": [
     {
@@ -49,7 +49,7 @@
       "id": "TC07",
       "ten": "Tự sửa khi registry bị đổi tay",
       "dat": true,
-      "chi_tiet": "khôi phục Start = 4 sau 1108 ms"
+      "chi_tiet": "khôi phục Start = 4 sau 550 ms"
     },
     {
       "id": "TC31",
@@ -61,7 +61,7 @@
       "id": "TC32",
       "ten": "Tầng 3 tự sửa khi bị xoá tay",
       "dat": true,
-      "chi_tiet": "khôi phục sau 1883 ms"
+      "chi_tiet": "khôi phục sau 1879 ms"
     },
     {
       "id": "TC08",
@@ -79,7 +79,7 @@
       "id": "TC10",
       "ten": "Bị kill tiến trình thì Windows tự chạy lại",
       "dat": true,
-      "chi_tiet": "PID 7400 -> 1896, chạy lại sau 5390 ms"
+      "chi_tiet": "PID 3960 -> 4288, chạy lại sau 5390 ms"
     },
     {
       "id": "TC11",
@@ -127,19 +127,19 @@
       "id": "TC18",
       "ten": "Tạm dừng đúng mật khẩu: mở lại USB",
       "dat": true,
-      "chi_tiet": "USBSTOR Start = 3, sau 323 ms"
+      "chi_tiet": "USBSTOR Start = 3, sau 886 ms"
     },
     {
       "id": "TC19",
       "ten": "Bật lại chặn",
       "dat": true,
-      "chi_tiet": "USBSTOR Start = 4, sau 1983 ms"
+      "chi_tiet": "USBSTOR Start = 4, sau 1972 ms"
     },
     {
       "id": "TC20",
       "ten": "Có whitelist: chuyển sang chế độ danh sách cho phép",
       "dat": true,
-      "chi_tiet": "driver mở để USB được phép chạy, sau 1981 ms"
+      "chi_tiet": "driver mở để USB được phép chạy, sau 1966 ms"
     },
     {
       "id": "TC21",
@@ -151,7 +151,7 @@
       "id": "TC22",
       "ten": "Xoá whitelist: quay lại chặn tất cả",
       "dat": true,
-      "chi_tiet": "sau 1861 ms"
+      "chi_tiet": "sau 1976 ms"
     },
     {
       "id": "TC23",
@@ -209,15 +209,21 @@
     },
     {
       "id": "TC38",
-      "ten": "Admin đặt dịch vụ Disabled: dịch vụ tự trả lại Automatic",
+      "ten": "Admin đổi Startup type (services.msc, sc config): bị từ chối",
       "dat": true,
-      "chi_tiet": "sc config mã 0, trả lại sau 2086 ms, StartMode = Auto"
+      "chi_tiet": "sc config mã 5, StartMode = Auto"
     },
     {
       "id": "TC39",
+      "ten": "Admin sửa thẳng Registry đặt dịch vụ Disabled: dịch vụ tự trả lại Automatic",
+      "dat": true,
+      "chi_tiet": "trả lại sau 2078 ms"
+    },
+    {
+      "id": "TC40",
       "ten": "Admin xoá cấu hình tự chạy lại khi bị kill: dịch vụ tự đặt lại",
       "dat": true,
-      "chi_tiet": "đặt lại sau 1898 ms"
+      "chi_tiet": "đặt lại sau 2011 ms"
     },
     {
       "id": "TC28",
@@ -229,7 +235,7 @@
       "id": "TC29",
       "ten": "Gỡ đúng mật khẩu: dịch vụ tự dừng và bị xoá",
       "dat": true,
-      "chi_tiet": "mất 6224 ms, sc query trả 1060 (không còn dịch vụ)"
+      "chi_tiet": "mất 6225 ms, sc query trả 1060 (không còn dịch vụ)"
     },
     {
       "id": "TC30",
